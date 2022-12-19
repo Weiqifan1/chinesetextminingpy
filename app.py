@@ -14,8 +14,11 @@ def hello_2(name):
     # return "hello owrld"
     return 'welcome %s' % name
 
-@app.route('/user', methods = ['GET', 'POST'])
+@app.route('/user', methods = ['POST'])
 def home():
-    if(request.method == 'GET'):
-        data = "hello world"
-    return jsonify({'data': data})
+    content_type = request.headers.get('Content-Type')
+    if (content_type == 'application/json'):
+        json = request.json
+        return json
+    else:
+        return 'Content-Type not supported!'
