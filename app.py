@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask import render_template
+import src.appController
 
 app = Flask(__name__)
 
@@ -19,6 +20,7 @@ def home():
     content_type = request.headers.get('Content-Type')
     if (content_type == 'application/json'):
         json = request.json
+        res = src.appController.postendpoint(json)
         return json
     else:
         return 'Content-Type not supported!'
