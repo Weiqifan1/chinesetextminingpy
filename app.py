@@ -7,12 +7,12 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    # return "hello owrld"
+    # return "hello world"
     return render_template("index.html")
 
 @app.route("/newapi/<name>")
 def hello_2(name):
-    # return "hello owrld"
+    # return "hello world"
     return 'welcome %s' % name
 
 @app.route('/user', methods = ['POST'])
@@ -21,6 +21,6 @@ def home():
     if (content_type == 'application/json'):
         json = request.json
         res = src.appController.postendpoint(json)
-        return json
+        return res
     else:
         return 'Content-Type not supported!'
