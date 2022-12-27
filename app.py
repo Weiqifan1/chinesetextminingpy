@@ -24,3 +24,4 @@ def home():
         return res
     else:
         return 'Content-Type not supported!'
+
