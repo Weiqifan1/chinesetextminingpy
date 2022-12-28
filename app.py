@@ -25,3 +25,4 @@ def home():
     else:
         return 'Content-Type not supported!'
 
+
