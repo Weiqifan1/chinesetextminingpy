@@ -5,7 +5,7 @@ def sentenceToDict(sen):
 
 def textToTokens(text):
     ChineseParser.initChineseParser()
-    test2 = ChineseParser.getSentences(text)
+    test2 = ChineseParser.getSentencesFromLargeText(text)
     result = [senToDict(x) for x in test2]
     return result
 
@@ -27,7 +27,7 @@ def isChinese(firstElem):
         return False
 
 def findSubtokenPairs(firstElem, remainElems, listOfCharsToPinyinTupples):
-    pinyin = ChineseParser.getPinyinStringFromWord(firstElem)
+    pinyin = ChineseParser.getPinyinStringFromSentence(firstElem)
     pinyinSplit = pinyin.split()
     test = ChineseParser.getTokensFromSentence(firstElem)
 
@@ -72,8 +72,8 @@ def flattenNestedList(cleanedMergedList, outputList):
         return flattenNestedList(rest, newList)
 
 def generatePinyinTokenPairs(sent):
-    basicTokens = ' '.join(ChineseParser.getTokenListFromSentence(sent)).split()
-    basicPinyin = ChineseParser.getPinyinStringFromWord(sent).split()
+    basicTokens = ChineseParser.getTokensFromSentence(sent)#' '.join(ChineseParser.getTokensFromSentence(sent)) #getTokenListFromSentence(sent)).split()
+    basicPinyin = ChineseParser.getPinyinStringFromSentence(sent).split()
     mergedLists = list(zip(basicTokens, basicPinyin))
     cleanedMergedList = [cleanedToken(x) for x in mergedLists]
     result = flattenNestedList(cleanedMergedList, [])
@@ -83,7 +83,7 @@ def senToDict(sent):
     pinyinTokens = generatePinyinTokenPairs(sent)
     mydict = {
         "sentence": sent,
-        "rawTokens": ChineseParser.getTokenListFromSentence(sent),
+        "rawTokens": ChineseParser.getTokensFromSentence(sent), #ChineseParser.getTokenListFromSentence(sent),
         "wordToPinyinTuples": pinyinTokens
     }
     return mydict
