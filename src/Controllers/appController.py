@@ -2,10 +2,10 @@ import json
 from chinese import ChineseAnalyzer
 import re
 
-from src.classes import ChineseParser
+from src.libraryInterface import ChineseParser
 
 
-#from src.classes.ChineseParser import ChineseParser
+#from src.libraryInterface.ChineseParser import ChineseParser
 
 
 

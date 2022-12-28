@@ -1,6 +1,5 @@
 import pytest
-import json
-import src.appController
+import src.Controllers.appController
 
 @pytest.fixture
 def input_value():
@@ -41,7 +40,7 @@ def test_divisible_by_6(input_value):
 
 def test_appController_postendpoint():
    news = input_jsonnews()
-   output = src.appController.postendpoint(news)
+   output = src.Controllers.appController.postendpoint(news)
 
    res = ['12月23日, 中国铁路成都局集团公司组织媒体提前试乘新成昆铁路, 感受即将到来的时空新体验',
           "记者在现场获悉, 新成昆铁路将采用第三代C型CR200J'复兴号'动车组值乘, 这也是该车型首次正式亮相",
