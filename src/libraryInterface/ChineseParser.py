@@ -43,5 +43,3 @@ def getPinyinStringFromSentence(text):
     return pinyinStr
 
 
-
-

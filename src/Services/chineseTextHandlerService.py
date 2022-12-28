@@ -26,36 +26,11 @@ def isChinese(firstElem):
     else:
         return False
 
-def findSubtokenPairs(firstElem, remainElems, listOfCharsToPinyinTupples):
-    pinyin = ChineseParser.getPinyinStringFromSentence(firstElem)
-    pinyinSplit = pinyin.split()
-    test = ChineseParser.getTokensFromSentence(firstElem)
-
-    if len(firstElem) == 0 and len(remainElems) == 0:
-        return listOfCharsToPinyinTupples
-    elif len(firstElem) == 0:
-        return findSubtokenPairs(remainElems, firstElem, listOfCharsToPinyinTupples)
-    elif len(pinyinSplit) > 1:
-        lenOfSplit = len(test[0])
-        shrinkFirstElemAgain = firstElem[:(lenOfSplit - len(firstElem))]
-        lastSection = firstElem[(lenOfSplit - len(firstElem)):]
-        return findSubtokenPairs(shrinkFirstElemAgain, lastSection + remainElems, listOfCharsToPinyinTupples)
-    elif len(pinyin) > 0 and pinyin != firstElem:
-        listOfCharsToPinyinTupples.append((firstElem, pinyin))
-        return findSubtokenPairs(remainElems, "", listOfCharsToPinyinTupples)
-    elif len(firstElem) == 1:
-        listOfCharsToPinyinTupples.append((firstElem, firstElem))
-        return findSubtokenPairs(remainElems, "", listOfCharsToPinyinTupples)
-    else:
-        shrinkFirstElem = firstElem[:-1]
-        lastChar = firstElem[-1]
-        return findSubtokenPairs(shrinkFirstElem, lastChar + remainElems, listOfCharsToPinyinTupples)
-
 def cleanedToken(tokenPinyinTuple):
     firstElem = tokenPinyinTuple[0]
     secondElem = tokenPinyinTuple[1]
     if firstElem == secondElem and isChinese(firstElem):
-        return findSubtokenPairs(firstElem, "", [])
+        return getWordToPinyinTupppleList(firstElem)  #findSubtokenPairs(firstElem, "", [])
     else:
         return tokenPinyinTuple
 
@@ -87,3 +62,32 @@ def senToDict(sent):
         "wordToPinyinTuples": pinyinTokens
     }
     return mydict
+
+def getWordToPinyinTupppleList(firstElem):
+    tokens = findSubtokenPairs(firstElem, "", [])
+    return tokens
+
+def findSubtokenPairs(firstElem, remainElems, listOfCharsToPinyinTupples):
+    pinyin = ChineseParser.getPinyinStringFromSentence(firstElem)
+    pinyinSplit = pinyin.split()
+    test = ChineseParser.getTokensFromSentence(firstElem)
+
+    if len(firstElem) == 0 and len(remainElems) == 0:
+        return listOfCharsToPinyinTupples
+    elif len(firstElem) == 0:
+        return findSubtokenPairs(remainElems, firstElem, listOfCharsToPinyinTupples)
+    elif len(pinyinSplit) > 1:
+        lenOfSplit = len(test[0])
+        shrinkFirstElemAgain = firstElem[:(lenOfSplit - len(firstElem))]
+        lastSection = firstElem[(lenOfSplit - len(firstElem)):]
+        return findSubtokenPairs(shrinkFirstElemAgain, lastSection + remainElems, listOfCharsToPinyinTupples)
+    elif len(pinyin) > 0 and pinyin != firstElem:
+        listOfCharsToPinyinTupples.append((firstElem, pinyin))
+        return findSubtokenPairs(remainElems, "", listOfCharsToPinyinTupples)
+    elif len(firstElem) == 1:
+        listOfCharsToPinyinTupples.append((firstElem, firstElem))
+        return findSubtokenPairs(remainElems, "", listOfCharsToPinyinTupples)
+    else:
+        shrinkFirstElem = firstElem[:-1]
+        lastChar = firstElem[-1]
+        return findSubtokenPairs(shrinkFirstElem, lastChar + remainElems, listOfCharsToPinyinTupples)
