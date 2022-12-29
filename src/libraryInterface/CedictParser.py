@@ -1,28 +1,52 @@
 from pathlib import Path
-
+import re
 from src.resources import cedictReader
 
 
 # def initChineseParser():
 #     global parser
 #     parser =
+def cedictParserReadCedict():
+    return cedictReader.readCedictFile()
 
 
-def createWordToInfoDictionary():
-    #test = readCedict()
-    # data = Path("resources")
-    # file = data / "cedict20221227.txt"
-    # f = open(file)
-    # text = open("resources/cedict20221227.txt", "r")
-    test = cedictReader.readCedictFile()
+def removeCommentLinesFromCedict(filelines):
+    noComments = [x for x in filelines if not (x.startswith("# ") or x.startswith("#!"))]
+    return noComments
+
+def isCommentLine(cedictLine):
+    if cedictLine[:2] == "# ":
+        True
+    elif cedictLine[:2] == "#!":
+        True
+    else:
+        False
+
+
+
+def lineToList(stringLine):
+    firstSplit = stringLine.split(" ", 1)
+    secondSplit = firstSplit[1].split("[", 1)
+    thirdSplit = secondSplit[1].split("]", 1)
+
+    #improve pinyin handling by joining strings
+    #betterPinyin =
+
+    return [firstSplit[0],
+            secondSplit[0].strip(),
+            thirdSplit[0],
+            thirdSplit[1].strip()]
+
+
+def testfunc(withoutComments):
+    resultObj = map(lineToList, withoutComments)
+    res = list(resultObj)
+    return res
+
+
+def createWordToInfoDictionary(cedictContent):
+    filelines = cedictContent.split('\n')
+    withoutComments = removeCommentLinesFromCedict(filelines)
+    toNestedList = testfunc(withoutComments)
     return {"kin":"value"}
-
-# def readCedict():
-#     text = open("demofile.txt", "r")
-
-def test_divisible_by_3(input_value):
-   assert input_value % 3 == 0
-
-def test_divisible_by_6(input_value):
-   assert input_value % 6 == 3
 

@@ -25,5 +25,6 @@ def test_appController_postendpoint():
    assert True
 
 def test_createWordToInfoDictionary():
-    test = CedictParser.createWordToInfoDictionary()
+    fileContent = CedictParser.cedictParserReadCedict()
+    test = CedictParser.createWordToInfoDictionary(fileContent)
     assert True
