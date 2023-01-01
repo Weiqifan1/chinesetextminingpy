@@ -4,58 +4,61 @@ from src.libraryInterface import CedictParser
 def test_wordToSimplifiedTrad():
     # when
     CedictParser.initCedictParser()
-    empty = CedictParser.wordToSimplifiedTrad("")
+    nonChinese = CedictParser.wordToSimplifiedTrad(",")
     nullarg = CedictParser.wordToSimplifiedTrad(None)
     sim = CedictParser.wordToSimplifiedTrad('來賓')
-    assert empty == ""
+    assert nonChinese == ","
     assert nullarg == ""
-    assert sim == '来宾|来宾'
+    assert sim == '来宾'
 
 def test_wordToTraditionalSimp():
     # when
     CedictParser.initCedictParser()
-    empty = CedictParser.wordToTraditionalSimp("")
+    nonChinese = CedictParser.wordToTraditionalSimp(",")
     nullarg = CedictParser.wordToTraditionalSimp(None)
     sim = CedictParser.wordToTraditionalSimp('亩')
-    assert empty == ""
+    assert nonChinese == ","
     assert nullarg == ""
-    assert sim == '畂|畆|畝|畮'
+    assert sim == '畂|畆|畮|畝'
 
 def test_wordToMeaningSimp():
     # when
     CedictParser.initCedictParser()
-    empty = CedictParser.wordToMeaningSimp("")
+    nonChinese = CedictParser.wordToMeaningSimp(",")
     nullarg = CedictParser.wordToMeaningSimp(None)
     sim = CedictParser.wordToMeaningSimp('亩')
-    assert sim == '/old variant of 畝|亩[mu3]/|/old variant of 畝|亩[mu3]/|/classifier for fields/unit of area equal to one fifteenth of a hectare/|/old variant of 畝|亩[mu3]/'
+    assert nonChinese == ","
+    assert nullarg == ""
+    assert sim == '/old variant of 畝|亩[mu3]/|/old variant of 畝|亩[mu3]/|/old variant of 畝|亩[mu3]/|/classifier for fields/unit of area equal to one fifteenth of a hectare/'
+
 
 def test_wordToMeaningTrad():
     # when
     CedictParser.initCedictParser()
-    empty = CedictParser.wordToMeaningTrad("")
+    nonChinese = CedictParser.wordToMeaningTrad(",")
     nullarg = CedictParser.wordToMeaningTrad(None)
     sim = CedictParser.wordToMeaningTrad('不是')
-    assert empty == ""
+    assert nonChinese == ","
     assert nullarg == ""
     assert sim == '/fault/blame/|/no/is not/not/'
 
 def test_wordToPinyinSimp():
     # when
     CedictParser.initCedictParser()
-    empty = CedictParser.wordToPinyinSimp("")
+    nonChinese = CedictParser.wordToPinyinSimp(",")
     nullarg = CedictParser.wordToPinyinSimp(None)
     sim = CedictParser.wordToPinyinSimp('亩')
-    assert empty == ""
+    assert nonChinese == ","
     assert nullarg == ""
-    assert sim == "Mu3|Mu3|Mu3|Mu3"
+    assert sim == "Mu3"
 
 def test_wordToPinyinTrad():
     # when
     CedictParser.initCedictParser()
-    empty = CedictParser.wordToPinyinTrad("")
+    nonChinese = CedictParser.wordToPinyinTrad(",")
     nullarg = CedictParser.wordToPinyinTrad(None)
     tra = CedictParser.wordToPinyinTrad('不是')
-    assert empty == ""
+    assert nonChinese == ","
     assert nullarg == ""
     assert tra == "Bu2_Shi5|Bu4_Shi4"
 

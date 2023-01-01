@@ -1,3 +1,4 @@
+from operator import itemgetter
 from src.resources import cedictReader
 import itertools
 
@@ -17,59 +18,62 @@ def initCedictParser():
 def wordToTraditionalSimp(word):
     simp = getCedictSimpDict()
     lookup = simp.get(word)
-    return doGetTraditional(lookup)
+    res = doGetDctionaryContent(lookup, word, "traditional")
+    return res
 
 def wordToSimplifiedTrad(word):
     trad = getCedictTradDict()
     lookup = trad.get(word)
-    return doGetSimplified(lookup)
+    res = doGetDctionaryContent(lookup, word, "simplified")
+    return res
+
 def wordToMeaningSimp(word):
     simp = getCedictSimpDict()
     lookup = simp.get(word)
-    return doGetMeaning(lookup)
+    res = doGetDctionaryContent(lookup, word, "meaning")
+    return res
 
 def wordToMeaningTrad(word):
     trad = getCedictTradDict()
     lookup = trad.get(word)
-    return doGetMeaning(lookup)
+    res = doGetDctionaryContent(lookup, word, "meaning")
+    return res
 
 def wordToPinyinSimp(word):
     simp = getCedictSimpDict()
     lookup = simp.get(word)
-    return doGetPinyin(lookup)
+    res = doGetDctionaryContent(lookup, word, "pinyin")
+    return res
 
 def wordToPinyinTrad(word):
     trad = getCedictTradDict()
     lookup = trad.get(word)
-    return doGetPinyin(lookup)
+    res = doGetDctionaryContent(lookup, word, "pinyin")
+    return res
 
-def doGetTraditional(lookup):
-    if lookup == None:
+def doGetDctionaryContent(lookup, word, key):
+    if lookup == None and word == None:
         return ""
+    elif lookup == None:
+        return word
     else:
-        pinyinList = [x.get("traditional") for x in lookup]
-        return "|".join(pinyinList)
+        newLookup = sortListOfWordLookup(lookup)
+        lookupList = [x.get(key) for x in newLookup]
+        lookupSet = set(lookupList)
+        if len(lookupSet) == 1:
+            return lookupList[0]
+        else:
+            return "|".join(lookupList)
 
-def doGetSimplified(lookup):
-    if lookup == None:
-        return ""
-    else:
-        pinyinList = [x.get("simplified") for x in lookup]
-        return "|".join(pinyinList)
+def sortListOfWordLookup(lookup):
+    for x in range(len(lookup)):
+        lookup[x]["length"] = len(lookup[x]["meaning"])
+    meaningLength = sorted(lookup, key=itemgetter('length', 'meaning'))
+    return meaningLength
 
-def doGetMeaning(lookup):
-    if lookup == None:
-        return ""
-    else:
-        pinyinList = [x.get("meaning") for x in lookup]
-        return "|".join(pinyinList)
-
-def doGetPinyin(lookup):
-    if lookup == None:
-        return ""
-    else:
-        pinyinList = [x.get("pinyin") for x in lookup]
-        return "|".join(pinyinList)
+def getMeaningLength(eachEntry):
+    meaningString = eachEntry["meaning"]
+    return len(meaningString)
 
 def getCedictTradDict():
     return traditionalDictionary
