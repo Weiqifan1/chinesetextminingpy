@@ -20,6 +20,22 @@ def getCedictSimpDict():
 def readCedictContentFromCedictReader():
     return cedictReader.readCedictFile()
 
+
+def cedictListToDict(x):
+    dict = {
+            "traditional": x[0],
+            "simplified": x[1],
+            "pinyin": x[2],
+            "meaning": x[3]}
+    return dict
+
+
+def getCedictSublistsToDict(group):
+    nestedList = list(group)
+    res = [cedictListToDict(x) for x in nestedList]
+    return res
+
+
 def cedictDictionariesFromRawFileContent(rawDictionaryContent):
     filelines = rawDictionaryContent.split('\n')
     withoutComments = removeCommentLinesFromCedict(filelines)
@@ -35,22 +51,23 @@ def cedictDictionariesFromRawFileContent(rawDictionaryContent):
     sortBySEcond = sorted(res, key = lambda x: x[1])
 
     tradIter = itertools.groupby(sortByFirst, lambda x: x[0])
-    tradDictList = [{key : list(group)} for key,group in tradIter]
+    tradDictList = [{key : getCedictSublistsToDict(group)} for key,group in tradIter]
     tradSuperDict = {}
     for d in tradDictList:
         tradSuperDict.update(d)
 
     simpIter = itertools.groupby(sortBySEcond, lambda x: x[1])
-    simpDictList = [{key : list(group)} for key,group in simpIter]
+    simpDictList = [{key : getCedictSublistsToDict(group)} for key,group in simpIter]
     simpSuperDict = {}
     for d in simpDictList:
         simpSuperDict.update(d)
-    return [tradSuperDict, simpSuperDict]
+    return {"traditionalDict": tradSuperDict,
+            "simplifiedDict": simpSuperDict}
 
 def createCedictTradToInfoDict(res):
     sortByFirst = sorted(res)
     tradIter = itertools.groupby(sortByFirst, lambda x: x[0])
-    tradDictList = [{key: list(group)} for key, group in tradIter]
+    tradDictList = [{key: getCedictSublistsToDict(group)} for key, group in tradIter]
     tradSuperDict = {}
     for d in tradDictList:
         tradSuperDict.update(d)
@@ -59,7 +76,7 @@ def createCedictTradToInfoDict(res):
 def createCedictSimpToInfoDict(res):
     sortBySEcond = sorted(res, key=lambda x: x[1])
     simpIter = itertools.groupby(sortBySEcond, lambda x: x[1])
-    simpDictList = [{key : list(group)} for key,group in simpIter]
+    simpDictList = [{key : getCedictSublistsToDict(group)} for key,group in simpIter]
     simpSuperDict = {}
     for d in simpDictList:
         simpSuperDict.update(d)
