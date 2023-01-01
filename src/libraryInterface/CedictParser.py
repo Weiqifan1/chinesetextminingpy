@@ -14,6 +14,8 @@ def initCedictParser():
         traditionalDictionary = createCedictTradToInfoDict(res)
         global simplifiedDictionary
         simplifiedDictionary = createCedictSimpToInfoDict(res)
+        global simplifyCedictPinyinWordList
+        simplifyCedictPinyinWordList = {'的' : "De5"}
 
 def wordToTraditionalSimp(word):
     simp = getCedictSimpDict()
@@ -42,13 +44,21 @@ def wordToMeaningTrad(word):
 def wordToPinyinSimp(word):
     simp = getCedictSimpDict()
     lookup = simp.get(word)
-    res = doGetDctionaryContent(lookup, word, "pinyin")
+    changePinyin = simplifyCedictPinyinWordList.get(word)
+    if changePinyin:
+        res = changePinyin
+    else:
+        res = doGetDctionaryContent(lookup, word, "pinyin")
     return res
 
 def wordToPinyinTrad(word):
     trad = getCedictTradDict()
     lookup = trad.get(word)
-    res = doGetDctionaryContent(lookup, word, "pinyin")
+    changePinyin = simplifyCedictPinyinWordList.get(word)
+    if changePinyin:
+        res = changePinyin
+    else:
+        res = doGetDctionaryContent(lookup, word, "pinyin")
     return res
 
 def doGetDctionaryContent(lookup, word, key):
@@ -154,6 +164,7 @@ def isCommentLine(cedictLine):
         True
     else:
         False
+
 
 def createDisplayPinyinString(rawPinyin):
     pinyinList = rawPinyin.split()
