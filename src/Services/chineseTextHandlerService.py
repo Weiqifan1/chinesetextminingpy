@@ -12,22 +12,6 @@ def textToTokensFromSimplified(text):
     result = [senToDictFromSimplified(x) for x in test2]
     return result
 
-def isCharChinese(singleChar):
-    #range of chinese punctuation in unicode
-    myrange = range(12288, 12352)
-    ordinal = ord(singleChar)
-    if ordinal > 20000 and ordinal not in myrange:
-        return True
-    else:
-        return False
-
-def isChinese(firstElem):
-    singleChars = [*firstElem]
-    singleCharsSet = [isCharChinese(x) for x in singleChars]
-    if True in singleCharsSet:
-        return True
-    else:
-        return False
 
 def flattenNestedList(cleanedMergedList, outputList):
     if len(cleanedMergedList) == 0:
