@@ -2,14 +2,74 @@ from src.resources import cedictReader
 import itertools
 
 def initCedictParser(cedictContent):
-    filelines = cedictContent.split('\n')
-    withoutComments = removeCommentLinesFromCedict(filelines)
-    resultObj = map(lineToList, withoutComments)
-    res = list(resultObj)
-    global traditionalDictionary
-    traditionalDictionary = createCedictTradToInfoDict(res)
-    global simplifiedDictionary
-    simplifiedDictionary = createCedictSimpToInfoDict(res)
+    if 'traditionalDictionary' in globals() and 'simplifiedDictionary' in globals():
+        pass
+    else:
+        filelines = cedictContent.split('\n')
+        withoutComments = removeCommentLinesFromCedict(filelines)
+        resultObj = map(lineToList, withoutComments)
+        res = list(resultObj)
+        global traditionalDictionary
+        traditionalDictionary = createCedictTradToInfoDict(res)
+        global simplifiedDictionary
+        simplifiedDictionary = createCedictSimpToInfoDict(res)
+
+def wordToTraditionalSimp(word):
+    simp = getCedictSimpDict()
+    lookup = simp.get(word)
+    return doGetTraditional(lookup)
+
+def wordToSimplifiedTrad(word):
+    trad = getCedictTradDict()
+    lookup = trad.get(word)
+    return doGetSimplified(lookup)
+def wordToMeaningSimp(word):
+    simp = getCedictSimpDict()
+    lookup = simp.get(word)
+    return doGetMeaning(lookup)
+
+def wordToMeaningTrad(word):
+    trad = getCedictTradDict()
+    lookup = trad.get(word)
+    return doGetMeaning(lookup)
+
+def wordToPinyinSimp(word):
+    simp = getCedictSimpDict()
+    lookup = simp.get(word)
+    return doGetPinyin(lookup)
+
+def wordToPinyinTrad(word):
+    trad = getCedictTradDict()
+    lookup = trad.get(word)
+    return doGetPinyin(lookup)
+
+def doGetTraditional(lookup):
+    if lookup == None:
+        return ""
+    else:
+        pinyinList = [x.get("traditional") for x in lookup]
+        return "|".join(pinyinList)
+
+def doGetSimplified(lookup):
+    if lookup == None:
+        return ""
+    else:
+        pinyinList = [x.get("simplified") for x in lookup]
+        return "|".join(pinyinList)
+
+def doGetMeaning(lookup):
+    if lookup == None:
+        return ""
+    else:
+        pinyinList = [x.get("meaning") for x in lookup]
+        return "|".join(pinyinList)
+
+def doGetPinyin(lookup):
+    if lookup == None:
+        return ""
+    else:
+        pinyinList = [x.get("pinyin") for x in lookup]
+        return "|".join(pinyinList)
 
 def getCedictTradDict():
     return traditionalDictionary
@@ -20,7 +80,6 @@ def getCedictSimpDict():
 def readCedictContentFromCedictReader():
     return cedictReader.readCedictFile()
 
-
 def cedictListToDict(x):
     dict = {
             "traditional": x[0],
@@ -29,12 +88,10 @@ def cedictListToDict(x):
             "meaning": x[3]}
     return dict
 
-
 def getCedictSublistsToDict(group):
     nestedList = list(group)
     res = [cedictListToDict(x) for x in nestedList]
     return res
-
 
 def cedictDictionariesFromRawFileContent(rawDictionaryContent):
     filelines = rawDictionaryContent.split('\n')

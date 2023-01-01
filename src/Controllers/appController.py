@@ -6,7 +6,7 @@ from src.Services import chineseTextHandlerService
 def postendpoint(postinput):
     gettextdata = postinput["text"]
     betterdata = re.sub("\s+", " ", gettextdata.strip())
-    sentences = chineseTextHandlerService.textToTokens(betterdata)
+    sentences = chineseTextHandlerService.textToTokensFromSimplified(betterdata)
     return sentences
 
 

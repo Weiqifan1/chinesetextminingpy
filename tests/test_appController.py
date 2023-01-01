@@ -42,32 +42,36 @@ def test_appController_postendpoint():
    news = input_jsonnews()
    output = src.Controllers.appController.postendpoint(news)
 
-   res = ['12月23日, 中国铁路成都局集团公司组织媒体提前试乘新成昆铁路, 感受即将到来的时空新体验',
-          "记者在现场获悉, 新成昆铁路将采用第三代C型CR200J'复兴号'动车组值乘, 这也是该车型首次正式亮相",
-          "据介绍, 第三代C型CR200J'复兴号'动车组为9节车厢, 较第二代'绿巨人'增加了商务座, 旋转座椅等, 外形涂装为绿白相间",
-          "此次中国铁路成都局集团公司迎接回6组最新型'复兴号'动车组, 将全部用于新成昆铁路开行"]
-
    assert len(output) == 4
    firstElem = output[0]
    assert firstElem.get("sentence") == '12月23日, 中国铁路成都局集团公司组织媒体提前试乘新成昆铁路, 感受即将到来的时空新体验'
-   assert firstElem.get("rawTokens") == ['12', '月', '23', '日', ',', '中国', '铁路', '成都', '局', '集团公司', '组织', '媒体', '提前', '试乘', '新', '成昆铁路', ',', '感受', '即将', '到来', '的', '时空', '新体验']
-   assert firstElem.get("wordToPinyinTuples") == [('12', '12'), ('月', 'yuè'), ('23', '23'), ('日', 'Rì'), (',', ','),
-                                                  ('中国', 'Zhōngguó'), ('铁路', 'tiělù'), ('成都', 'Chéngdū'), ('局', 'jú'),
-                                                  ('集团', 'jítuán'), ('公司', 'gōngsī'), ('组织', 'zǔzhī'), ('媒体', 'méitǐ'),
-                                                  ('提前', 'tíqián'), ('试乘', 'shìchéng'), ('新', 'Xīn'), ('成', 'Chéng'),
-                                                  ('昆', 'kūn'), ('铁路', 'tiělù'), (',', ','), ('感受', 'gǎnshòu'), ('即将', 'jíjiāng'),
-                                                  ('到来', 'dàolái'), ('的', 'de'), ('时空', 'shíkōng'), ('新', 'Xīn'), ('体验', 'tǐyàn')]
-   thirdElem = output[2]
-   assert thirdElem.get("sentence") == "据介绍, 第三代C型CR200J'复兴号'动车组为9节车厢, 较第二代'绿巨人'增加了商务座, 旋转座椅等, 外形涂装为绿白相间"
-   assert thirdElem.get("rawTokens") == ['据介绍', ',', '第三代', 'C', '型', 'CR200J', "'", '复兴号', "'", '动车组', '为', '9', '节车厢', ',',
-                                         '较', '第二代', "'", '绿巨人', "'", '增加', '了', '商务', '座', ',', '旋转', '座椅', '等', ',', '外形', '涂装', '为', '绿白', '相间']
-   assert thirdElem.get("wordToPinyinTuples") == [('据', 'jù'), ('介绍', 'jièshào'), (',', ','), ('第', 'dì'), ('三代', 'sāndài'),
-                                                  ('C', 'C'), ('型', 'xíng'), ('CR200J', 'CR200J'), ("'", "'"), ('复兴', 'Fùxīng'),
-                                                  ('号', 'háo'), ("'", "'"), ('动车', 'dòngchē'), ('组', 'Zǔ'), ('为', 'wéi'),
-                                                  ('9', '9'), ('节', 'jiē'), ('车厢', 'chēxiāng'), (',', ','), ('较', 'jiào'),
-                                                  ('第二', 'dìèr'), ('代', 'dài'), ("'", "'"), ('绿', '绿'), ('巨人', 'jùrén'), #notice ('绿', '绿')
-                                                  ("'", "'"), ('增加', 'zēngjiā'), ('了', 'le'), ('商务', 'shāngwù'), ('座', 'zuò'),
-                                                  (',', ','), ('旋转', 'xuánzhuǎn'), ('座椅', 'zuòyǐ'), ('等', 'děng'), (',', ','),
-                                                  ('外形', 'wàixíng'), ('涂装', 'túzhuāng'), ('为', 'wéi'), ('绿', '绿'), ('白', 'Bái'), ('相间', 'xiāngjiàn')]
+   assert len(firstElem.get("tokens")) == 27
+   assert firstElem.get("tokens") == ['12', '月', '23', '日', ',', '中国', '铁路', '成都', '局', '集团', '公司', '组织', '媒体', '提前', '试乘', '新', '成', '昆', '铁路', ',', '感受', '即将', '到来', '的', '时空', '新', '体验']
+   assert len(firstElem.get("simplified")) == 27
+   assert firstElem.get("simplified") == ['12', '月', '23', '日', ',', '中国', '铁路', '成都', '局', '集团', '公司', '组织', '媒体', '提前', '试乘', '新', '成', '昆', '铁路', ',', '感受', '即将', '到来', '的', '时空', '新', '体验']
+   assert len(firstElem.get("traditional")) == 27
+   assert firstElem.get("traditional") == ['', '月', '', '日|日', '', '中國', '鐵路', '成都', '侷|局', '集團', '公司', '組織', '媒體', '提前', '試乘', '新|新', '成|成', '崐|崑|昆', '鐵路', '', '感受', '即將', '到來', '的|的|的|的', '時空', '新|新', '體驗']
+   assert len(firstElem.get("pinyin")) == 27
+   assert firstElem.get("pinyin") == ['', 'Yue4', '', 'Ri4|Ri4', '', 'Zhong1_Guo2', 'Tie3_Lu4', 'Cheng2_Du1', 'Ju2|Ju2', 'Ji2_Tuan2', 'Gong1_Si1', 'Zu3_Zhi1', 'Mei2_Ti3', 'Ti2_Qian2', 'Shi4_Cheng2', 'Xin1|Xin1', 'Cheng2|Cheng2', 'Kun1|Kun1|Kun1', 'Tie3_Lu4', '', 'Gan3_Shou4', 'Ji2_Jiang1', 'Dao4_Lai2', 'De5|Di1|Di2|Di4', 'Shi2_Kong1', 'Xin1|Xin1', 'Ti3_Yan4']
+   assert len(firstElem.get("meaning")) == 27
+   assert firstElem.get("meaning") == ['', '/moon/month/monthly/CL:個|个[ge4],輪|轮[lun2]/', '',
+                                       '/abbr. for 日本[Ri4 ben3], Japan/|/sun/day/date, day of the month/',
+                                       '', '/China/', '/railroad/railway/CL:條|条[tiao2]/',
+                                       '/Chengdu subprovincial city and capital of Sichuan province 四川 in southwest China/',
+                                       '/narrow/|/office/situation/classifier for games: match, set, round etc/',
+                                       '/group/bloc/corporation/conglomerate/', '/company; firm; corporation/CL:家[jia1]/',
+                                       '/to organize/organization/(biology) tissue/(textiles) weave/CL:個|个[ge4]/',
+                                       '/media, esp. news media/',
+                                       '/to shift to an earlier date/to do sth ahead of time/in advance/', '/test drive/',
+                                       '/abbr. for Xinjiang 新疆[Xin1 jiang1] or Singapore 新加坡[Xin1 jia1 po1]/surname Xin/|/new/newly/meso- (chemistry)/',
+                                       '/surname Cheng/|/to succeed/to finish/to complete/to accomplish/to become/to turn into/to be all right/OK!/one tenth/',
+                                       '/variant of 崑|昆[kun1]/|/used in place names, notably Kunlun Mountains 崑崙|昆仑[Kun1 lun2]/(also used for transliteration)/|/descendant/elder brother/a style of Chinese poetry/',
+                                       '/railroad/railway/CL:條|条[tiao2]/', '',
+                                       '/to sense/perception/to feel (through the senses)/to experience/a feeling/an impression/an experience/',
+                                       '/on the eve of/to be about to/to be on the verge of/', '/to arrive/arrival; advent/',
+                                       "/of/~'s (possessive particle)/(used after an attribute)/(used to form a nominal expression)/(used at the end of a declarative sentence for emphasis)/also pr. [di4] or [di5] in poetry and songs/|/see 的士[di1 shi4]/|/really and truly/|/aim/clear/",
+                                       '/time and place/world of a particular locale and era/(physics) space-time/',
+                                       '/abbr. for Xinjiang 新疆[Xin1 jiang1] or Singapore 新加坡[Xin1 jia1 po1]/surname Xin/|/new/newly/meso- (chemistry)/',
+                                       '/to experience for oneself/']
 
 

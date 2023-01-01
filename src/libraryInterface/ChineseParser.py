@@ -22,15 +22,92 @@ def getSentencesFromLargeText(inputTest):
     trimmedSen = [x.strip() for x in sent]
     return trimmedSen
 
-def getTokensFromSentence(sentence):
+def getTokensFromSentence(sent):
     """
     :param sentence: a string consisting of a single chinese sentences or small string of text. Example:
      '昆铁路'
     :return: a list of words/tokens contained in the text. Example:
     ['昆', '铁路']
     """
-    tokenList = ' '.join(parser.parse(sentence).tokens()).split()
-    return tokenList
+    basicTokens = ' '.join(parser.parse(sent).tokens()).split()
+    basicPinyin = getPinyinStringFromSentence(sent).split()
+    mergedLists = list(zip(basicTokens, basicPinyin))
+    cleanedMergedList = [cleanedToken(x) for x in mergedLists]
+    result = flattenNestedList(cleanedMergedList, [])
+    final = [x for (x,y) in result]
+    return final
+
+def getTokenToPinyinTuplesFromSentence(sent):
+    basicTokens = ' '.join(parser.parse(sent).tokens()).split()
+    basicPinyin = getPinyinStringFromSentence(sent).split()
+    mergedLists = list(zip(basicTokens, basicPinyin))
+    cleanedMergedList = [cleanedToken(x) for x in mergedLists]
+    result = flattenNestedList(cleanedMergedList, [])
+
+    return result
+
+def flattenNestedList(cleanedMergedList, outputList):
+    if len(cleanedMergedList) == 0:
+        return outputList
+    elif type(cleanedMergedList[0]) is tuple:
+        rest = cleanedMergedList[1:]
+        outputList.append(cleanedMergedList[0])
+        return flattenNestedList(rest, outputList)
+    else:
+        newList = outputList + cleanedMergedList[0]
+        rest = cleanedMergedList[1:]
+        return flattenNestedList(rest, newList)
+
+def cleanedToken(tokenPinyinTuple):
+    firstElem = tokenPinyinTuple[0]
+    secondElem = tokenPinyinTuple[1]
+    if firstElem == secondElem and isChinese(firstElem):
+        return findSubtokenPairs(firstElem, "", [])  #findSubtokenPairs(firstElem, "", [])
+    else:
+        return tokenPinyinTuple
+
+def findSubtokenPairs(firstElem, remainElems, listOfCharsToPinyinTupples):
+    pinyin = getPinyinStringFromSentence(firstElem)
+    pinyinSplit = pinyin.split()
+    test = ' '.join(parser.parse(firstElem).tokens()).split()
+
+    if len(firstElem) == 0 and len(remainElems) == 0:
+        return listOfCharsToPinyinTupples
+    elif len(firstElem) == 0:
+        return findSubtokenPairs(remainElems, firstElem, listOfCharsToPinyinTupples)
+    elif len(pinyinSplit) > 1:
+        lenOfSplit = len(test[0])
+        shrinkFirstElemAgain = firstElem[:(lenOfSplit - len(firstElem))]
+        lastSection = firstElem[(lenOfSplit - len(firstElem)):]
+        return findSubtokenPairs(shrinkFirstElemAgain, lastSection + remainElems, listOfCharsToPinyinTupples)
+    elif len(pinyin) > 0 and pinyin != firstElem:
+        listOfCharsToPinyinTupples.append((firstElem, pinyin))
+        return findSubtokenPairs(remainElems, "", listOfCharsToPinyinTupples)
+    elif len(firstElem) == 1:
+        listOfCharsToPinyinTupples.append((firstElem, firstElem))
+        return findSubtokenPairs(remainElems, "", listOfCharsToPinyinTupples)
+    else:
+        shrinkFirstElem = firstElem[:-1]
+        lastChar = firstElem[-1]
+        return findSubtokenPairs(shrinkFirstElem, lastChar + remainElems, listOfCharsToPinyinTupples)
+
+
+def isChinese(firstElem):
+    singleChars = [*firstElem]
+    singleCharsSet = [isCharChinese(x) for x in singleChars]
+    if True in singleCharsSet:
+        return True
+    else:
+        return False
+
+def isCharChinese(singleChar):
+    #range of chinese punctuation in unicode
+    myrange = range(12288, 12352)
+    ordinal = ord(singleChar)
+    if ordinal > 20000 and ordinal not in myrange:
+        return True
+    else:
+        return False
 
 def getPinyinStringFromSentence(text):
     """

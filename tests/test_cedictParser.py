@@ -21,6 +21,58 @@ def test_divisible_by_6(input_value):
 def test_appController_postendpoint():
    assert True
 
+def test_wordToSimplifiedTrad():
+    fileContent = CedictParser.readCedictContentFromCedictReader()
+    # when
+    CedictParser.initCedictParser(fileContent)
+    empty = CedictParser.wordToSimplifiedTrad("")
+    nullarg = CedictParser.wordToSimplifiedTrad(None)
+    sim = CedictParser.wordToSimplifiedTrad('來賓')
+    assert sim == '来宾|来宾'
+
+def test_wordToTraditionalSimp():
+    fileContent = CedictParser.readCedictContentFromCedictReader()
+    # when
+    CedictParser.initCedictParser(fileContent)
+    empty = CedictParser.wordToTraditionalSimp("")
+    nullarg = CedictParser.wordToTraditionalSimp(None)
+    sim = CedictParser.wordToTraditionalSimp('亩')
+    assert sim == '畂|畆|畝|畮'
+
+def test_wordToMeaningSimp():
+    fileContent = CedictParser.readCedictContentFromCedictReader()
+    # when
+    CedictParser.initCedictParser(fileContent)
+    empty = CedictParser.wordToMeaningSimp("")
+    nullarg = CedictParser.wordToMeaningSimp(None)
+    sim = CedictParser.wordToMeaningSimp('亩')
+    assert sim == '/old variant of 畝|亩[mu3]/|/old variant of 畝|亩[mu3]/|/classifier for fields/unit of area equal to one fifteenth of a hectare/|/old variant of 畝|亩[mu3]/'
+
+def test_wordToMeaningTrad():
+    fileContent = CedictParser.readCedictContentFromCedictReader()
+    # when
+    CedictParser.initCedictParser(fileContent)
+    empty = CedictParser.wordToMeaningTrad("")
+    nullarg = CedictParser.wordToMeaningTrad(None)
+    sim = CedictParser.wordToMeaningTrad('不是')
+    assert sim == '/fault/blame/|/no/is not/not/'
+
+def test_wordToPinyinSimp():
+    fileContent = CedictParser.readCedictContentFromCedictReader()
+    # when
+    CedictParser.initCedictParser(fileContent)
+    empty = CedictParser.wordToPinyinSimp("")
+    nullarg = CedictParser.wordToPinyinSimp(None)
+    sim = CedictParser.wordToPinyinSimp('亩')
+    assert sim == "Mu3|Mu3|Mu3|Mu3"
+
+def test_wordToPinyinTrad():
+    fileContent = CedictParser.readCedictContentFromCedictReader()
+    # when
+    CedictParser.initCedictParser(fileContent)
+    tra = CedictParser.wordToPinyinTrad('不是')
+    assert tra == "Bu2_Shi5|Bu4_Shi4"
+
 def test_initCedictParser():
     #given
     fileContent = CedictParser.readCedictContentFromCedictReader()
@@ -31,6 +83,8 @@ def test_initCedictParser():
     #then
     assert len(trad) == 119084 #keys = traditional character
     assert len(simp) == 117956 #keys = simplified character
+
+    test = [x for x in trad.values() if len(x) > 1]
 
     lai2bin1word = trad.get('來賓')
     assert len(lai2bin1word) == 2

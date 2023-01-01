@@ -1,12 +1,15 @@
 from src.libraryInterface import ChineseParser
+from src.libraryInterface import CedictParser
 
 def sentenceToDict(sen):
     return sen
 
-def textToTokens(text):
+def textToTokensFromSimplified(text):
     ChineseParser.initChineseParser()
     test2 = ChineseParser.getSentencesFromLargeText(text)
-    result = [senToDict(x) for x in test2]
+    fileContent = CedictParser.readCedictContentFromCedictReader()
+    CedictParser.initCedictParser(fileContent)
+    result = [senToDictFromSimplified(x) for x in test2]
     return result
 
 def isCharChinese(singleChar):
@@ -26,14 +29,6 @@ def isChinese(firstElem):
     else:
         return False
 
-def cleanedToken(tokenPinyinTuple):
-    firstElem = tokenPinyinTuple[0]
-    secondElem = tokenPinyinTuple[1]
-    if firstElem == secondElem and isChinese(firstElem):
-        return getWordToPinyinTupppleList(firstElem)  #findSubtokenPairs(firstElem, "", [])
-    else:
-        return tokenPinyinTuple
-
 def flattenNestedList(cleanedMergedList, outputList):
     if len(cleanedMergedList) == 0:
         return outputList
@@ -46,48 +41,21 @@ def flattenNestedList(cleanedMergedList, outputList):
         rest = cleanedMergedList[1:]
         return flattenNestedList(rest, newList)
 
-def generatePinyinTokenPairs(sent):
-    basicTokens = ChineseParser.getTokensFromSentence(sent)#' '.join(ChineseParser.getTokensFromSentence(sent)) #getTokenListFromSentence(sent)).split()
-    basicPinyin = ChineseParser.getPinyinStringFromSentence(sent).split()
-    mergedLists = list(zip(basicTokens, basicPinyin))
-    cleanedMergedList = [cleanedToken(x) for x in mergedLists]
-    result = flattenNestedList(cleanedMergedList, [])
-    return result
 
-def senToDict(sent):
-    pinyinTokens = generatePinyinTokenPairs(sent)
+def senToDictFromSimplified(sent):
+    tokens = ChineseParser.getTokensFromSentence(sent)
+    traditional = [CedictParser.wordToTraditionalSimp(x) for x in tokens]
+    pinyinList = [CedictParser.wordToPinyinSimp(x) for x in tokens]
+    meaningList = [CedictParser.wordToMeaningSimp(x) for x in tokens]
     mydict = {
         "sentence": sent,
-        "rawTokens": ChineseParser.getTokensFromSentence(sent), #ChineseParser.getTokenListFromSentence(sent),
-        "wordToPinyinTuples": pinyinTokens
+        "tokens": tokens,
+        "simplified": tokens,
+        "traditional": traditional,
+        "pinyin": pinyinList,
+        "meaning": meaningList
     }
     return mydict
 
-def getWordToPinyinTupppleList(firstElem):
-    tokens = findSubtokenPairs(firstElem, "", [])
-    return tokens
 
-def findSubtokenPairs(firstElem, remainElems, listOfCharsToPinyinTupples):
-    pinyin = ChineseParser.getPinyinStringFromSentence(firstElem)
-    pinyinSplit = pinyin.split()
-    test = ChineseParser.getTokensFromSentence(firstElem)
 
-    if len(firstElem) == 0 and len(remainElems) == 0:
-        return listOfCharsToPinyinTupples
-    elif len(firstElem) == 0:
-        return findSubtokenPairs(remainElems, firstElem, listOfCharsToPinyinTupples)
-    elif len(pinyinSplit) > 1:
-        lenOfSplit = len(test[0])
-        shrinkFirstElemAgain = firstElem[:(lenOfSplit - len(firstElem))]
-        lastSection = firstElem[(lenOfSplit - len(firstElem)):]
-        return findSubtokenPairs(shrinkFirstElemAgain, lastSection + remainElems, listOfCharsToPinyinTupples)
-    elif len(pinyin) > 0 and pinyin != firstElem:
-        listOfCharsToPinyinTupples.append((firstElem, pinyin))
-        return findSubtokenPairs(remainElems, "", listOfCharsToPinyinTupples)
-    elif len(firstElem) == 1:
-        listOfCharsToPinyinTupples.append((firstElem, firstElem))
-        return findSubtokenPairs(remainElems, "", listOfCharsToPinyinTupples)
-    else:
-        shrinkFirstElem = firstElem[:-1]
-        lastChar = firstElem[-1]
-        return findSubtokenPairs(shrinkFirstElem, lastChar + remainElems, listOfCharsToPinyinTupples)
