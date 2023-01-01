@@ -67,6 +67,8 @@ def doGetDctionaryContent(lookup, word, key):
     elif lookup == None:
         return word
     else:
+        if word == '据' and key == "meaning":
+            test = ""
         newLookup = sortListOfWordLookup(lookup)
         lookupList = [x.get(key) for x in newLookup]
         lookupSet = set(lookupList)
@@ -78,9 +80,20 @@ def doGetDctionaryContent(lookup, word, key):
 def sortListOfWordLookup(lookup):
     for x in range(len(lookup)):
         lookup[x]["length"] = len(lookup[x]["meaning"])
-    meaningLength = sorted(lookup, key=itemgetter('length', 'meaning'))
+        lookup[x]["deprioritzeCariants"] = getVariantPrioritynumber(lookup[x]["meaning"])
+    meaningLength = sorted(lookup, key=itemgetter('deprioritzeCariants', 'length'))
     return meaningLength
 
+def getVariantPrioritynumber(param):
+    if param.startswith("/old variant of"):
+        return 4
+    elif param.startswith("/variant of"):
+        return 3
+    elif param.startswith("/unofficial variant of"):
+        return 2
+    else:
+        return 1
+# /unofficial variant of 瞭[liao4]/|/(of eyes) bright/clear-sighted/to understand clearly/|/to finish/to achieve/variant of 瞭|了[liao3]/to understand clearly/|/(completed action marker)/(modal particle indicating change of state, situation now)/(modal particle intensifying preceding clause)/
 def getMeaningLength(eachEntry):
     meaningString = eachEntry["meaning"]
     return len(meaningString)
