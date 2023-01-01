@@ -158,7 +158,7 @@ def isCommentLine(cedictLine):
 def createDisplayPinyinString(rawPinyin):
     pinyinList = rawPinyin.split()
     capitalize = [(x[0].upper() + x[1:]) for x in pinyinList]
-    return "_".join(capitalize)
+    return "".join(capitalize)
 
 def lineToList(stringLine):
     firstSplit = stringLine.split(" ", 1)

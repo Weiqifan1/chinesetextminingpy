@@ -60,7 +60,7 @@ def test_wordToPinyinTrad():
     tra = CedictParser.wordToPinyinTrad('不是')
     assert nonChinese == ","
     assert nullarg == ""
-    assert tra == "Bu2_Shi5|Bu4_Shi4"
+    assert tra == "Bu2Shi5|Bu4Shi4"
 
 def test_initCedictParser():
     #given
@@ -77,7 +77,7 @@ def test_initCedictParser():
     lai2bin1word = trad.get('來賓')
     assert len(lai2bin1word) == 2
     assert lai2bin1word[0].get('simplified') == '来宾'
-    assert lai2bin1word[0].get('pinyin') == 'Lai2_Bin1'
+    assert lai2bin1word[0].get('pinyin') == 'Lai2Bin1'
     assert lai2bin1word[0].get('meaning') == '/Laibin prefecture-level city in Guangxi/'
     assert lai2bin1word[1].get('meaning') == '/guest/visitor/'
 
@@ -109,7 +109,7 @@ def test_cedictDictionariesFromRawFileContent():
     lai2bin1word = trad.get('來賓')
     assert len(lai2bin1word) == 2
     assert lai2bin1word[0].get('simplified') == '来宾'
-    assert lai2bin1word[0].get('pinyin') == 'Lai2_Bin1'
+    assert lai2bin1word[0].get('pinyin') == 'Lai2Bin1'
     assert lai2bin1word[0].get('meaning') == '/Laibin prefecture-level city in Guangxi/'
     assert lai2bin1word[1].get('meaning') == '/guest/visitor/'
 
