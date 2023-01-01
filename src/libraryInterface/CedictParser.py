@@ -1,11 +1,11 @@
 from src.resources import cedictReader
 import itertools
 
-def initCedictParser(cedictContent):
+def initCedictParser():
     if 'traditionalDictionary' in globals() and 'simplifiedDictionary' in globals():
         pass
     else:
-        filelines = cedictContent.split('\n')
+        filelines = readCedictContentFromCedictReader().split('\n')
         withoutComments = removeCommentLinesFromCedict(filelines)
         resultObj = map(lineToList, withoutComments)
         res = list(resultObj)

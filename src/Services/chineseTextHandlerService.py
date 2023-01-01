@@ -7,8 +7,8 @@ def sentenceToDict(sen):
 def textToTokensFromSimplified(text):
     ChineseParser.initChineseParser()
     test2 = ChineseParser.getSentencesFromLargeText(text)
-    fileContent = CedictParser.readCedictContentFromCedictReader()
-    CedictParser.initCedictParser(fileContent)
+    #fileContent = CedictParser.readCedictContentFromCedictReader()
+    CedictParser.initCedictParser()
     result = [senToDictFromSimplified(x) for x in test2]
     return result
 
