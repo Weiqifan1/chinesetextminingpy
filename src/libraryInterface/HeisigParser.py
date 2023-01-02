@@ -56,6 +56,39 @@ def getHeisigStringFromWordKanji(word):
     res = doGetHeisigStringFromWord(word, dict)
     return res
 
+def getHeisigIntsFromWordSimp(word):
+    dict = getHeisigSimpDict()
+    res = doGetHeisigInt(word, dict)
+    return res
+
+def getHeisigIntsFromWordTrad(word):
+    dict = getHeisigTradDict()
+    res = doGetHeisigInt(word, dict)
+    return res
+
+def getHeisigIntsFromWordKanji(word):
+    dict = getHeisigKanjiDict()
+    res = doGetHeisigInt(word, dict)
+    return res
+
+def doGetHeisigInt(word, dict):
+    wordList = [*word]
+    lookup = [dict.get(x)["ordinal"] for x in wordList if dict.get(x)]
+    #res = [item for sublist in lookup for item in sublist]
+    resFlat = [*lookup]
+    resSet = set(resFlat)
+    return resSet
+
+def doGetHeisigIntFromChar(heisigChar, dict):
+    heisigCharDict = dict[heisigChar]
+    if heisigCharDict:
+        ord = heisigCharDict["ordinal"]
+        ch = heisigCharDict["char"]
+        mean = heisigCharDict["meaning"]
+        return ord + " " + ch + " " + mean
+    else:
+        return ""
+
 def doGetHeisigStringFromWord(word, dict):
     wordList = [*word]
     lookup = [doGetHeisigStringFromChar(x, dict) for x in wordList if dict.get(x)]
