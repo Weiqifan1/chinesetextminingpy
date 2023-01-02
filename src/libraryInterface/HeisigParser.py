@@ -16,7 +16,6 @@ def initHeisigParser():
                      for x in shorterList if x[1].isdigit()]
         kanji = [{x[5]: {"ordinal": int(x[2]), "char": x[5], "meaning": x[9]}}
                  for x in shorterList if x[2].isdigit()]
-
         finalTrad = {}
         finalSimp = {}
         finalKanji = {}
@@ -42,7 +41,36 @@ def getHeisigTradDict():
 def getHeisigKanjiDict():
     return kanjiHeisig
 
+def getHeisigStringFromWordSimp(word):
+    dict = getHeisigSimpDict()
+    res = doGetHeisigStringFromWord(word, dict)
+    return res
 
+def getHeisigStringFromWordTrad(word):
+    dict = getHeisigTradDict()
+    res = doGetHeisigStringFromWord(word, dict)
+    return res
+
+def getHeisigStringFromWordKanji(word):
+    dict = getHeisigKanjiDict()
+    res = doGetHeisigStringFromWord(word, dict)
+    return res
+
+def doGetHeisigStringFromWord(word, dict):
+    wordList = [*word]
+    lookup = [doGetHeisigStringFromChar(x, dict) for x in wordList if dict.get(x)]
+    res = " ".join(lookup)
+    return res
+
+def doGetHeisigStringFromChar(heisigChar, dict):
+    heisigCharDict = dict[heisigChar]
+    if heisigCharDict:
+        ord = str(heisigCharDict["ordinal"])
+        ch = heisigCharDict["char"]
+        mean = heisigCharDict["meaning"]
+        return ord + " " + ch + " " + mean
+    else:
+        return ""
 
 
 
