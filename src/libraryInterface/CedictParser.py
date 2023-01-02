@@ -17,6 +17,12 @@ def initCedictParser():
         global simplifyCedictPinyinWordList
         simplifyCedictPinyinWordList = {'的' : "De5"}
 
+def getCedictTradDict():
+    return traditionalDictionary
+
+def getCedictSimpDict():
+    return simplifiedDictionary
+
 def wordToTraditionalSimp(word):
     simp = getCedictSimpDict()
     lookup = simp.get(word)
@@ -97,12 +103,6 @@ def getVariantPrioritynumber(param):
 def getMeaningLength(eachEntry):
     meaningString = eachEntry["meaning"]
     return len(meaningString)
-
-def getCedictTradDict():
-    return traditionalDictionary
-
-def getCedictSimpDict():
-    return simplifiedDictionary
 
 def readCedictContentFromCedictReader():
     return cedictReader.readCedictFile()

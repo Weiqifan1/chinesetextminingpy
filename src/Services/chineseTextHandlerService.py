@@ -6,12 +6,10 @@ def sentenceToDict(sen):
 
 def textToTokensFromSimplified(text):
     ChineseParser.initChineseParser()
-    test2 = ChineseParser.getSentencesFromLargeText(text)
-    #fileContent = CedictParser.readCedictContentFromCedictReader()
     CedictParser.initCedictParser()
+    test2 = ChineseParser.getSentencesFromLargeText(text)
     result = [senToDictFromSimplified(x) for x in test2]
     return result
-
 
 def flattenNestedList(cleanedMergedList, outputList):
     if len(cleanedMergedList) == 0:
@@ -24,7 +22,6 @@ def flattenNestedList(cleanedMergedList, outputList):
         newList = outputList + cleanedMergedList[0]
         rest = cleanedMergedList[1:]
         return flattenNestedList(rest, newList)
-
 
 def senToDictFromSimplified(sent):
     tokens = ChineseParser.getTokensFromSentence(sent)
