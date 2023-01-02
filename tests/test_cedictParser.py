@@ -19,7 +19,7 @@ def test_wordToTraditionalSimp():
     sim = CedictParser.wordToTraditionalSimp('亩')
     assert nonChinese == ","
     assert nullarg == ""
-    assert sim == '畂|畆|畮|畝'
+    assert sim == '畝|畂|畆|畮'
 
 def test_wordToMeaningSimp():
     # when
@@ -29,7 +29,7 @@ def test_wordToMeaningSimp():
     sim = CedictParser.wordToMeaningSimp('亩')
     assert nonChinese == ","
     assert nullarg == ""
-    assert sim == '/old variant of 畝|亩[mu3]/|/old variant of 畝|亩[mu3]/|/old variant of 畝|亩[mu3]/|/classifier for fields/unit of area equal to one fifteenth of a hectare/'
+    assert sim == '/classifier for fields/unit of area equal to one fifteenth of a hectare/|/old variant of 畝|亩[mu3]/|/old variant of 畝|亩[mu3]/|/old variant of 畝|亩[mu3]/'
 
 
 def test_wordToMeaningTrad():
