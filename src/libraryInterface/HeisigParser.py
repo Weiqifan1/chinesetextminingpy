@@ -76,8 +76,13 @@ def doGetHeisigInt(word, dict):
     lookup = [dict.get(x)["ordinal"] for x in wordList if dict.get(x)]
     #res = [item for sublist in lookup for item in sublist]
     resFlat = [*lookup]
-    resSet = set(resFlat)
+    dictList = list(zip(wordList, resFlat))
+    resSet = [{x : y} for (x, y) in dictList] #set(resFlat)
     return resSet
+    # if (resSet == []):
+    #     return {}
+    # else:
+    #     return resSet
 
 def doGetHeisigIntFromChar(heisigChar, dict):
     heisigCharDict = dict[heisigChar]

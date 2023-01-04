@@ -32,8 +32,10 @@ def senToDictFromSimplified(sent):
     meaningList = [CedictParser.wordToMeaningSimp(x) for x in tokens]
     heisigSimplified = [HeisigParser.getHeisigStringFromWordSimp(x) for x in tokens]
     heisigSimpInt = [HeisigParser.getHeisigIntsFromWordSimp(x) for x in tokens]
+    heisigSimpIntFlatten = [*heisigSimpInt]
     heisigTraditional = [HeisigParser.getHeisigStringFromWordTrad(x) for x in traditional]
-    heisigTradInt = [HeisigParser.getHeisigIntsFromWordTrad(x) for x in tokens]
+    heisigTradInt = [HeisigParser.getHeisigIntsFromWordTrad(x) for x in traditional]
+    heisigTradIntFlatten = [*heisigTradInt]
     mydict = {
         "sentence": sent,
         "tokens": tokens,
@@ -42,9 +44,9 @@ def senToDictFromSimplified(sent):
         "pinyin": pinyinList,
         "meaning": meaningList,
         "heisigSimplified": heisigSimplified,
-        "heisigSimpInt" : heisigSimpInt,
+        "heisigSimpInt" : heisigSimpIntFlatten,
         "heisigTraditional": heisigTraditional,
-        "heisigTradInt": heisigTradInt
+        "heisigTradInt": heisigTradIntFlatten
     }
     return mydict
 
