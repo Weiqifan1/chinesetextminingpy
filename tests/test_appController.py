@@ -48,7 +48,7 @@ def test_appController_postendpoint():
    assert len(firstElem.get("hskLevel")) == 27
    assert firstElem.get("hskLevel") == ['', 'hsk1', '', 'hsk2', '', 'hsk1', '', '', '', 'hsk6', 'hsk2', 'hsk5', 'hsk5', 'hsk4', '', 'hsk2', '', '', '', '', 'hsk5', 'hsk6', '', 'hsk1', '', 'hsk2', 'hsk5']
    assert len(firstElem.get("bcluFrequency")) == 27
-   assert firstElem.get("bcluFrequency") == ['', 32, '', 29, '', 52, 1916, 1939, 584, 825, 85, 256, 568, 1685, '', 70, 165, 8306, 1916, '', 1456, 1622, 3080, 2, 8041, 70, 1700]
+   assert firstElem.get("bcluFrequency") == [None, 32, None, 29, None, 52, 1916, 1939, 584, 825, 85, 256, 568, 1685, None, 70, 165, 8306, 1916, None, 1456, 1622, 3080, 2, 8041, 70, 1700]
    assert len(firstElem.get("heisigSimplified")) == 27
    assert firstElem.get("heisigSimplified") == ['', '13 月 month', '', '12 日 day', '', '38 中 middle 549 国 country', '730 铁 iron 1053 路 path', '368 成 turn into 1383 都 metropolis', '893 局 bureau', '538 集 gather 622 团 troupe', '696 公 public 1391 司 take charge of', '1347 组 group 1082 织 weave', '2732 媒 matchmaker 813 体 body', '598 提 bring up 303 前 in front', '360 试 test 1706 乘 hitch a ride', '1191 新 new', '368 成 turn into', '457 昆 descendants', '730 铁 iron 1053 路 path', '', '576 感 feel 667 受 accept', '1148 即 immediately 244 将 General', '680 到 arrive 783 来 come', "70 的 'bull''s eye'", '168 时 time 1075 空 empty', '1191 新 new', '813 体 body 1457 验 check']
    assert len(firstElem.get("heisigSimpInt")) == 27
