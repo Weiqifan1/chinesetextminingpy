@@ -16,18 +16,18 @@ def initHskParser():
         global hskSimpDictionary
         hskSimpDictionary = res
 
-def init_bcluDictionary():
+def initBCLUDictionary():
     if 'bcluDictionary' in globals():
         pass
     else:
-        readfile = hskReader.doReadDictionaryFromFile("BCLU_Cedict_Intersection")
-        return readfile
+        global bcluDictionary
+        bcluDictionary = hskReader.doReadDictionaryFromFile("BCLU_Cedict_Intersection")
 
 def getHskSimpDict():
     return hskSimpDictionary
 
-def getHskTradDict():
-    return hskTradDictionary
+def getBCLUdict():
+    return bcluDictionary
 
 def getStringSet(param, hskLevel):
     splitString = set(param.split("，"))
@@ -45,9 +45,19 @@ def getHSKSublistsToDict(group):
     res = [hskListToDict(x) for x in nestedList]
     return res
 
-def createHskNestedList(hskContent):
+def getHskLevel(x):
+    simpDict = getHskSimpDict()
+    allkeys = simpDict.keys()
+    for key in allkeys:
+        if x in simpDict.get(key):
+            return key
+    return ""
 
 
-    return hskContent
-
-
+def getBCLUfrequency(x):
+    bcluDict = getBCLUdict()
+    if x in bcluDict:
+        #get only the frequency number
+        return bcluDict.get(x)[1]
+    else:
+        return ""

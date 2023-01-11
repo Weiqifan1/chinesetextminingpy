@@ -5,7 +5,8 @@ from src.resources import hskReader
 import json
 
 def test_initBcluDictionary():
-    bclu = HskParser.init_bcluDictionary()
+    HskParser.initBCLUDictionary()
+    bclu = HskParser.getBCLUdict()
     assert len(bclu) == 74099
     assert bclu['第'] == ['第', 1, '2002074595']
     assert bclu["踆"] == ['踆', 74099, '25']
