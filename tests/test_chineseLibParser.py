@@ -1,10 +1,10 @@
 import pytest
-from src.libraryInterface import ChineseParser
+from src.libraryInterface import ChineseLibParser
 
 def test_sentenceToTokens():
-   ChineseParser.initChineseParser()
+   ChineseLibParser.initChineseLibParser()
    sent = "记者在现场获悉, 新成昆铁路将采用第三代C型CR200J'复兴号'动车组值乘, 这也是该车型首次正式亮相"
-   basicTokens = ChineseParser.getTokenToPinyinTuplesFromSentence(sent)
+   basicTokens = ChineseLibParser.getTokenToPinyinTuplesFromSentence(sent)
    assert basicTokens == [('记者', 'jìzhě'), ('在', 'zài'), ('现场', 'xiànchǎng'), ('获悉', 'huòxī'), (',', ','),
                           ('新', 'Xīn'), ('成', 'Chéng'), ('昆', 'kūn'), ('铁路', 'tiělù'), ('将', 'jiāng'),
                           ('采用', 'cǎiyòng'), ('第', 'dì'), ('三代', 'sāndài'), ('C', 'C'), ('型', 'xíng'),

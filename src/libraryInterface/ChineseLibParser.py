@@ -1,6 +1,6 @@
 from chinese import ChineseAnalyzer
 
-def initChineseParser():
+def initChineseLibParser():
     global parser
     parser = ChineseAnalyzer()
 

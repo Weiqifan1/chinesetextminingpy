@@ -1,4 +1,4 @@
-from src.libraryInterface import ChineseParser
+from src.libraryInterface import ChineseLibParser
 from src.libraryInterface import CedictParser
 from src.libraryInterface import HeisigParser
 from src.libraryInterface import HskParser
@@ -8,12 +8,12 @@ def sentenceToDict(sen):
     return sen
 
 def textToTokensFromSimplified(text):
-    ChineseParser.initChineseParser()
+    ChineseLibParser.initChineseLibParser()
     CedictParser.initCedictParser()
     HeisigParser.initHeisigParser()
     HskParser.initHskParser()
     BcluParser.initBCLUDictionary()
-    test2 = ChineseParser.getSentencesFromLargeText(text)
+    test2 = ChineseLibParser.getSentencesFromLargeText(text)
     result = [senToDictFromSimplified(x) for x in test2]
     return result
 
@@ -30,7 +30,7 @@ def flattenNestedList(cleanedMergedList, outputList):
         return flattenNestedList(rest, newList)
 
 def senToDictFromSimplified(sent):
-    tokens = ChineseParser.getTokensFromSentence(sent)
+    tokens = ChineseLibParser.getTokensFromSentence(sent)
     traditional = [CedictParser.wordToTraditionalSimp(x) for x in tokens]
     pinyinList = [CedictParser.wordToPinyinSimp(x) for x in tokens]
     meaningList = [CedictParser.wordToMeaningSimp(x) for x in tokens]
