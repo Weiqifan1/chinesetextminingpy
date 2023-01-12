@@ -43,7 +43,6 @@ def getTokenToPinyinTuplesFromSentence(sent):
     mergedLists = list(zip(basicTokens, basicPinyin))
     cleanedMergedList = [cleanedToken(x) for x in mergedLists]
     result = flattenNestedList(cleanedMergedList, [])
-
     return result
 
 def flattenNestedList(cleanedMergedList, outputList):
@@ -62,7 +61,7 @@ def cleanedToken(tokenPinyinTuple):
     firstElem = tokenPinyinTuple[0]
     secondElem = tokenPinyinTuple[1]
     if firstElem == secondElem and isChinese(firstElem):
-        return findSubtokenPairs(firstElem, "", [])  #findSubtokenPairs(firstElem, "", [])
+        return findSubtokenPairs(firstElem, "", [])
     else:
         return tokenPinyinTuple
 
@@ -104,7 +103,7 @@ def isCharChinese(singleChar):
     #range of chinese punctuation in unicode
     myrange = range(12288, 12352)
     ordinal = ord(singleChar)
-    if ordinal > 20000 and ordinal not in myrange:
+    if ordinal > 10000 and ordinal not in myrange:
         return True
     else:
         return False

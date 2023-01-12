@@ -1,13 +1,10 @@
-from operator import itemgetter
 from src.resources import hskReader
-import itertools
 
 def initHskParser():
     if 'hskSimpDictionary' in globals():
         pass
     else:
         hskContent = hskReader.readHskFiles()
-
         keyList = [x for x in hskContent.keys()]
         allstrings = [getStringSet(hskContent.get(x), x) for x in keyList]
         res = {}
@@ -16,23 +13,12 @@ def initHskParser():
         global hskSimpDictionary
         hskSimpDictionary = res
 
-def initBCLUDictionary():
-    if 'bcluDictionary' in globals():
-        pass
-    else:
-        global bcluDictionary
-        bcluDictionary = hskReader.doReadDictionaryFromFile("BCLU_Cedict_Intersection")
-
 def getHskSimpDict():
     return hskSimpDictionary
-
-def getBCLUdict():
-    return bcluDictionary
 
 def getStringSet(param, hskLevel):
     splitString = set(param.split("，"))
     return {hskLevel : splitString}
-
 
 def hskListToDict(x):
     dict = {
@@ -52,12 +38,3 @@ def getHskLevel(x):
         if x in simpDict.get(key):
             return key
     return ""
-
-
-def getBCLUfrequency(x):
-    bcluDict = getBCLUdict()
-    if x in bcluDict:
-        #get only the frequency number
-        return bcluDict.get(x)[1]
-    else:
-        return None

@@ -2,6 +2,7 @@ from src.libraryInterface import ChineseParser
 from src.libraryInterface import CedictParser
 from src.libraryInterface import HeisigParser
 from src.libraryInterface import HskParser
+from src.libraryInterface import BcluParser
 
 def sentenceToDict(sen):
     return sen
@@ -11,7 +12,7 @@ def textToTokensFromSimplified(text):
     CedictParser.initCedictParser()
     HeisigParser.initHeisigParser()
     HskParser.initHskParser()
-    HskParser.initBCLUDictionary()
+    BcluParser.initBCLUDictionary()
     test2 = ChineseParser.getSentencesFromLargeText(text)
     result = [senToDictFromSimplified(x) for x in test2]
     return result
@@ -40,7 +41,7 @@ def senToDictFromSimplified(sent):
     heisigTradInt = [HeisigParser.getHeisigIntsFromWordTrad(x) for x in traditional]
     heisigTradIntFlatten = [*heisigTradInt]
     hskLevel = [HskParser.getHskLevel(x) for x in tokens]
-    bclu = [HskParser.getBCLUfrequency(x) for x in tokens]
+    bclu = [BcluParser.getBCLUfrequency(x) for x in tokens]
     mydict = {
         "sentence": sent,
         "tokens": tokens,
