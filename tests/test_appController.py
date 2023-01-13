@@ -58,6 +58,7 @@ def input_jsonTradNews():
    }
    return jsondict
 
+
 def test_appController_postendpoint_traditional():
    news = input_jsonTradNews()
    outputDict = src.Controllers.appController.postendpoint(news)
