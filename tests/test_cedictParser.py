@@ -14,9 +14,9 @@ def test_wordToSimplifiedTrad():
 def test_wordToTraditionalSimp():
     # when
     CedictParser.initCedictParser()
-    nonChinese = CedictParser.wordToTraditionalSimp(",")
-    nullarg = CedictParser.wordToTraditionalSimp(None)
-    sim = CedictParser.wordToTraditionalSimp('亩')
+    nonChinese = CedictParser.wordToTraditionalFromSimp(",")
+    nullarg = CedictParser.wordToTraditionalFromSimp(None)
+    sim = CedictParser.wordToTraditionalFromSimp('亩')
     assert nonChinese == ","
     assert nullarg == ""
     assert sim == '畝|畂|畆|畮'

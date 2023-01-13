@@ -20,18 +20,67 @@ def input_jsonhagrid():
    }
    return jsondict
 
-#@pytest.fixture
-def input_jsonnews():
+def input_jsonSimpNews_missingScript():
    # http://cn.chinadaily.com.cn/a/202212/23/WS63a58ed9a3102ada8b2281d8.html
    cntext = """12月23日, 中国铁路成都局集团公司组织媒体提前试乘新成昆铁路, 感受即将到来的时空新体验。 记者在现场获悉, 新成昆铁路将采用第三代C型CR200J'复兴号'动车组值乘, 这也是该车型首次正式亮相。 据介绍, 第三代C型CR200J'复兴号'动车组为9节车厢, 较第二代'绿巨人'增加了商务座, 旋转座椅等, 外形涂装为绿白相间。 此次中国铁路成都局集团公司迎接回6组最新型'复兴号'动车组, 将全部用于新成昆铁路开行。"""
    jsondict = {
       "text": cntext
    }
    return jsondict
+
+def input_jsonSimpNews():
+   # http://cn.chinadaily.com.cn/a/202212/23/WS63a58ed9a3102ada8b2281d8.html
+   cntext = """12月23日, 中国铁路成都局集团公司组织媒体提前试乘新成昆铁路, 感受即将到来的时空新体验。 记者在现场获悉, 新成昆铁路将采用第三代C型CR200J'复兴号'动车组值乘, 这也是该车型首次正式亮相。 据介绍, 第三代C型CR200J'复兴号'动车组为9节车厢, 较第二代'绿巨人'增加了商务座, 旋转座椅等, 外形涂装为绿白相间。 此次中国铁路成都局集团公司迎接回6组最新型'复兴号'动车组, 将全部用于新成昆铁路开行。"""
+   jsondict = {
+      "script": "simplified",
+      "text": cntext
+   }
+   return jsondict
 #skriv en test der tester at det ikke er markeret om undertekster er simplificerede eller traditionelle
 
-def test_appController_postendpoint():
-   news = input_jsonnews()
+def input_jsonTradNews():
+   # https://www.taiwannews.com.tw/ch/news/4779971
+   cntext = """竹北市戶政事務所12日湧入大量人潮，碼牌抽到1297號，多是為辦遷入戶籍作業。
+
+鄭朝方12日接受媒體聯訪表示，民生紓困金是為減緩疫情帶來的經濟衝擊，所以未設定門檻條件，12日通過提案的自治條例，是以1月12日（含當日）前設籍於竹北市，即符合領取資格，但民眾若在發放紓困金前移出，會被取消資格。"""
+   jsondict = {
+      "script": "traditional",
+      "text": cntext
+   }
+   return jsondict
+
+def test_appController_postendpoint_traditional():
+   news = input_jsonTradNews()
+   outputDict = src.Controllers.appController.postendpoint(news)
+   output = outputDict["output"]
+   assert len(output) == 2
+   firstElem = output[0]
+   assert firstElem.get("sentence") == '竹北市戶政事務所12日湧入大量人潮，碼牌抽到1297號，多是為辦遷入戶籍作業'
+   assert len(firstElem.get("tokens")) == 26
+   assert firstElem.get("tokens") == ['竹北', '市', '戶', '政事', '務', '所', '12', '日', '湧入', '大量', '人潮', '，', '碼', '牌', '抽', '到', '1297', '號', '，', '多', '是', '為', '辦', '遷入', '戶籍', '作業']
+   assert len(firstElem.get("simplified")) == 26
+   assert firstElem.get("simplified") == ['竹北', '市', '户', '政事', '务', '所', '12', '日', '涌入', '大量', '人潮', '，', '码', '牌', '抽', '到', '1297', '号', '，', '多', '是', '为', '办', '迁入', '户籍', '作业']
+   assert len(firstElem.get("traditional")) == 26
+   assert firstElem.get("traditional") == ['竹北', '市', '戶', '政事', '務', '所', '12', '日', '湧入', '大量', '人潮', '，', '碼', '牌', '抽', '到', '1297', '號', '，', '多', '是', '為', '辦', '遷入', '戶籍', '作業']
+   assert len(firstElem.get("pinyin")) == 26
+   assert firstElem.get("pinyin") == ['Zhu2Bei3', 'Shi4', 'Hu4', 'Zheng4Shi4', 'Wu4', 'Suo3', '12', 'Ri4', 'Yong3Ru4', 'Da4Liang4', 'Ren2Chao2', '，', 'Ma3', 'Pai2', 'Chou1', 'Dao4', '1297', 'Hao2|Hao4', '，', 'Duo1', 'Shi4', 'Wei4|Wei2', 'Ban4', 'Qian1Ru4', 'Hu4Ji2', 'Zuo4Ye4']
+   assert len(firstElem.get("meaning")) == 26
+   assert firstElem.get("meaning") == ['/Zhubei or Chupei city in Hsinchu County 新竹縣|新竹县[Xin1 zhu2 Xian4], northwest Taiwan/', '/market/city/CL:個|个[ge4]/', '/a household/door/family/', '/politics/government affairs/', '/affair/business/matter/to be engaged in/to attend to/by all means/', '/actually/place/classifier for houses, small buildings, institutions etc/that which/particle introducing a relative clause or passive/CL:個|个[ge4]/', '12', '/abbr. for 日本[Ri4 ben3], Japan/|/sun/day/date, day of the month/', '/to come pouring in/influx/', '/great amount/large quantity/bulk/numerous/generous/magnanimous/', '/a tide of people/', '，', '/weight/number/code/to pile/to stack/classifier for length or distance (yard), happenings etc/', '/mahjong tile/playing card/game pieces/signboard/plate/tablet/medal/CL:片[pian4],個|个[ge4],塊|块[kuai4]/', '/to draw out/to pull out from in between/to remove part of the whole/(of certain plants) to sprout or bud/to whip or thrash/', '/to (a place)/until (a time)/up to/to go/to arrive/(verb complement denoting completion or result of an action)/', '1297', '/roar/cry/CL:個|个[ge4]/|/ordinal number/day of a month/mark/sign/business establishment/size/ship suffix/horn (wind instrument)/bugle call/assumed name/to take a pulse/classifier used to indicate number of people/', '，', '/many/much/often/a lot of/numerous/more/in excess/how (to what extent)/multi-/Taiwan pr. [duo2] when it means "how"/', '/is/are/am/yes/to be/', '/because of/for/to/|/as (in the capacity of)/to take sth as/to act as/to serve as/to behave as/to become/to be/to do/by (in the passive voice)/', '/to do/to manage/to handle/to go about/to run/to set up/to deal with/', '/to move in (to new lodging)/', '/census register/household register/', '/school assignment/homework/work/task/operation/CL:個|个[ge4]/to operate/']
+   assert len(firstElem.get("hskLevel")) == 26
+   assert firstElem.get("hskLevel") == ['', '', '', '', '', 'hsk5', '', 'hsk2', '', '', '', '', '', '', '', 'hsk2', '', 'hsk1', '', 'hsk1', 'hsk1', 'hsk3', '', '', '', 'hsk3']
+   assert len(firstElem.get("bcluFrequency")) == 26
+   assert firstElem.get("bcluFrequency") == [None, 146, 947, 23396, 4450, 108, None, 29, 12236, 842, 21235, None, 3271, 1436, 1779, 25, None, 254, None, None, 5, 20, 736, 21898, 9053, 2507]
+   assert len(firstElem.get("heisigSimplified")) == 26
+   assert firstElem.get("heisigSimplified") == ['786 竹 bamboo 454 北 north', '419 市 market', '896 户 door', '389 政 politics 953 事 matter', '752 务 tasks', '926 所 place', '', '12 日 day', '2442 涌 gush 693 入 enter', '113 大 large 180 量 quantity', '793 人 person 149 潮 tide', '', '2893 码 numeral', '1497 牌 brand', '914 抽 take out', '680 到 arrive', '', '1027 号 appellation', '', '116 多 many', '394 是 be', '746 为 act', '743 办 manage', '1618 迁 resituate 693 入 enter', '896 户 door 2851 籍 records', '940 作 do 1351 业 profession']
+   assert len(firstElem.get("heisigSimpInt")) == 26
+   assert firstElem.get("heisigSimpInt") == [[{'竹': 786}, {'北': 454}], [{'市': 419}], [{'户': 896}], [{'政': 389}, {'事': 953}], [{'务': 752}], [{'所': 926}], [], [{'日': 12}], [{'涌': 2442}, {'入': 693}], [{'大': 113}, {'量': 180}], [{'人': 793}, {'潮': 149}], [], [{'码': 2893}], [{'牌': 1497}], [{'抽': 914}], [{'到': 680}], [], [{'号': 1027}], [], [{'多': 116}], [{'是': 394}], [{'为': 746}], [{'办': 743}], [{'迁': 1618}, {'入': 693}], [{'户': 896}, {'籍': 2851}], [{'作': 940}, {'业': 1351}]]
+   assert len(firstElem.get("heisigTraditional")) == 26
+   assert firstElem.get("heisigTraditional") == ['728 竹 bamboo 420 北 north', '388 市 market', '830 戶 door', '363 政 politics 878 事 matter', '934 務 tasks', '857 所 place', '', '12 日 day', '2378 湧 gush 638 入 enter', '106 大 large 170 量 quantity', '736 人 person 139 潮 tide', '', '2848 碼 numeral', '1492 牌 brand', '846 抽 take out', '628 到 arrive', '', '1493 號 appellation', '', '109 多 many', '368 是 be', '1385 為 act', '1119 辦 manage', '2542 遷 resituate 638 入 enter', '830 戶 door 2798 籍 records', '868 作 do 1304 業 profession']
+   assert len(firstElem.get("heisigTradInt")) == 26
+   assert firstElem.get("heisigTradInt") == [[{'竹': 728}, {'北': 420}], [{'市': 388}], [{'戶': 830}], [{'政': 363}, {'事': 878}], [{'務': 934}], [{'所': 857}], [], [{'日': 12}], [{'湧': 2378}, {'入': 638}], [{'大': 106}, {'量': 170}], [{'人': 736}, {'潮': 139}], [], [{'碼': 2848}], [{'牌': 1492}], [{'抽': 846}], [{'到': 628}], [], [{'號': 1493}], [], [{'多': 109}], [{'是': 368}], [{'為': 1385}], [{'辦': 1119}], [{'遷': 2542}, {'入': 638}], [{'戶': 830}, {'籍': 2798}], [{'作': 868}, {'業': 1304}]]
+
+def test_appController_postendpoint_simplified():
+   news = input_jsonSimpNews()
    outputDict = src.Controllers.appController.postendpoint(news)
    output = outputDict["output"]
    assert len(output) == 4
@@ -60,4 +109,8 @@ def test_appController_postendpoint():
    assert len(firstElem.get("heisigTradInt")) == 27
    assert firstElem.get("heisigTradInt") == [[], [{'月': 13}], [], [{'日': 12}], [], [{'中': 36}, {'國': 516}], [{'鐵': 339}, {'路': 976}], [{'成': 341}, {'都': 1340}], [{'侷': 829}], [{'集': 502}, {'團': 1471}], [{'公': 643}, {'司': 1348}], [{'組': 1299}, {'織': 1020}], [{'媒': 2665}, {'體': 1070}], [{'提': 563}, {'前': 277}], [{'試': 334}, {'乘': 1678}], [{'新': 1123}], [{'成': 341}], [{'昆': 423}], [{'鐵': 339}, {'路': 976}], [], [{'感': 540}, {'受': 617}], [{'即': 1087}, {'將': 920}], [{'到': 628}, {'來': 789}], [{'的': 66}], [{'時': 156}, {'空': 998}], [{'新': 1123}], [{'體': 1070}, {'驗': 1419}]]
 
-
+def test_appController_postendpoint_missingScript():
+   news = input_jsonSimpNews_missingScript()
+   outputDict = src.Controllers.appController.postendpoint(news)
+   output = outputDict["output"]
+   assert len(output) == 0

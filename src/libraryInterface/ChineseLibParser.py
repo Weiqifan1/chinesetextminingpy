@@ -30,6 +30,21 @@ def getSentencesFromLargeText(inputTest):
     # trimmedSen = [x.strip() for x in sent]
     # return trimmedSen
 
+
+def getTokensFromTraditionalSentence(sent):
+    # use cedict to find subtokens
+    CedictParser.initCedictParser()
+    cedict = CedictParser.getCedictTradDict()
+
+    basic = jieba.cut(sent, cut_all=False)
+    normal = " ".join(basic)
+    parsed = normal.split()
+
+    parsedByCedict = [parseWordByCedict(x, "", [], cedict) for x in parsed]
+    flatList = flattenNestedList(parsedByCedict, [])
+    joined = joinNonHanStrings(flatList, [])
+    return joined
+
 def getTokensFromSimplifiedSentence(sent):
     """
     :param sentence: a string consisting of a single chinese sentences or small string of text. Example:
@@ -49,13 +64,7 @@ def getTokensFromSimplifiedSentence(sent):
     flatList = flattenNestedList(parsedByCedict, [])
     joined = joinNonHanStrings(flatList, [])
     return joined
-    # basicTokens = ' '.join(parser.parse(sent).tokens()).split()
-    # basicPinyin = getPinyinStringFromSentence(sent).split()
-    # mergedLists = list(zip(basicTokens, basicPinyin))
-    # cleanedMergedList = [cleanedToken(x) for x in mergedLists]
-    # result = flattenNestedList(cleanedMergedList, [])
-    # final = [x for (x,y) in result]
-    # return final
+
 
 def joinNonHanStrings(flatList, newList):
     if len(flatList) == 0:
@@ -166,5 +175,4 @@ def isCharChinese(singleChar):
 #     """
 #     pinyinStr = parser.parse(text).pinyin()
 #     return pinyinStr
-
 

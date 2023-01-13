@@ -23,10 +23,16 @@ def getCedictTradDict():
 def getCedictSimpDict():
     return simplifiedDictionary
 
-def wordToTraditionalSimp(word):
+def wordToTraditionalFromSimp(word):
     simp = getCedictSimpDict()
     lookup = simp.get(word)
     res = doGetDctionaryContent(lookup, word, "traditional")
+    return res
+
+def wordToSimplifiedFromTrad(word):
+    trad = getCedictTradDict()
+    lookup = trad.get(word)
+    res = doGetDctionaryContent(lookup, word, "simplified")
     return res
 
 def wordToSimplifiedTrad(word):
@@ -194,6 +200,3 @@ def lineToList(stringLine):
             simplified,
             betterPinyin,
             meaning]
-
-
-
