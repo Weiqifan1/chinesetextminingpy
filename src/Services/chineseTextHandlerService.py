@@ -11,7 +11,7 @@ def textToTokensFromSimplified(text):
     ChineseLibParser.initChineseLibParser()
     # CedictParser.initCedictParser()
     # HeisigParser.initHeisigParser()
-    HskParser.initHskParser()
+    #HskParser.initHskParser()
     # BcluParser.initBCLUDictionary()
     test2 = ChineseLibParser.getSentencesFromLargeText(text)
     result = [senToDictFromSimplified(x) for x in test2]
@@ -40,7 +40,7 @@ def senToDictFromSimplified(sent):
     # heisigTraditional = [HeisigParser.getHeisigStringFromWordTrad(x) for x in traditional]
     # heisigTradInt = [HeisigParser.getHeisigIntsFromWordTrad(x) for x in traditional]
     # heisigTradIntFlatten = [*heisigTradInt]
-    hskLevel = [HskParser.getHskLevel(x) for x in tokens]
+    #hskLevel = [HskParser.getHskLevel(x) for x in tokens]
     # bclu = [BcluParser.getBCLUfrequency(x) for x in tokens]
     mydict = {
         "sentence": sent,
@@ -49,7 +49,7 @@ def senToDictFromSimplified(sent):
         # "traditional": traditional,
         # "pinyin": pinyinList,
         # "meaning": meaningList,
-        "hskLevel": hskLevel,
+        #"hskLevel": hskLevel,
         # "bcluFrequency": bclu,
         # "heisigSimplified": heisigSimplified,
         # "heisigSimpInt" : heisigSimpIntFlatten,
