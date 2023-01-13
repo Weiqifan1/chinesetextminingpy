@@ -8,11 +8,11 @@ def sentenceToDict(sen):
     return sen
 
 def textToTokensFromSimplified(text):
-    ChineseLibParser.initChineseLibParser()
-    CedictParser.initCedictParser()
-    HeisigParser.initHeisigParser()
+    # ChineseLibParser.initChineseLibParser()
+    # CedictParser.initCedictParser()
+    # HeisigParser.initHeisigParser()
     HskParser.initHskParser()
-    BcluParser.initBCLUDictionary()
+    # BcluParser.initBCLUDictionary()
     test2 = ChineseLibParser.getSentencesFromLargeText(text)
     result = [senToDictFromSimplified(x) for x in test2]
     return result
@@ -31,30 +31,30 @@ def flattenNestedList(cleanedMergedList, outputList):
 
 def senToDictFromSimplified(sent):
     tokens = ChineseLibParser.getTokensFromSentence(sent)
-    traditional = [CedictParser.wordToTraditionalSimp(x) for x in tokens]
-    pinyinList = [CedictParser.wordToPinyinSimp(x) for x in tokens]
-    meaningList = [CedictParser.wordToMeaningSimp(x) for x in tokens]
-    heisigSimplified = [HeisigParser.getHeisigStringFromWordSimp(x) for x in tokens]
-    heisigSimpInt = [HeisigParser.getHeisigIntsFromWordSimp(x) for x in tokens]
-    heisigSimpIntFlatten = [*heisigSimpInt]
-    heisigTraditional = [HeisigParser.getHeisigStringFromWordTrad(x) for x in traditional]
-    heisigTradInt = [HeisigParser.getHeisigIntsFromWordTrad(x) for x in traditional]
-    heisigTradIntFlatten = [*heisigTradInt]
+    # traditional = [CedictParser.wordToTraditionalSimp(x) for x in tokens]
+    # pinyinList = [CedictParser.wordToPinyinSimp(x) for x in tokens]
+    # meaningList = [CedictParser.wordToMeaningSimp(x) for x in tokens]
+    # heisigSimplified = [HeisigParser.getHeisigStringFromWordSimp(x) for x in tokens]
+    # heisigSimpInt = [HeisigParser.getHeisigIntsFromWordSimp(x) for x in tokens]
+    # heisigSimpIntFlatten = [*heisigSimpInt]
+    # heisigTraditional = [HeisigParser.getHeisigStringFromWordTrad(x) for x in traditional]
+    # heisigTradInt = [HeisigParser.getHeisigIntsFromWordTrad(x) for x in traditional]
+    # heisigTradIntFlatten = [*heisigTradInt]
     hskLevel = [HskParser.getHskLevel(x) for x in tokens]
-    bclu = [BcluParser.getBCLUfrequency(x) for x in tokens]
+    # bclu = [BcluParser.getBCLUfrequency(x) for x in tokens]
     mydict = {
         "sentence": sent,
         "tokens": tokens,
         "simplified": tokens,
-        "traditional": traditional,
-        "pinyin": pinyinList,
-        "meaning": meaningList,
+        # "traditional": traditional,
+        # "pinyin": pinyinList,
+        # "meaning": meaningList,
         "hskLevel": hskLevel,
-        "bcluFrequency": bclu,
-        "heisigSimplified": heisigSimplified,
-        "heisigSimpInt" : heisigSimpIntFlatten,
-        "heisigTraditional": heisigTraditional,
-        "heisigTradInt": heisigTradIntFlatten
+        # "bcluFrequency": bclu,
+        # "heisigSimplified": heisigSimplified,
+        # "heisigSimpInt" : heisigSimpIntFlatten,
+        # "heisigTraditional": heisigTraditional,
+        # "heisigTradInt": heisigTradIntFlatten
     }
     return mydict
 
