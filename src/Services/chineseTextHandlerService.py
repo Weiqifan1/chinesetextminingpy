@@ -8,7 +8,7 @@ def sentenceToDict(sen):
     return sen
 
 def textToTokensFromSimplified(text):
-    # ChineseLibParser.initChineseLibParser()
+    ChineseLibParser.initChineseLibParser()
     # CedictParser.initCedictParser()
     # HeisigParser.initHeisigParser()
     HskParser.initHskParser()
