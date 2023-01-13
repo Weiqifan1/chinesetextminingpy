@@ -28,6 +28,7 @@ def input_jsonnews():
       "text": cntext
    }
    return jsondict
+#skriv en test der tester at det ikke er markeret om undertekster er simplificerede eller traditionelle
 
 def test_appController_postendpoint():
    news = input_jsonnews()

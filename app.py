@@ -10,7 +10,7 @@ def hello_world():
     # return "hello world"
     return render_template("index.html")
 
-@app.route("/newapi/<name>")
+@app.route("/newapi/<name>", methods = ['GET'])
 def hello_2(name):
     # return "hello world"
     return 'welcome %s' % name
