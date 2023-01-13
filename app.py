@@ -18,6 +18,7 @@ def hello_2(name):
 @app.route('/user', methods = ['POST'])
 def home():
     content_type = request.headers.get('Content-Type')
+    print("appstart chr")
     if (content_type == 'application/json'):
         json = request.json
         res = src.Controllers.appController.postendpoint(json)
