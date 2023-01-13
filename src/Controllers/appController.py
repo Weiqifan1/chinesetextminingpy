@@ -1,5 +1,4 @@
-import json
-from chinese import ChineseAnalyzer
+
 import re
 from src.Services import chineseTextHandlerService
 
