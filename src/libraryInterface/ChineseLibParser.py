@@ -1,9 +1,5 @@
 from chinese import ChineseAnalyzer
 
-def initChineseLibParser():
-    global parser
-    parser = ChineseAnalyzer()
-
 def getSentencesFromLargeText(inputTest):
     """
     :param inputTest: a string containing a chinese text. Example:
@@ -17,7 +13,7 @@ def getSentencesFromLargeText(inputTest):
     "据介绍, 第三代C型CR200J'复兴号'动车组为9节车厢, 较第二代'绿巨人'增加了商务座, 旋转座椅等, 外形涂装为绿白相间",
     "此次中国铁路成都局集团公司迎接回6组最新型'复兴号'动车组, 将全部用于新成昆铁路开行"]
     """
-    anal = parser.parse(inputTest)
+    anal = ChineseAnalyzer().parse(inputTest)
     sent = anal.sentences()
     trimmedSen = [x.strip() for x in sent]
     return trimmedSen
@@ -29,16 +25,16 @@ def getTokensFromSentence(sent):
     :return: a list of words/tokens contained in the text. Example:
     ['昆', '铁路']
     """
-    basicTokens = ' '.join(parser.parse(sent).tokens()).split()
-    basicPinyin = getPinyinStringFromSentence(sent).split()
-    mergedLists = list(zip(basicTokens, basicPinyin))
-    cleanedMergedList = [cleanedToken(x) for x in mergedLists]
-    result = flattenNestedList(cleanedMergedList, [])
-    final = [x for (x,y) in result]
-    return final
+    basicTokens = ' '.join(ChineseAnalyzer().parse(sent).tokens()).split()
+    # basicPinyin = getPinyinStringFromSentence(sent).split()
+    # mergedLists = list(zip(basicTokens, basicPinyin))
+    # cleanedMergedList = [cleanedToken(x) for x in mergedLists]
+    # result = flattenNestedList(cleanedMergedList, [])
+    # final = [x for (x,y) in result]
+    return basicTokens
 
 def getTokenToPinyinTuplesFromSentence(sent):
-    basicTokens = ' '.join(parser.parse(sent).tokens()).split()
+    basicTokens = ' '.join(ChineseAnalyzer().parse(sent).tokens()).split()
     basicPinyin = getPinyinStringFromSentence(sent).split()
     mergedLists = list(zip(basicTokens, basicPinyin))
     cleanedMergedList = [cleanedToken(x) for x in mergedLists]
@@ -68,7 +64,7 @@ def cleanedToken(tokenPinyinTuple):
 def findSubtokenPairs(firstElem, remainElems, listOfCharsToPinyinTupples):
     pinyin = getPinyinStringFromSentence(firstElem)
     pinyinSplit = pinyin.split()
-    test = ' '.join(parser.parse(firstElem).tokens()).split()
+    test = ' '.join(ChineseAnalyzer().parse(firstElem).tokens()).split()
 
     if len(firstElem) == 0 and len(remainElems) == 0:
         return listOfCharsToPinyinTupples
@@ -115,7 +111,7 @@ def getPinyinStringFromSentence(text):
     :return: a string of pinyin generated from the text. each ward is space separated. Example:
     '12 yuè 23 Rì ,   Zhōngguó tiělù Chéngdū jú 集团公司 zǔzhī méitǐ tíqián shìchéng Xīn 成昆铁路 ,   gǎnshòu jíjiāng dàolái de shíkōng 新体验'
     """
-    pinyinStr = parser.parse(text).pinyin()
+    pinyinStr = ChineseAnalyzer().parse(text).pinyin()
     return pinyinStr
 
 

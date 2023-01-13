@@ -9,13 +9,13 @@ def sentenceToDict(sen):
 
 def textToTokensFromSimplified(text):
     print("dette er en print")
-    ChineseLibParser.initChineseLibParser()
-    print("chineselib har koert")
+
     # CedictParser.initCedictParser()
     # HeisigParser.initHeisigParser()
     #HskParser.initHskParser()
     # BcluParser.initBCLUDictionary()
     test2 = ChineseLibParser.getSentencesFromLargeText(text)
+    print("chineselib har koert")
     result = [senToDictFromSimplified(x) for x in test2]
     return result
 
