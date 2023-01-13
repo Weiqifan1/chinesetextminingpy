@@ -32,7 +32,8 @@ def input_jsonnews():
 
 def test_appController_postendpoint():
    news = input_jsonnews()
-   output = src.Controllers.appController.postendpoint(news)
+   outputDict = src.Controllers.appController.postendpoint(news)
+   output = outputDict["output"]
    assert len(output) == 4
    firstElem = output[0]
    assert firstElem.get("sentence") == '12月23日, 中国铁路成都局集团公司组织媒体提前试乘新成昆铁路, 感受即将到来的时空新体验'
