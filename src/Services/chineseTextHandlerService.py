@@ -13,6 +13,7 @@ def textToTokensFromSimplified(text):
     HeisigParser.initHeisigParser()
     HskParser.initHskParser()
     BcluParser.initBCLUDictionary()
+    print("doneLoading")
     test2 = ChineseLibParser.getSentencesFromLargeText(text)
     result = [senToDictFromSimplified(x) for x in test2]
     return result
