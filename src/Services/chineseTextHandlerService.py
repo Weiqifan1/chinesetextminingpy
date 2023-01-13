@@ -30,7 +30,7 @@ def flattenNestedList(cleanedMergedList, outputList):
         return flattenNestedList(rest, newList)
 
 def senToDictFromSimplified(sent):
-    tokens = ChineseLibParser.getTokensFromSentence(sent)
+    tokens = ChineseLibParser.getTokensFromSimplifiedSentence(sent)
     traditional = [CedictParser.wordToTraditionalSimp(x) for x in tokens]
     pinyinList = [CedictParser.wordToPinyinSimp(x) for x in tokens]
     meaningList = [CedictParser.wordToMeaningSimp(x) for x in tokens]
