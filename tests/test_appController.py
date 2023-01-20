@@ -32,6 +32,8 @@ def input_jsonSimpNews_missingScript():
 
 def input_jsonSimpNews_missingText():
    jsondict = {
+      "deckName": "testDeckName",
+      "deckInfo": "testDeckInfo",
       "script": "simplified"
    }
    return jsondict
@@ -41,6 +43,8 @@ def input_jsonSimpNews():
    # http://cn.chinadaily.com.cn/a/202212/23/WS63a58ed9a3102ada8b2281d8.html
    cntext = """12月23日, 中国铁路成都局集团公司组织媒体提前试乘新成昆铁路, 感受即将到来的时空新体验。 记者在现场获悉, 新成昆铁路将采用第三代C型CR200J'复兴号'动车组值乘, 这也是该车型首次正式亮相。 据介绍, 第三代C型CR200J'复兴号'动车组为9节车厢, 较第二代'绿巨人'增加了商务座, 旋转座椅等, 外形涂装为绿白相间。 此次中国铁路成都局集团公司迎接回6组最新型'复兴号'动车组, 将全部用于新成昆铁路开行。"""
    jsondict = {
+      "deckName": "testDeckName",
+      "deckInfo": "testDeckInfo",
       "script": "simplified",
       "text": cntext
    }
@@ -53,6 +57,8 @@ def input_jsonTradNews():
 
 鄭朝方12日接受媒體聯訪表示，民生紓困金是為減緩疫情帶來的經濟衝擊，所以未設定門檻條件，12日通過提案的自治條例，是以1月12日（含當日）前設籍於竹北市，即符合領取資格，但民眾若在發放紓困金前移出，會被取消資格。"""
    jsondict = {
+      "deckName": "testDeckName",
+      "deckInfo": "testDeckInfo",
       "script": "traditional",
       "text": cntext
    }
@@ -62,6 +68,9 @@ def input_jsonTradNews():
 def test_appController_postendpoint_traditional():
    news = input_jsonTradNews()
    outputDict = src.Controllers.appController.postendpoint(news)
+   assert outputDict["deckName"] == "testDeckName"
+   assert outputDict["deckInfo"] == "testDeckInfo"
+   assert outputDict["script"] == "traditional"
    output = outputDict["output"]
    assert len(output) == 2
    firstElem = output[0]
@@ -92,6 +101,9 @@ def test_appController_postendpoint_traditional():
 def test_appController_postendpoint_simplified():
    news = input_jsonSimpNews()
    outputDict = src.Controllers.appController.postendpoint(news)
+   assert outputDict["deckName"] == "testDeckName"
+   assert outputDict["deckInfo"] == "testDeckInfo"
+   assert outputDict["script"] == "simplified"
    output = outputDict["output"]
    assert len(output) == 4
    firstElem = output[0]
@@ -103,7 +115,7 @@ def test_appController_postendpoint_simplified():
    assert len(firstElem.get("traditional")) == 27
    assert firstElem.get("traditional") == ['12', '月', '23', '日', ',', '中國', '鐵路', '成都', '侷|局', '集團', '公司', '組織', '媒體', '提前', '試乘', '新', '成', '昆|崑|崐', '鐵路', ',', '感受', '即將', '到來', '的', '時空', '新', '體驗']
    assert len(firstElem.get("pinyin")) == 27
-   assert firstElem.get("pinyin") == ['12', 'Yue4', '23', 'Ri4', ',', 'Zhong1Guo2', 'Tie3Lu4', 'Cheng2Du1', 'Ju2', 'Ji2Tuan2', 'Gong1Si1', 'Zu3Zhi1', 'Mei2Ti3', 'Ti2Qian2', 'Shi4Cheng2', 'Xin1', 'Cheng2', 'Kun1', 'Tie3Lu4', ',', 'Gan3Shou4', 'Ji2Jiang1', 'Dao4Lai2', 'De5', 'Shi2Kong1', 'Xin1', 'Ti3Yan4']
+   assert firstElem.get("pinyin") == ['12', 'Yue4', '23', 'Ri4', ',', 'Zhong1Guo2', 'Tie3Lu4', 'Cheng2Du1', 'Ju2', 'Ji2Tuan2', 'Gong1Si1', 'Zu3Zhi1', 'Mei2Ti3', 'Ti2Qian2', 'Shi4Cheng2', 'Xin1', 'Cheng2', 'Kun1', 'Tie3Lu4', ',', 'Gan3Shou4', 'Ji2Jiang1', 'Dao4Lai2', 'Di4|Di1|Di2|De5', 'Shi2Kong1', 'Xin1', 'Ti3Yan4']
    assert len(firstElem.get("meaning")) == 27
    assert firstElem.get("meaning") == ['12', '/moon/month/monthly/CL:個|个[ge4],輪|轮[lun2]/', '23', '/abbr. for 日本[Ri4 ben3], Japan/|/sun/day/date, day of the month/', ',', '/China/', '/railroad/railway/CL:條|条[tiao2]/', '/Chengdu subprovincial city and capital of Sichuan province 四川 in southwest China/', '/narrow/|/office/situation/classifier for games: match, set, round etc/', '/group/bloc/corporation/conglomerate/', '/company; firm; corporation/CL:家[jia1]/', '/to organize/organization/(biology) tissue/(textiles) weave/CL:個|个[ge4]/', '/media, esp. news media/', '/to shift to an earlier date/to do sth ahead of time/in advance/', '/test drive/', '/new/newly/meso- (chemistry)/|/abbr. for Xinjiang 新疆[Xin1 jiang1] or Singapore 新加坡[Xin1 jia1 po1]/surname Xin/', '/surname Cheng/|/to succeed/to finish/to complete/to accomplish/to become/to turn into/to be all right/OK!/one tenth/', '/descendant/elder brother/a style of Chinese poetry/|/used in place names, notably Kunlun Mountains 崑崙|昆仑[Kun1 lun2]/(also used for transliteration)/|/variant of 崑|昆[kun1]/', '/railroad/railway/CL:條|条[tiao2]/', ',', '/to sense/perception/to feel (through the senses)/to experience/a feeling/an impression/an experience/', '/on the eve of/to be about to/to be on the verge of/', '/to arrive/arrival; advent/', "/aim/clear/|/see 的士[di1 shi4]/|/really and truly/|/of/~'s (possessive particle)/(used after an attribute)/(used to form a nominal expression)/(used at the end of a declarative sentence for emphasis)/also pr. [di4] or [di5] in poetry and songs/", '/time and place/world of a particular locale and era/(physics) space-time/', '/new/newly/meso- (chemistry)/|/abbr. for Xinjiang 新疆[Xin1 jiang1] or Singapore 新加坡[Xin1 jia1 po1]/surname Xin/', '/to experience for oneself/']
    assert len(firstElem.get("hskLevel")) == 27
@@ -122,11 +134,9 @@ def test_appController_postendpoint_simplified():
 def test_appController_postendpoint_missingScript():
    news = input_jsonSimpNews_missingScript()
    outputDict = src.Controllers.appController.postendpoint(news)
-   output = outputDict["output"]
-   assert len(output) == 0
+   assert outputDict["deckInfo"] == 'text json is missing either of the following: [deckName, deckInfo, script, text]'
 
 def test_appController_postendpoint_missingText():
    news = input_jsonSimpNews_missingText()
    outputDict = src.Controllers.appController.postendpoint(news)
-   output = outputDict["output"]
-   assert len(output) == 0
+   assert outputDict["deckInfo"] == 'text json is missing either of the following: [deckName, deckInfo, script, text]'

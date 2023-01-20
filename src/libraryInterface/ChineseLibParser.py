@@ -1,6 +1,8 @@
 #from chinese import ChineseAnalyzer
 import jieba
 import re
+
+from src.Services.utilityService import isChinese
 from src.libraryInterface import CedictParser
 
 def initChineseLibParser():
@@ -148,22 +150,6 @@ def flattenNestedList(cleanedMergedList, outputList):
 #         return findSubtokenPairs(shrinkFirstElem, lastChar + remainElems, listOfCharsToPinyinTupples)
 
 
-def isChinese(firstElem):
-    singleChars = [*firstElem]
-    singleCharsSet = [isCharChinese(x) for x in singleChars]
-    if True in singleCharsSet:
-        return True
-    else:
-        return False
-
-def isCharChinese(singleChar):
-    #range of chinese punctuation in unicode
-    myrange = range(12288, 12352)
-    ordinal = ord(singleChar)
-    if ordinal > 10000 and ordinal not in myrange:
-        return True
-    else:
-        return False
 
 #
 # def getPinyinStringFromSentence(text):

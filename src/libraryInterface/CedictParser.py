@@ -15,7 +15,7 @@ def initCedictParser():
         global simplifiedDictionary
         simplifiedDictionary = createCedictSimpToInfoDict(res)
         global simplifyCedictPinyinWordList
-        simplifyCedictPinyinWordList = {'的' : "De5"}
+        simplifyCedictPinyinWordList = {} #this used to contain  {'的' : "De5"} but the special treatment of de is abandoned
 
 def getCedictTradDict():
     return traditionalDictionary
