@@ -8,12 +8,12 @@ def doReadHsk(title):
     base_path = Path(__file__).parent
     pathString = "../resources/" + title + ".txt"
     finpath = (base_path / pathString).resolve()
-    loktest = open(finpath, "r").read()
+    loktest = open(finpath, "r", encoding="utf8").read()
     return loktest
 
 def doWriteDictionaryToFile(file, title):
     pathString = title + ".json"
-    out_file = open(pathString, "w")
+    out_file = open(pathString, "w", encoding="utf8")
     json.dump(file, out_file)
     out_file.close()
 
