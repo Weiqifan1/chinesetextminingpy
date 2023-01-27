@@ -48,6 +48,16 @@ def createSmallSimpTestData():
     outputDict = src.Controllers.appController.postendpoint(jsondict)
     return outputDict
 
+def createSmallTradTestData():
+    jsondict = {
+        "deckName": "jsonTraditionalNews",
+        "deckInfo": "traditionalNewsInfo",
+        "script": "traditional",
+        "text": "竹北市戶政事. 務所日12日湧入。"
+    }
+    outputDict = src.Controllers.appController.postendpoint(jsondict)
+    return outputDict
+
 def createMoreComplexSimpTestData():
     jsondict = {
         "deckName": "jsonSimplifiedNews",
@@ -87,6 +97,11 @@ def test_convertDictionarySentenceToCard_targetSimplied():
     output = res.get("cards")
     assert len(output) == 10
 
+def test_convertDictionarySentenceToCard_targetTraditional_shortText():
+    analysisDict = createSmallTradTestData()
+    res = Converter.convertAnalysisDictToMiningDict(analysisDict)
+    output = res.get("cards")
+    assert len(output) == 10
 
 def test_convertDictionarySentenceToCard_targetSimplied_moreComplex():
     analysisDict = createMoreComplexSimpTestData()
@@ -103,13 +118,13 @@ def test_convertDictionarySentenceToCard_targetTraditional():
 
     #if no configs == only simplified data and both words and sentences
 
-    analysisDict = createTestData()
+    analysisDict = createSmallTradTestData()
     output = analysisDict.get("output")
     allUniqueTokens = set()
     allUniqueTokens.update(output[0].get("tokens"))
     allUniqueTokens.update(output[1].get("tokens"))
-    allUniqueTokens.update(output[2].get("tokens"))
-    allUniqueTokens.update(output[3].get("tokens"))
+    #allUniqueTokens.update(output[2].get("tokens"))
+    #allUniqueTokens.update(output[3].get("tokens"))
     chineseWords = set(filter(isChinese, allUniqueTokens))
 
     res = Converter.convertAnalysisDictToMiningDict(analysisDict)
@@ -121,16 +136,17 @@ def test_convertDictionarySentenceToCard_targetTraditional():
     #four sentenceCards and
     firstCard = cards[0]
     assert firstCard.get("cardNumber") == 1
-    assert firstCard.get("cardName") == ""
-    assert firstCard.get("frontSide") == ['12', 'Yue4', '23', 'Ri4', ',', 'Zhong1Guo2', 'Tie3Lu4', 'Cheng2Du1', 'Ju2', 'Ji2Tuan2', 'Gong1Si1', 'Zu3Zhi1', 'Mei2Ti3', 'Ti2Qian2', 'Shi4Cheng2', 'Xin1', 'Cheng2', 'Kun1', 'Tie3Lu4', ',', 'Gan3Shou4', 'Ji2Jiang1', 'Dao4Lai2', 'De5', 'Shi2Kong1', 'Xin1', 'Ti3Yan4']
+    assert firstCard.get("cardName") == "sentenceNo:1"
+    assert firstCard.get("frontSide") == '[[Zhu2Bei3]] Shi4 Hu4 Zheng4Shi4' #['12', 'Yue4', '23', 'Ri4', ',', 'Zhong1Guo2', 'Tie3Lu4', 'Cheng2Du1', 'Ju2', 'Ji2Tuan2', 'Gong1Si1', 'Zu3Zhi1', 'Mei2Ti3', 'Ti2Qian2', 'Shi4Cheng2', 'Xin1', 'Cheng2', 'Kun1', 'Tie3Lu4', ',', 'Gan3Shou4', 'Ji2Jiang1', 'Dao4Lai2', 'De5', 'Shi2Kong1', 'Xin1', 'Ti3Yan4']
+    assert firstCard.get("backSide") == ' [竹北] 市戶政事'
 
     #last four cards == front side is chinese character
     fifthCard = cards[4]
-    assert fifthCard.get("cardNumber") == 1
-    assert fifthCard.get("cardName") == ""
-    assert fifthCard.get("frontSide") == '12月23日, 中国铁路成都局集团公司组织媒体提前试乘新成昆铁路, 感受即将到来的时空新体验'
-
-
+    assert fifthCard.get("cardNumber") == 5
+    assert fifthCard.get("cardName") == 'sentenceNo:1'
+    assert fifthCard.get("frontSide") == 'Zhu2Bei3 Shi4 Hu4 Zheng4Shi4'#'12月23日, 中国铁路成都局集团公司组织媒体提前试乘新成昆铁路, 感受即将到来的时空新体验'
+    assert fifthCard.get("backSide") == '竹北市戶政事'
+    assert cards[9].get("backSide") == '務所日12日湧入'
 
 
 

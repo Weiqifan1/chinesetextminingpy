@@ -112,6 +112,13 @@ def convertSentenceToCardOnlySimplified(sen, prevSen, nextSen, index, tokenList)
     cardList.append(cardForWholeSentence)
     return cardList
 
+def convertSentenceToCardOnlyTraditional(sen, prevSen, nextSen, index, tokenList):
+    output = sharedSentenceData(nextSen, prevSen, sen)
+    cardList = [subcard(token, output, index, sen.get("pinyin"), sen.get("traditional"), sen.get("sentence")) for token in tokenList]
+    cardForWholeSentence = subcardForWholeSentence(output, index, sen.get("pinyin"), sen.get("traditional"), sen.get("sentence"))
+    cardList.append(cardForWholeSentence)
+    return cardList
+
 def sharedSentenceData(nextSen, prevSen, sen):
     output = ""
     tokenDataString = sentenceTokenDataOnlySimplified(sen, False)
@@ -215,6 +222,28 @@ def convertSentencesToCardsSimplified(outputLines):
 
     #TODO: skal ordne text til simplified
 
+def convertSentencesToCardsTraditional(outputLines):
+    uniqueTokens = getNestedUniqueList([x.get("traditional") for x in outputLines], [], len(outputLines), set())
+    result = []
+    for i in range(len(outputLines)):
+        if i is 0:
+            current = outputLines[i]
+            next = outputLines[i + 1] if len(outputLines) > i + 1 else None
+            card = convertSentenceToCardOnlyTraditional(current, None, next, i, uniqueTokens[i])
+            result.append(card)
+        elif i is len(outputLines) - 1:
+            current = outputLines[i]
+            prev = outputLines[i - 1]
+            card = convertSentenceToCardOnlyTraditional(current, prev, None, i, uniqueTokens[i])
+            result.append(card)
+        else:
+            current = outputLines[i]
+            prev = outputLines[i - 1]
+            next = outputLines[i + 1] if len(outputLines) > i + 1 else None
+            card = convertSentenceToCardOnlyTraditional(current, prev, next, i, uniqueTokens[i])
+            result.append(card)
+    return result
+
 def convertAnalysisDictToMiningDict(analysisDict):
     resultDict = {}
     resultDict = addValueToDict("deckName", analysisDict, resultDict)
@@ -225,12 +254,16 @@ def convertAnalysisDictToMiningDict(analysisDict):
     if outputLines is None or outputLines is []:
         return resultDict
     else:
-        cards = convertSentencesToCardsSimplified(outputLines)
+        cards = {}
+        if analysisDict["script"] == "simplified":
+            cards = convertSentencesToCardsSimplified(outputLines)
+        elif analysisDict["script"] == "traditional":
+            cards = convertSentencesToCardsTraditional(outputLines)
+
         flatCArds = [element for innerList in cards for element in innerList]
         for x in range(len(flatCArds)):
             eachcard = flatCArds[x]
             eachcard["cardNumber"] = x + 1
-
 
         tagsList = getAllTagsFromCards(flatCArds)
         res = {tagsList[i]: tagsList[i] for i in range(len(tagsList))}

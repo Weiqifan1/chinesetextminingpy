@@ -29,7 +29,6 @@ def textToTokensFromTraditional(text):
     result = [senToDictFromTraditional(x) for x in test2]
     return result
 
-
 def flattenNestedList(cleanedMergedList, outputList):
     if len(cleanedMergedList) == 0:
         return outputList
