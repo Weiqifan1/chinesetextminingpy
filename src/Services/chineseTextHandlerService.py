@@ -2,7 +2,7 @@ from src.libraryInterface import ChineseLibParser
 from src.libraryInterface import CedictParser
 from src.libraryInterface import HeisigParser
 from src.libraryInterface import HskParser
-from src.libraryInterface import BcluParser
+from src.libraryInterface import BlcuParser
 
 def sentenceToDict(sen):
     return sen
@@ -12,7 +12,7 @@ def textToTokensFromSimplified(text):
     CedictParser.initCedictParser()
     HeisigParser.initHeisigParser()
     HskParser.initHskParser()
-    BcluParser.initBCLUDictionary()
+    BlcuParser.initBLCUDictionary()
     print("doneLoading")
     test2 = ChineseLibParser.getSentencesFromLargeText(text)
     result = [senToDictFromSimplified(x) for x in test2]
@@ -23,7 +23,7 @@ def textToTokensFromTraditional(text):
     CedictParser.initCedictParser()
     HeisigParser.initHeisigParser()
     HskParser.initHskParser()
-    BcluParser.initBCLUDictionary()
+    BlcuParser.initBLCUDictionary()
     print("doneLoading")
     test2 = ChineseLibParser.getSentencesFromLargeText(text)
     result = [senToDictFromTraditional(x) for x in test2]
@@ -54,7 +54,7 @@ def senToDictFromTraditional(sent):
     heisigTradInt = [HeisigParser.getHeisigIntsFromWordTrad(x) for x in tokens]
     heisigTradIntFlatten = [*heisigTradInt]
     hskLevel = [HskParser.getHskLevel(x) for x in simplified]
-    bclu = [BcluParser.getBCLUfrequency(x) for x in simplified]
+    blcu = [BlcuParser.getBLCUfrequency(x) for x in simplified]
     mydict = {
         "sentence": sent,
         "tokens": tokens,
@@ -63,7 +63,7 @@ def senToDictFromTraditional(sent):
         "pinyin": pinyinList,
         "meaning": meaningList,
         "hskLevel": hskLevel,
-        "bcluFrequency": bclu,
+        "blcuFrequency": blcu,
         "heisigSimplified": heisigSimplified,
         "heisigSimpInt": heisigSimpIntFlatten,
         "heisigTraditional": heisigTraditional,
@@ -84,7 +84,7 @@ def senToDictFromSimplified(sent):
     heisigTradInt = [HeisigParser.getHeisigIntsFromWordTrad(x) for x in traditional]
     heisigTradIntFlatten = [*heisigTradInt]
     hskLevel = [HskParser.getHskLevel(x) for x in tokens]
-    bclu = [BcluParser.getBCLUfrequency(x) for x in tokens]
+    blcu = [BlcuParser.getBLCUfrequency(x) for x in tokens]
     mydict = {
         "sentence": sent,
         "tokens": tokens,
@@ -93,7 +93,7 @@ def senToDictFromSimplified(sent):
         "pinyin": pinyinList,
         "meaning": meaningList,
         "hskLevel": hskLevel,
-        "bcluFrequency": bclu,
+        "blcuFrequency": blcu,
         "heisigSimplified": heisigSimplified,
         "heisigSimpInt" : heisigSimpIntFlatten,
         "heisigTraditional": heisigTraditional,

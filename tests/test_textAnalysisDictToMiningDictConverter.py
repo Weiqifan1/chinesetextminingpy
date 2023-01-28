@@ -159,7 +159,7 @@ def test_convertDictionarySentenceToCard_targetTraditional():
     assert firstCard.get("cardName") == "sentenceNo:1"
     assert firstCard.get("frontSide") == '[[Zhu2Bei3]] Shi4 Hu4 Zheng4Shi4 .'
     assert firstCard.get("backSide") == '[[竹北]] 市戶政事.'
-    assert firstCard.get("tokenbclu") == [None]
+    assert firstCard.get("tokenblcu") == [None]
 
 
     #last four cards == front side is chinese character
@@ -168,12 +168,12 @@ def test_convertDictionarySentenceToCard_targetTraditional():
     assert fifthCard.get("cardName") == 'sentenceNo:1'
     assert fifthCard.get("frontSide") == 'Zhu2Bei3 Shi4 Hu4 Zheng4Shi4 .'
     assert fifthCard.get("backSide") == '竹北市戶政事.'
-    assert fifthCard.get("tokenbclu") == [None, 146, 947, 23396, None]
+    assert fifthCard.get("tokenblcu") == [None, 146, 947, 23396, None]
 
     assert cards[8].get("backSide") == '務所日12日 [[湧入]] 。'
-    assert cards[8].get("tokenbclu") == [12236]
+    assert cards[8].get("tokenblcu") == [12236]
     assert cards[9].get("backSide") == '務所日12日湧入。'
-    assert cards[9].get("tokenbclu") == [4450, 108, 29, None, 29, 12236, None]
+    assert cards[9].get("tokenblcu") == [4450, 108, 29, None, 29, 12236, None]
 
 
 def test_convertDictionarySentenceToCard_targetSimnplified():
@@ -207,7 +207,7 @@ def test_convertDictionarySentenceToCard_targetSimnplified():
     assert firstCard.get("cardName") == "sentenceNo:1"
     assert firstCard.get("frontSide") == '[[Zhu2Bei3]] Shi4 Hu4 Zheng4Shi4 .'
     assert firstCard.get("backSide") == '[[竹北]] 市户政事.'
-    assert firstCard.get("tokenbclu") == [None]
+    assert firstCard.get("tokenblcu") == [None]
 
     #last four cards == front side is chinese character
     fifthCard = cards[4]
@@ -215,12 +215,12 @@ def test_convertDictionarySentenceToCard_targetSimnplified():
     assert fifthCard.get("cardName") == 'sentenceNo:1'
     assert fifthCard.get("frontSide") == 'Zhu2Bei3 Shi4 Hu4 Zheng4Shi4 .'
     assert fifthCard.get("backSide") == '竹北市户政事.'
-    assert fifthCard.get("tokenbclu") == [None, 146, 947, 23396, None]
+    assert fifthCard.get("tokenblcu") == [None, 146, 947, 23396, None]
 
     assert cards[8].get("backSide") == '务所日12日 [[涌入]] 。'
-    assert cards[8].get("tokenbclu") == [12236]
+    assert cards[8].get("tokenblcu") == [12236]
     assert cards[9].get("backSide") == '务所日12日涌入。'
-    assert cards[9].get("tokenbclu") == [4450, 108, 29, None, 29, 12236, None]
+    assert cards[9].get("tokenblcu") == [4450, 108, 29, None, 29, 12236, None]
 
 def test_convertDictionarySentenceToCard_targetSimnplified_wikidata():
     #configurations
@@ -255,7 +255,7 @@ def test_convertDictionarySentenceToCard_targetSimnplified_wikidata():
     assert firstCard.get("cardName") == "sentenceNo:1"
     assert firstCard.get("frontSide") == '[[Zhong1Hua2Ren2Min2Gong4He2Guo2]] ，'
     assert firstCard.get("backSide") == '[[中华人民共和国]] ，'
-    assert firstCard.get("tokenbclu") == [3781]
+    assert firstCard.get("tokenblcu") == [3781]
 
     #last four cards == front side is chinese character
     fifthCard = cards[4]
@@ -263,12 +263,12 @@ def test_convertDictionarySentenceToCard_targetSimnplified_wikidata():
     assert fifthCard.get("cardName") == 'sentenceNo:2'
     assert fifthCard.get("frontSide") == 'Jian3Cheng1 Zhong1Guo2 [ [[註]] 13][17][2]，'
     assert fifthCard.get("backSide") == '简称中国[ [[註]] 13][17][2]，'
-    assert fifthCard.get("tokenbclu") == [None]
+    assert fifthCard.get("tokenblcu") == [None]
 
     assert cards[8].get("backSide") == '是一 [[个]] 位於东亚的社会主义国家[18]，'
-    assert cards[8].get("tokenbclu") == [10]
+    assert cards[8].get("tokenblcu") == [10]
     assert cards[9].get("backSide") == '是一个 [[位]] 於东亚的社会主义国家[18]，'
-    assert cards[9].get("tokenbclu") == [114]
+    assert cards[9].get("tokenblcu") == [114]
 
 
 

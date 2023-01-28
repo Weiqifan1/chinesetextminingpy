@@ -30,9 +30,9 @@ def doReadDictionaryFromFile(title):
     f.close()
     return retdict
 
-def readbclu():
-    fullBclu = doReadHsk("BLCU2018freqcorpus")
-    return fullBclu
+def readblcu():
+    fullBlcu = doReadHsk("BLCU2018freqcorpus")
+    return fullBlcu
 
 def readHskFiles():
     hsk1 = doReadHsk("hsk1raw")
@@ -48,24 +48,24 @@ def readHskFiles():
             "hsk5" : hsk5,
             "hsk6" : hsk6}
 
-def createBCLU_cedict_intersection():
+def createBLCU_cedict_intersection():
     # create, save, and read a dictionary that is the intersection of
     # BCC (BLCU Chinese Corpus)  https://www.plecoforums.com/threads/word-frequency-list-based-on-a-15-billion-character-corpus-bcc-blcu-chinese-corpus.5859/
     # and the cedict open dictionary.
-    # this code requires that bclu corpus get downloaded and saved under resources as BLCU2018freqcorpus.txt
+    # this code requires that blcu corpus get downloaded and saved under resources as BLCU2018freqcorpus.txt
     CedictParser.initCedictParser()
     simp = CedictParser.getCedictSimpDict()
     wort = simp.get("附赘悬疣")
 
-    # create a dictionary based on bclu_corpus
-    fullBclu = hskReader.readbclu()
-    lines = (fullBclu[1:]).split("\n")
+    # create a dictionary based on blcu_corpus
+    fullBlcu = hskReader.readblcu()
+    lines = (fullBlcu[1:]).split("\n")
     nested = [x.split("\t") for x in lines]
 
     filterDublicates = remove_duplicatesAndAddIndex(nested, simp)
     last10elem = filterDublicates[-10:]
-    bcludict = list_to_dict(filterDublicates)
-    readfile = hskReader.doReadDictionaryFromFile("BCLU_Cedict_Intersection")
+    blcudict = list_to_dict(filterDublicates)
+    readfile = hskReader.doReadDictionaryFromFile("BLCU_Cedict_Intersection")
 
 def list_to_dict(lst):
   result = {}

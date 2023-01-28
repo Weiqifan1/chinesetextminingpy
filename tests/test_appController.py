@@ -90,8 +90,8 @@ def test_appController_postendpoint_traditional():
    assert firstElem.get("meaning") == ['/Zhubei or Chupei city in Hsinchu County 新竹縣|新竹县[Xin1 zhu2 Xian4], northwest Taiwan/', '/market/city/CL:個|个[ge4]/', '/a household/door/family/', '/politics/government affairs/', '/affair/business/matter/to be engaged in/to attend to/by all means/', '/actually/place/classifier for houses, small buildings, institutions etc/that which/particle introducing a relative clause or passive/CL:個|个[ge4]/', '12', '/abbr. for 日本[Ri4 ben3], Japan/|/sun/day/date, day of the month/', '/to come pouring in/influx/', '/great amount/large quantity/bulk/numerous/generous/magnanimous/', '/a tide of people/', '，']
    assert len(firstElem.get("hskLevel")) == 12
    assert firstElem.get("hskLevel") == ['', '', '', '', '', 'hsk5', '', 'hsk2', '', '', '', '']
-   assert len(firstElem.get("bcluFrequency")) == 12
-   assert firstElem.get("bcluFrequency") == [None, 146, 947, 23396, 4450, 108, None, 29, 12236, 842, 21235, None]
+   assert len(firstElem.get("blcuFrequency")) == 12
+   assert firstElem.get("blcuFrequency") == [None, 146, 947, 23396, 4450, 108, None, 29, 12236, 842, 21235, None]
    assert len(firstElem.get("heisigSimplified")) == 12
    assert firstElem.get("heisigSimplified") == ['786 竹 bamboo 454 北 north', '419 市 market', '896 户 door', '389 政 politics 953 事 matter', '752 务 tasks', '926 所 place', '', '12 日 day', '2442 涌 gush 693 入 enter', '113 大 large 180 量 quantity', '793 人 person 149 潮 tide', '']
    assert len(firstElem.get("heisigSimpInt")) == 12
@@ -124,8 +124,8 @@ def test_appController_postendpoint_simplified():
    assert secondElement.get("meaning") == ['/China/', '/railroad/railway/CL:條|条[tiao2]/', '/Chengdu subprovincial city and capital of Sichuan province 四川 in southwest China/', '/narrow/|/office/situation/classifier for games: match, set, round etc/', '/group/bloc/corporation/conglomerate/', '/company; firm; corporation/CL:家[jia1]/', '/to organize/organization/(biology) tissue/(textiles) weave/CL:個|个[ge4]/', '/media, esp. news media/', '/to shift to an earlier date/to do sth ahead of time/in advance/', '/test drive/', '/new/newly/meso- (chemistry)/|/abbr. for Xinjiang 新疆[Xin1 jiang1] or Singapore 新加坡[Xin1 jia1 po1]/surname Xin/', '/surname Cheng/|/to succeed/to finish/to complete/to accomplish/to become/to turn into/to be all right/OK!/one tenth/', '/descendant/elder brother/a style of Chinese poetry/|/used in place names, notably Kunlun Mountains 崑崙|昆仑[Kun1 lun2]/(also used for transliteration)/|/variant of 崑|昆[kun1]/', '/railroad/railway/CL:條|条[tiao2]/', ',']
    assert len(secondElement.get("hskLevel")) == 15
    assert secondElement.get("hskLevel") == ['hsk1', '', '', '', 'hsk6', 'hsk2', 'hsk5', 'hsk5', 'hsk4', '', 'hsk2', '', '', '', '']
-   assert len(secondElement.get("bcluFrequency")) == 15
-   assert secondElement.get("bcluFrequency") == [52, 1916, 1939, 584, 825, 85, 256, 568, 1685, None, 70, 165, 8306, 1916, None]
+   assert len(secondElement.get("blcuFrequency")) == 15
+   assert secondElement.get("blcuFrequency") == [52, 1916, 1939, 584, 825, 85, 256, 568, 1685, None, 70, 165, 8306, 1916, None]
    assert len(secondElement.get("heisigSimplified")) == 15
    assert secondElement.get("heisigSimplified") == ['38 中 middle 549 国 country', '730 铁 iron 1053 路 path', '368 成 turn into 1383 都 metropolis', '893 局 bureau', '538 集 gather 622 团 troupe', '696 公 public 1391 司 take charge of', '1347 组 group 1082 织 weave', '2732 媒 matchmaker 813 体 body', '598 提 bring up 303 前 in front', '360 试 test 1706 乘 hitch a ride', '1191 新 new', '368 成 turn into', '457 昆 descendants', '730 铁 iron 1053 路 path', '']
    assert len(secondElement.get("heisigSimpInt")) == 15
