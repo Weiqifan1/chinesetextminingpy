@@ -272,6 +272,15 @@ def getTokenFreqMap(outputLines):
     return tokenFReqMap
 
 
+def flatCardsWithNumbers(flatCArds, param):
+    if param == "chronological":
+        for x in range(len(flatCArds)):
+            eachcard = flatCArds[x]
+            eachcard["cardNumber"] = x + 1
+        return flatCArds
+    elif param == "chronological":
+        return flatCArds
+
 def convertAnalysisDictToMiningDict(analysisDict):
     resultDict = {}
     resultDict = addValueToDict("deckName", analysisDict, resultDict)
@@ -291,13 +300,11 @@ def convertAnalysisDictToMiningDict(analysisDict):
         flatCArds = [element for innerList in cards for element in innerList]
         #flatCArds = [card.strip() for card in flatCArdsRaw]
 
-        for x in range(len(flatCArds)):
-            eachcard = flatCArds[x]
-            eachcard["cardNumber"] = x + 1
+        cardsWithNumbers = flatCardsWithNumbers(flatCArds, analysisDict.get("cardOrder"))
 
-        tagsList = getAllTagsFromCards(flatCArds)
+        tagsList = getAllTagsFromCards(cardsWithNumbers)
         res = {tagsList[i]: tagsList[i] for i in range(len(tagsList))}
-        resultDict["cards"] = flatCArds
+        resultDict["cards"] = cardsWithNumbers
         resultDict["tags"] = res
         resultDict["settings"] = {}
         return resultDict

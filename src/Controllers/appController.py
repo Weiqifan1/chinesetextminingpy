@@ -15,6 +15,7 @@ def postendpoint(postinput):
     resultDict["deckName"] = postinput["deckName"] #addValueToDict("deckName", postinput, output)
     resultDict["deckInfo"] = postinput["deckInfo"]#addValueToDict("deckInfo", postinput, output)
     resultDict["script"] = postinput["script"]
+    resultDict["cardOrder"] = postinput["cardOrder"]
 
     if not "text" in postinput or not "script" in postinput:
         return resultDict

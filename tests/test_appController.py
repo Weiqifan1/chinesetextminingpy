@@ -46,6 +46,7 @@ def input_jsonSimpNews():
       "deckName": "testDeckName",
       "deckInfo": "testDeckInfo",
       "script": "simplified",
+      "cardOrder": "chronological",
       "text": cntext
    }
    return jsondict
@@ -60,6 +61,7 @@ def input_jsonTradNews():
       "deckName": "testDeckName",
       "deckInfo": "testDeckInfo",
       "script": "traditional",
+      "cardOrder": "chronological",
       "text": cntext
    }
    return jsondict
@@ -71,6 +73,7 @@ def test_appController_postendpoint_traditional():
    assert outputDict["deckName"] == "testDeckName"
    assert outputDict["deckInfo"] == "testDeckInfo"
    assert outputDict["script"] == "traditional"
+   assert outputDict["cardOrder"] == "chronological"
    output = outputDict["output"]
    assert len(output) == 11
    firstElem = output[0]
@@ -104,6 +107,7 @@ def test_appController_postendpoint_simplified():
    assert outputDict["deckName"] == "testDeckName"
    assert outputDict["deckInfo"] == "testDeckInfo"
    assert outputDict["script"] == "simplified"
+   assert outputDict["cardOrder"] == "chronological"
    output = outputDict["output"]
    assert len(output) == 13
    secondElement = output[1]
