@@ -48,6 +48,17 @@ def createSmallSimpTestData():
     outputDict = src.Controllers.appController.postendpoint(jsondict)
     return outputDict
 
+def createWikiSimpTestData():
+    #中华人民共和国，简称中国[註 13][17][2]，是一个位於东亚的社会主义国家[18]，成立于1949年10月1日，
+    jsondict = {
+        "deckName": "jsonSimplifiedNews",
+        "deckInfo": "simplifiedNewsInfo",
+        "script": "simplified",
+        "text": "中华人民共和国，简称中国[註 13][17][2]，是一个位於东亚的社会主义国家[18]，成立于1949年10月1日，"
+    }
+    outputDict = src.Controllers.appController.postendpoint(jsondict)
+    return outputDict
+
 def createSmallTradTestData():
     jsondict = {
         "deckName": "jsonTraditionalNews",
@@ -108,6 +119,8 @@ def test_convertDictionarySentenceToCard_targetSimplied_moreComplex():
     res = Converter.convertAnalysisDictToMiningDict(analysisDict)
     output = res.get("cards")
     assert len(output) == 12
+
+
 
 def test_convertDictionarySentenceToCard_targetTraditional():
     #configurations
@@ -203,9 +216,53 @@ def test_convertDictionarySentenceToCard_targetSimnplified():
     assert cards[9].get("backSide") == '务所日12日涌入。'
     assert cards[9].get("tokenbclu") == [4450, 108, 29, None, 29, 12236, None]
 
+def test_convertDictionarySentenceToCard_targetSimnplified_wikidata():
+    #configurations
+    #traditional data, simplified data, traditional first then simplified, simplified first then traditional
+    # (how it is done depends on witch script the original script is in)
+    #word cards only, sentencecards only, words and sentencecards
+    #tags: the word cards, the sentencecards and the deck title will become tags
 
+    #if no configs == only simplified data and both words and sentences
 
+    analysisDict = createWikiSimpTestData()
+    output = analysisDict.get("output")
+    allUniqueTokens = set()
+    allUniqueTokens.update(output[0].get("tokens"))
+    allUniqueTokens.update(output[1].get("tokens"))
+    allUniqueTokens.update(output[2].get("tokens"))
+    allUniqueTokens.update(output[3].get("tokens"))
+    #allUniqueTokens.update(output[2].get("tokens"))
+    #allUniqueTokens.update(output[3].get("tokens"))
+    chineseWords = set(filter(isChinese, allUniqueTokens))
 
+    res = Converter.convertAnalysisDictToMiningDict(analysisDict)
+    cards = res.get("cards")
+
+    #number of cards == number of sentences + number of unique tokens containing chinese characters
+    assert len(cards) == len(output) + len(chineseWords)
+
+    #four sentenceCards and
+    firstCard = cards[0]
+
+    assert firstCard.get("cardNumber") == 1
+    assert firstCard.get("cardName") == "sentenceNo:1"
+    assert firstCard.get("frontSide") == '[[Zhong1Hua2Ren2Min2Gong4He2Guo2]] ，'
+    assert firstCard.get("backSide") == '[[中华人民共和国]] ，'
+    assert firstCard.get("tokenbclu") == [3781]
+
+    #last four cards == front side is chinese character
+    fifthCard = cards[4]
+    assert fifthCard.get("cardNumber") == 5
+    assert fifthCard.get("cardName") == 'sentenceNo:2'
+    assert fifthCard.get("frontSide") == 'Jian3Cheng1 Zhong1Guo2 [ [[註]] 13][17][2]，'
+    assert fifthCard.get("backSide") == '简称中国[ [[註]] 13][17][2]，'
+    assert fifthCard.get("tokenbclu") == [None]
+
+    assert cards[8].get("backSide") == '是一 [[个]] 位於东亚的社会主义国家[18]，'
+    assert cards[8].get("tokenbclu") == [10]
+    assert cards[9].get("backSide") == '是一个 [[位]] 於东亚的社会主义国家[18]，'
+    assert cards[9].get("tokenbclu") == [114]
 
 
 
