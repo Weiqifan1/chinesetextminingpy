@@ -17,5 +17,3 @@ def getBCLUfrequency(x):
         return bcluDict.get(x)[1]
     else:
         return None
-
-

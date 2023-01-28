@@ -10,6 +10,20 @@ def initChineseLibParser():
     # global parser
     # parser = ChineseAnalyzer()
 
+
+def splitStringOnDelimiters(inputTest, paramList):
+    stringlist = []
+    newString = ""
+    for elem in inputTest:
+        if elem in paramList:
+            newString = newString + elem
+            stringlist.append(newString)
+            newString = ""
+        else:
+            newString = newString + elem
+    return stringlist
+
+
 def getSentencesFromLargeText(inputTest):
     """
     :param inputTest: a string containing a chinese text. Example:
@@ -23,10 +37,14 @@ def getSentencesFromLargeText(inputTest):
     "据介绍, 第三代C型CR200J'复兴号'动车组为9节车厢, 较第二代'绿巨人'增加了商务座, 旋转座椅等, 外形涂装为绿白相间",
     "此次中国铁路成都局集团公司迎接回6组最新型'复兴号'动车组, 将全部用于新成昆铁路开行"]
     """
-    rawsens = re.split(r'\.|。', inputTest)
-    stripSen = [x.strip() for x in rawsens if len(x) > 0]
+    #d = "，"
+    #test =  [e+d for e in inputTest.split(d) if e]
+    #rawsens2 = re.split(r'\.|。|，|,', inputTest)
+    #rawsens = re.split(r'(\.|。|，|.)', inputTest)
+    rawsens3 = splitStringOnDelimiters(inputTest, [".","。","，",","])
+    stripSen = [x.strip() for x in rawsens3 if len(x) > 0]
     return stripSen
-    #
+    #[1::2]
     # anal = parser.parse(inputTest)
     # sent = anal.sentences()
     # trimmedSen = [x.strip() for x in sent]

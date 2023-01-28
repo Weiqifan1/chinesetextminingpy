@@ -87,7 +87,7 @@ def test_convertAnalysisDictToMiningDict_doesntTestCards():
     deckInfo = res.get("deckInfo")
     assert deckInfo == "simplifiedNewsInfo"
     cards = res["cards"]
-    assert len(cards) == 76
+    assert len(cards) == 85
     firstCard = cards[0]
     assert not firstCard == None
 
@@ -135,18 +135,73 @@ def test_convertDictionarySentenceToCard_targetTraditional():
 
     #four sentenceCards and
     firstCard = cards[0]
+
     assert firstCard.get("cardNumber") == 1
     assert firstCard.get("cardName") == "sentenceNo:1"
-    assert firstCard.get("frontSide") == '[[Zhu2Bei3]] Shi4 Hu4 Zheng4Shi4' #['12', 'Yue4', '23', 'Ri4', ',', 'Zhong1Guo2', 'Tie3Lu4', 'Cheng2Du1', 'Ju2', 'Ji2Tuan2', 'Gong1Si1', 'Zu3Zhi1', 'Mei2Ti3', 'Ti2Qian2', 'Shi4Cheng2', 'Xin1', 'Cheng2', 'Kun1', 'Tie3Lu4', ',', 'Gan3Shou4', 'Ji2Jiang1', 'Dao4Lai2', 'De5', 'Shi2Kong1', 'Xin1', 'Ti3Yan4']
-    assert firstCard.get("backSide") == ' [竹北] 市戶政事'
+    assert firstCard.get("frontSide") == '[[Zhu2Bei3]] Shi4 Hu4 Zheng4Shi4 .'
+    assert firstCard.get("backSide") == '[[竹北]] 市戶政事.'
+    assert firstCard.get("tokenbclu") == [None]
+
 
     #last four cards == front side is chinese character
     fifthCard = cards[4]
     assert fifthCard.get("cardNumber") == 5
     assert fifthCard.get("cardName") == 'sentenceNo:1'
-    assert fifthCard.get("frontSide") == 'Zhu2Bei3 Shi4 Hu4 Zheng4Shi4'#'12月23日, 中国铁路成都局集团公司组织媒体提前试乘新成昆铁路, 感受即将到来的时空新体验'
-    assert fifthCard.get("backSide") == '竹北市戶政事'
-    assert cards[9].get("backSide") == '務所日12日湧入'
+    assert fifthCard.get("frontSide") == 'Zhu2Bei3 Shi4 Hu4 Zheng4Shi4 .'
+    assert fifthCard.get("backSide") == '竹北市戶政事.'
+    assert fifthCard.get("tokenbclu") == [None, 146, 947, 23396, None]
+
+    assert cards[8].get("backSide") == '務所日12日 [[湧入]] 。'
+    assert cards[8].get("tokenbclu") == [12236]
+    assert cards[9].get("backSide") == '務所日12日湧入。'
+    assert cards[9].get("tokenbclu") == [4450, 108, 29, None, 29, 12236, None]
+
+
+def test_convertDictionarySentenceToCard_targetSimnplified():
+    #configurations
+    #traditional data, simplified data, traditional first then simplified, simplified first then traditional
+    # (how it is done depends on witch script the original script is in)
+    #word cards only, sentencecards only, words and sentencecards
+    #tags: the word cards, the sentencecards and the deck title will become tags
+
+    #if no configs == only simplified data and both words and sentences
+
+    analysisDict = createSmallSimpTestData()
+    output = analysisDict.get("output")
+    allUniqueTokens = set()
+    allUniqueTokens.update(output[0].get("tokens"))
+    allUniqueTokens.update(output[1].get("tokens"))
+    #allUniqueTokens.update(output[2].get("tokens"))
+    #allUniqueTokens.update(output[3].get("tokens"))
+    chineseWords = set(filter(isChinese, allUniqueTokens))
+
+    res = Converter.convertAnalysisDictToMiningDict(analysisDict)
+    cards = res.get("cards")
+
+    #number of cards == number of sentences + number of unique tokens containing chinese characters
+    assert len(cards) == len(output) + len(chineseWords)
+
+    #four sentenceCards and
+    firstCard = cards[0]
+
+    assert firstCard.get("cardNumber") == 1
+    assert firstCard.get("cardName") == "sentenceNo:1"
+    assert firstCard.get("frontSide") == '[[Zhu2Bei3]] Shi4 Hu4 Zheng4Shi4 .'
+    assert firstCard.get("backSide") == '[[竹北]] 市户政事.'
+    assert firstCard.get("tokenbclu") == [None]
+
+    #last four cards == front side is chinese character
+    fifthCard = cards[4]
+    assert fifthCard.get("cardNumber") == 5
+    assert fifthCard.get("cardName") == 'sentenceNo:1'
+    assert fifthCard.get("frontSide") == 'Zhu2Bei3 Shi4 Hu4 Zheng4Shi4 .'
+    assert fifthCard.get("backSide") == '竹北市户政事.'
+    assert fifthCard.get("tokenbclu") == [None, 146, 947, 23396, None]
+
+    assert cards[8].get("backSide") == '务所日12日 [[涌入]] 。'
+    assert cards[8].get("tokenbclu") == [12236]
+    assert cards[9].get("backSide") == '务所日12日涌入。'
+    assert cards[9].get("tokenbclu") == [4450, 108, 29, None, 29, 12236, None]
 
 
 

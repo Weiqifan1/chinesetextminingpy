@@ -22,7 +22,7 @@ def doTokenList(tokenList, token, newList):
         newList.append(punctuation)
         return doTokenList(tokenList[1:], token, newList)
     elif tokenList[0] == token:
-        tokenWithBraces = " [" + token + "] "
+        tokenWithBraces = " [[" + token + "]] "
         newList.append(tokenWithBraces)
         return doTokenList(tokenList[1:], token, newList)
     else:
@@ -49,7 +49,7 @@ def formatAmbigousPinyin(rawPinyin):
         return noNum
 
 
-def subcard(token, sharedData, index, pinyinList, tokenList, sentence):
+def subcard(token, sharedData, index, pinyinList, tokenList, sentence, bclu):
     #write a function that surrounds pinyin with curly
     firstCardInSentece = False
     convertedPinyin = []
@@ -70,10 +70,11 @@ def subcard(token, sharedData, index, pinyinList, tokenList, sentence):
 
     backsideAndSecondaryInfo = sharedData.split(globalParagraphSeparator)
     res = {
+        "tokenbclu": [bclu],
         "cardNumber": 0,
         "cardName": "sentenceNo:" + str(index + 1),
-        "frontSide": " ".join(convertedPinyin),
-        "backSide": tokentListToBacksideSentence(tokenList, token), # instead of just using token + sentence, i will try to join the tokentlist,
+        "frontSide": (" ".join(convertedPinyin)).strip(),
+        "backSide": (tokentListToBacksideSentence(tokenList, token)).strip(), # instead of just using token + sentence, i will try to join the tokentlist,
         "primaryInfo": backsideAndSecondaryInfo[0],
         "secondaryInfo": globalParagraphSeparator.join(backsideAndSecondaryInfo[1:]),
         "notableCards": [],
@@ -85,11 +86,12 @@ def subcard(token, sharedData, index, pinyinList, tokenList, sentence):
     return res
 
 
-def subcardForWholeSentence(sharedData, index, pinyinList, tokenList, sentence):
+def subcardForWholeSentence(sharedData, index, pinyinList, tokenList, sentence, bclu):
     # write a function that surrounds pinyin with curly
     generateTags = ["sentenceNo:" + str(index + 1), "onlySentence:" + str(index + 1)]
     backsideAndSecondaryInfo = sharedData.split(globalParagraphSeparator)
     res = {
+        "tokenbclu": bclu,
         "cardNumber": 0,
         "cardName": "sentenceNo:" + str(index + 1),
         "frontSide": " ".join(pinyinList),
@@ -105,17 +107,25 @@ def subcardForWholeSentence(sharedData, index, pinyinList, tokenList, sentence):
     return res
 
 
-def convertSentenceToCardOnlySimplified(sen, prevSen, nextSen, index, tokenList):
+def convertSentenceToCardOnlySimplified(sen, prevSen, nextSen, index, tokenList, bclu, linebclu):
     output = sharedSentenceData(nextSen, prevSen, sen)
-    cardList = [subcard(token, output, index, sen.get("pinyin"), sen.get("simplified"), sen.get("sentence")) for token in tokenList]
-    cardForWholeSentence = subcardForWholeSentence(output, index, sen.get("pinyin"), sen.get("simplified"), sen.get("sentence"))
+    cardList = []
+    for i in range(len(tokenList)):
+        cardtemp = subcard(tokenList[i], output, index, sen.get("pinyin"), sen.get("simplified"), sen.get("sentence"), bclu.get(tokenList[i]))
+        cardList.append(cardtemp)
+    #cardList = [subcard(token, output, index, sen.get("pinyin"), sen.get("simplified"), sen.get("sentence"), bclu[tokenList.index(token)]) for token in tokenList]
+    cardForWholeSentence = subcardForWholeSentence(output, index, sen.get("pinyin"), sen.get("simplified"), sen.get("sentence"), linebclu)
     cardList.append(cardForWholeSentence)
     return cardList
 
-def convertSentenceToCardOnlyTraditional(sen, prevSen, nextSen, index, tokenList):
+def convertSentenceToCardOnlyTraditional(sen, prevSen, nextSen, index, tokenList, bclu, linebclu):
     output = sharedSentenceData(nextSen, prevSen, sen)
-    cardList = [subcard(token, output, index, sen.get("pinyin"), sen.get("traditional"), sen.get("sentence")) for token in tokenList]
-    cardForWholeSentence = subcardForWholeSentence(output, index, sen.get("pinyin"), sen.get("traditional"), sen.get("sentence"))
+    cardList = []
+    for i in range(len(tokenList)):
+        cardtemp = subcard(tokenList[i], output, index, sen.get("pinyin"), sen.get("traditional"), sen.get("sentence"), bclu.get(tokenList[i]))
+        cardList.append(cardtemp)
+        #[subcard(token, output, index, sen.get("pinyin"), sen.get("traditional"), sen.get("sentence"), bclu[tokenList.index(token)]) for token in tokenList]
+    cardForWholeSentence = subcardForWholeSentence(output, index, sen.get("pinyin"), sen.get("traditional"), sen.get("sentence"), linebclu)
     cardList.append(cardForWholeSentence)
     return cardList
 
@@ -190,6 +200,7 @@ def getNestedUniqueList(listOfTokens, newList, length, setToCompare):
         return getNestedUniqueList(updatedListOfTokens, newList, length, setToCompare)
 
 def convertSentencesToCardsSimplified(outputLines):
+    tokenFReqMap = getTokenFreqMap(outputLines)
     uniqueTokens = getNestedUniqueList([x.get("simplified") for x in outputLines], [], len(outputLines), set())
 
     result = []
@@ -197,18 +208,18 @@ def convertSentencesToCardsSimplified(outputLines):
         if i is 0:
             current = outputLines[i]
             next = outputLines[i+1] if len(outputLines) > i+1 else None
-            card = convertSentenceToCardOnlySimplified(current, None, next, i, uniqueTokens[i])
+            card = convertSentenceToCardOnlySimplified(current, None, next, i, uniqueTokens[i], tokenFReqMap, current.get("bcluFrequency"))
             result.append(card)
         elif i is len(outputLines) - 1:
             current = outputLines[i]
             prev = outputLines[i-1]
-            card = convertSentenceToCardOnlySimplified(current, prev, None, i, uniqueTokens[i])
+            card = convertSentenceToCardOnlySimplified(current, prev, None, i, uniqueTokens[i], tokenFReqMap, current.get("bcluFrequency"))
             result.append(card)
         else:
             current = outputLines[i]
             prev = outputLines[i-1]
             next = outputLines[i+1] if len(outputLines) > i+1 else None
-            card = convertSentenceToCardOnlySimplified(current, prev, next, i, uniqueTokens[i])
+            card = convertSentenceToCardOnlySimplified(current, prev, next, i, uniqueTokens[i], tokenFReqMap, current.get("bcluFrequency"))
             result.append(card)
     return result
 
@@ -223,26 +234,43 @@ def convertSentencesToCardsSimplified(outputLines):
     #TODO: skal ordne text til simplified
 
 def convertSentencesToCardsTraditional(outputLines):
+    tokenFReqMap = getTokenFreqMap(outputLines)
     uniqueTokens = getNestedUniqueList([x.get("traditional") for x in outputLines], [], len(outputLines), set())
     result = []
+
     for i in range(len(outputLines)):
         if i is 0:
             current = outputLines[i]
             next = outputLines[i + 1] if len(outputLines) > i + 1 else None
-            card = convertSentenceToCardOnlyTraditional(current, None, next, i, uniqueTokens[i])
+            #createUniquetokens to bclu map
+
+            card = convertSentenceToCardOnlyTraditional(current, None, next, i, uniqueTokens[i], tokenFReqMap, current.get("bcluFrequency"))
             result.append(card)
         elif i is len(outputLines) - 1:
             current = outputLines[i]
             prev = outputLines[i - 1]
-            card = convertSentenceToCardOnlyTraditional(current, prev, None, i, uniqueTokens[i])
+            card = convertSentenceToCardOnlyTraditional(current, prev, None, i, uniqueTokens[i], tokenFReqMap, current.get("bcluFrequency"))
             result.append(card)
         else:
             current = outputLines[i]
             prev = outputLines[i - 1]
             next = outputLines[i + 1] if len(outputLines) > i + 1 else None
-            card = convertSentenceToCardOnlyTraditional(current, prev, next, i, uniqueTokens[i])
+            card = convertSentenceToCardOnlyTraditional(current, prev, next, i, uniqueTokens[i], tokenFReqMap, current.get("bcluFrequency"))
             result.append(card)
     return result
+
+
+def getTokenFreqMap(outputLines):
+    tokenJoinedList = sum([x.get("tokens") for x in outputLines], [])
+    freqlist = sum([x.get("bcluFrequency") for x in outputLines], [])
+    tokenFReqMap = {}
+    for key in tokenJoinedList:
+        for value in freqlist:
+            tokenFReqMap[key] = value
+            freqlist.remove(value)
+            break
+    return tokenFReqMap
+
 
 def convertAnalysisDictToMiningDict(analysisDict):
     resultDict = {}
@@ -261,6 +289,8 @@ def convertAnalysisDictToMiningDict(analysisDict):
             cards = convertSentencesToCardsTraditional(outputLines)
 
         flatCArds = [element for innerList in cards for element in innerList]
+        #flatCArds = [card.strip() for card in flatCArdsRaw]
+
         for x in range(len(flatCArds)):
             eachcard = flatCArds[x]
             eachcard["cardNumber"] = x + 1
