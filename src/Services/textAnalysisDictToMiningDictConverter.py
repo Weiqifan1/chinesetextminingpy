@@ -1,4 +1,7 @@
+from operator import itemgetter
+
 from src.Services.utilityService import isChinese
+import functools
 
 
 #convert dictionaries from the text analysis format to FlashCardDeck format from the app 'hanzimining'
@@ -271,13 +274,70 @@ def getTokenFreqMap(outputLines):
     return tokenFReqMap
 
 
+def sortBlcu(blcuList):
+    #write code that removes None
+    noNone = [x for x in blcuList if x is not None]
+    #write code that sorts the list
+    sortedList = list(reversed(sorted(noNone)))
+    return sortedList
+
+
+def getBlcu1IsLarger(blcu1, blcu2):
+    if blcu1 == []:
+        return False
+    if blcu2 == []:
+        return True
+    head1, *tail1 = blcu1
+    head2, *tail2 = blcu2
+    if head1 > head2:
+        return True
+    elif head2 > head1:
+        return False
+    return getBlcu1IsLarger(tail1, tail2)
+
+def sortDictsByBlcuTuple(item1, item2):
+    blcu1 = item1[0]
+    blcu2 = item2[0]
+    if blcu1 == blcu2:
+        return 0
+    blcu1IsLarger = getBlcu1IsLarger(blcu1, blcu2)
+    if blcu1IsLarger:
+        return 1
+    return -1
+
 def flatCardsWithNumbers(flatCArds, param):
     if param == "chronological":
-        for x in range(len(flatCArds)):
-            eachcard = flatCArds[x]
+        multitokenCards = list(filter(lambda a: len(a.get("tokenblcu")) > 1, flatCArds))
+        singleTokenCards = list(filter(lambda a: len(a.get("tokenblcu")) < 2, flatCArds))
+        resultToNumber = singleTokenCards + multitokenCards
+
+        for x in range(len(resultToNumber)):
+            eachcard = resultToNumber[x]
             eachcard["cardNumber"] = x + 1
-        return flatCArds
-    elif param == "chronological":
+        return resultToNumber
+    elif param == "frequency":
+        #multitokens
+        multitokenCards = list(filter(lambda a : len(a.get("tokenblcu")) > 1, flatCArds))
+        #write code that create a tupple. left side is sorted list of blcu, right side is dict
+        rawMultiTupple = [(sortBlcu(y.get("tokenblcu")), y) for y in multitokenCards]
+        oldStyleComparator = functools.cmp_to_key(sortDictsByBlcuTuple)
+        sortedMultiTupple = sorted(rawMultiTupple, key=oldStyleComparator)#sortDictsByBlcuTuple(rawMultiTupple)
+
+        #single tokens
+        singleTokenCards = list(filter(lambda a : len(a.get("tokenblcu")) < 2, flatCArds))
+        notHasBlcu = list(filter(lambda a : a.get("tokenblcu") == [None], singleTokenCards))
+        hasBlcu = list(filter(lambda a : a.get("tokenblcu") != [None], singleTokenCards))
+        hasBlcu_sorted = hasBlcu
+        hasBlcu_sorted.sort(key = lambda a : a.get("tokenblcu")[0])
+
+        finalMultiple = list(map(lambda a: a[1], sortedMultiTupple))
+        finalResult = hasBlcu_sorted + notHasBlcu + finalMultiple
+
+        for x in range(len(finalResult)):
+            eachcard = finalResult[x]
+            eachcard["cardNumber"] = x + 1
+        return finalResult
+    else:
         return flatCArds
 
 def convertAnalysisDictToMiningDict(analysisDict):
@@ -303,7 +363,8 @@ def convertAnalysisDictToMiningDict(analysisDict):
 
         tagsList = getAllTagsFromCards(cardsWithNumbers)
         res = {tagsList[i]: tagsList[i] for i in range(len(tagsList))}
-        resultDict["cards"] = cardsWithNumbers
+        finalCards = list(map(lambda a: {key:val for key, val in a.items() if key != "tokenblcu"}, cardsWithNumbers))
+        resultDict["cards"] = finalCards#list(map(lambda a: a.update({"cardNumber": a["cardNumber"] + )) ))
         resultDict["tags"] = res
         resultDict["settings"] = {}
         return resultDict

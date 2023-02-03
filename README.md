@@ -1,3 +1,7 @@
+## Do
+to run locally: run 'flask run'
+to deploy: commit and push
+
 ## Getting Started
 
 We provide a sample app using Flask that you can deploy on App Platform. These steps will get this sample application running for you using App Platform.
