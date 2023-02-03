@@ -161,6 +161,7 @@ def test_convertDictionarySentenceToCard_targetTraditional():
 
     #number of cards == number of sentences + number of unique tokens containing chinese characters
     assert len(cards) == len(output) + len(chineseWords)
+    assert res.get("tags") == {'onlySentence:2': 'onlySentence:2', 'sentenceNo:1': 'sentenceNo:1', 'onlySentence:1': 'onlySentence:1', 'jsonTraditionalNews': 'traditionalNewsInfo', 'firstInSentence': 'firstInSentence', 'sentenceNo:2': 'sentenceNo:2'}
 
     #four sentenceCards and
     firstCard = cards[0]
@@ -169,6 +170,9 @@ def test_convertDictionarySentenceToCard_targetTraditional():
     assert firstCard.get("cardName") == "sentenceNo:1"
     assert firstCard.get("frontSide") == '[[Zhu2Bei3]] Shi4 Hu4 Zheng4Shi4 .'
     assert firstCard.get("backSide") == '[[竹北]] 市戶政事.'
+    assert firstCard.get("primaryInfo") == trad_primary_example()
+    assert firstCard.get("secondaryInfo") == trad_secondary_example()
+    assert firstCard.get("tags") == ['sentenceNo:1', 'firstInSentence', 'jsonTraditionalNews']
     #assert firstCard.get("tokenblcu") == [None]
 
     #last four cards == front side is chinese character
@@ -177,12 +181,43 @@ def test_convertDictionarySentenceToCard_targetTraditional():
     assert fifthCard.get("cardName") == 'sentenceNo:2'
     assert fifthCard.get("frontSide") == '[[Wu4]] Suo3 Ri4 12 Ri4 Yong3Ru4 。'
     assert fifthCard.get("backSide") == '[[務]] 所日12日湧入。'
+    assert fifthCard.get("tags") == ['sentenceNo:2', 'firstInSentence', 'jsonTraditionalNews']
     #assert fifthCard.get("tokenblcu") == [None, 146, 947, 23396, None]
 
     assert cards[8].get("backSide") == '竹北市戶政事.'
     #assert cards[8].get("tokenblcu") == [12236]
     assert cards[9].get("backSide") == '務所日12日湧入。'
     #assert cards[9].get("tokenblcu") == [4450, 108, 29, None, 29, 12236, None]
+
+def trad_primary_example():
+    return """竹北 Zhu2Bei3 /Zhubei or Chupei city in Hsinchu County 新竹縣|新竹县[Xin1 zhu2 Xian4], northwest Taiwan/
+heisig:728 竹 bamboo 420 北 north hsk:nil blcu:nil
+市 Shi4 /market/city/CL:個|个[ge4]/
+heisig:388 市 market hsk:nil blcu:146
+戶 Hu4 /a household/door/family/
+heisig:830 戶 door hsk:nil blcu:947
+政事 Zheng4Shi4 /politics/government affairs/
+heisig:363 政 politics 878 事 matter hsk:nil blcu:23396
+. . .
+heisig:nil hsk:nil blcu:nil"""
+
+def trad_secondary_example():
+    return """next Sentence:
+務所日12日湧入。 
+務 Wu4 /affair/business/matter/to be engaged in/to attend to/by all means/
+heisig:934 務 tasks hsk:nil blcu:4450
+所 Suo3 /actually/place/classifier for houses, small buildings, institutions etc/that which/particle introducing a relative clause or passive/CL:個|个[ge4]/
+heisig:857 所 place hsk:hsk5 blcu:108
+日 Ri4 /abbr. for 日本[Ri4 ben3], Japan/|/sun/day/date, day of the month/
+heisig:12 日 day hsk:hsk2 blcu:29
+12 12 12
+heisig:nil hsk:nil blcu:nil
+日 Ri4 /abbr. for 日本[Ri4 ben3], Japan/|/sun/day/date, day of the month/
+heisig:12 日 day hsk:hsk2 blcu:29
+湧入 Yong3Ru4 /to come pouring in/influx/
+heisig:2378 湧 gush 638 入 enter hsk:nil blcu:12236
+。 。 。
+heisig:nil hsk:nil blcu:nil"""
 
 
 def test_convertDictionarySentenceToCard_targetSimnplified():
@@ -208,6 +243,7 @@ def test_convertDictionarySentenceToCard_targetSimnplified():
 
     #number of cards == number of sentences + number of unique tokens containing chinese characters
     assert len(cards) == len(output) + len(chineseWords)
+    assert res.get("tags") == {'jsonSimplifiedNews': 'simplifiedNewsInfo', 'sentenceNo:2': 'sentenceNo:2', 'firstInSentence': 'firstInSentence', 'sentenceNo:1': 'sentenceNo:1', 'onlySentence:1': 'onlySentence:1', 'onlySentence:2': 'onlySentence:2'}
 
     #four sentenceCards and
     firstCard = cards[0]
@@ -216,6 +252,8 @@ def test_convertDictionarySentenceToCard_targetSimnplified():
     assert firstCard.get("cardName") == "sentenceNo:1"
     assert firstCard.get("frontSide") == '[[Zhu2Bei3]] Shi4 Hu4 Zheng4Shi4 .'
     assert firstCard.get("backSide") == '[[竹北]] 市户政事.'
+    assert firstCard.get("tags") == ['sentenceNo:1', 'firstInSentence', 'jsonSimplifiedNews']
+
     #assert firstCard.get("tokenblcu") == [None]
 
     #last four cards == front side is chinese character
@@ -224,6 +262,8 @@ def test_convertDictionarySentenceToCard_targetSimnplified():
     assert fifthCard.get("cardName") == 'sentenceNo:2'
     assert fifthCard.get("frontSide") == '[[Wu4]] Suo3 Ri4 12 Ri4 Yong3Ru4 。'
     assert fifthCard.get("backSide") == '[[务]] 所日12日涌入。'
+    assert fifthCard.get("tags") == ['sentenceNo:2', 'firstInSentence', 'jsonSimplifiedNews']
+
     #assert fifthCard.get("tokenblcu") == [None, 146, 947, 23396, None]
 
     assert cards[8].get("backSide") == '竹北市户政事.'
