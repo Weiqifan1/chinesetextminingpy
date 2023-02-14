@@ -13,6 +13,7 @@ def input_jsonSimpNews():
       "tags": {"tag1": "tagVal1"},
       "script": "simplified",
       "cardOrder": "chronological",
+      "vocab" : "",
       "text": cntext
    }
    return jsondict
@@ -26,6 +27,7 @@ def input_jsonSimpNews_missingField():
       #"tags": {"tag1": "tagVal1"},
       #"cardOrder": "chronological",
       "script": "simplified",
+      "vocab": "",
       "text": cntext
    }
    return jsondict
@@ -46,6 +48,7 @@ def createSmallSimpTestData():
         "deckInfo": "simplifiedNewsInfo",
         "script": "simplified",
         "cardOrder": "chronological",
+        "vocab": "",
         "text": "竹北市户政事. 务所日12日涌入。"
     }
     outputDict = src.Controllers.appController.postendpoint(jsondict)
@@ -58,6 +61,7 @@ def createWikiSimpTestData():
         "deckInfo": "simplifiedNewsInfo",
         "script": "simplified",
         "cardOrder": "chronological",
+        "vocab": "",
         "text": "中华人民共和国，简称中国[註 13][17][2]，是一个位於东亚的社会主义国家[18]，成立于1949年10月1日，"
     }
     outputDict = src.Controllers.appController.postendpoint(jsondict)
@@ -70,6 +74,7 @@ def createWikiSimpTestData_byFrequency():
         "deckInfo": "simplifiedNewsInfo",
         "script": "simplified",
         "cardOrder": "frequency",
+        "vocab": ['戶', '政事'],
         "text": "中华人民共和国，简称中国[註 13][17][2]，是一个位於东亚的社会主义国家[18]，成立于1949年10月1日，"
     }
     outputDict = src.Controllers.appController.postendpoint(jsondict)
@@ -81,6 +86,7 @@ def createSmallTradTestData():
         "deckInfo": "traditionalNewsInfo",
         "script": "traditional",
         "cardOrder": "chronological",
+        "vocab": "",
         "text": "竹北市戶政事. 務所日12日湧入。"
     }
     outputDict = src.Controllers.appController.postendpoint(jsondict)
@@ -92,21 +98,16 @@ def createMoreComplexSimpTestData():
         "deckInfo": "simplifiedNewsInfo",
         "script": "simplified",
         "cardOrder": "chronological",
+        "vocab": "",
         "text": "中世纪时犹太学者为希伯来语的4字神名标。"
     }
     outputDict = src.Controllers.appController.postendpoint(jsondict)
     return outputDict
 
-
 def test_convertAnalysisDictToMiningDict_missingValue():
     analysisDict = createFaultyTestData()
     res = Converter.convertAnalysisDictToMiningDict(analysisDict)
     assert res["deckInfo"] == 'text json is missing either of the following: [deckName, deckInfo, script, text]'
-
-    #assert not "cards" in res
-    #assert not "deckName" in res
-    #assert not "deckInfo" in res
-    #assert not "tags" in res
 
 def test_convertAnalysisDictToMiningDict_doesntTestCards():
     analysisDict = createTestData()
@@ -138,7 +139,7 @@ def test_convertDictionarySentenceToCard_targetSimplied_moreComplex():
     output = res.get("cards")
     assert len(output) == 12
 
-def test_convertDictionarySentenceToCard_targetTraditional():
+def test_convertDictionarySentenceToCard_targetTraditional_noVocab():
     #configurations
     #traditional data, simplified data, traditional first then simplified, simplified first then traditional
     # (how it is done depends on witch script the original script is in)
@@ -189,6 +190,58 @@ def test_convertDictionarySentenceToCard_targetTraditional():
     assert cards[9].get("backSide") == '務所日12日湧入。'
     #assert cards[9].get("tokenblcu") == [4450, 108, 29, None, 29, 12236, None]
 
+def test_convertDictionarySentenceToCard_targetTraditional_WithVocab():
+    #configurations
+    #traditional data, simplified data, traditional first then simplified, simplified first then traditional
+    # (how it is done depends on witch script the original script is in)
+    #word cards only, sentencecards only, words and sentencecards
+    #tags: the word cards, the sentencecards and the deck title will become tags
+
+    #if no configs == only simplified data and both words and sentences
+    analysisDict = createSmallTradTestData()
+    analysisDict["vocab"] = ['戶', '政事']
+    #add vocab to map
+    output = analysisDict.get("output")
+    allUniqueTokens = set()
+    allUniqueTokens.update(output[0].get("tokens"))
+    allUniqueTokens.update(output[1].get("tokens"))
+    #allUniqueTokens.update(output[2].get("tokens"))
+    #allUniqueTokens.update(output[3].get("tokens"))
+    chineseWords = set(filter(isChinese, allUniqueTokens))
+
+    res = Converter.convertAnalysisDictToMiningDict(analysisDict)
+    cards = res.get("cards")
+
+    #number of cards == number of sentences + number of unique tokens containing chinese characters - number of vocab words in cards
+    assert len(cards) == len(output) + len(chineseWords) - 2
+    assert res.get("tags") == {'onlySentence:2': 'onlySentence:2', 'sentenceNo:1': 'sentenceNo:1', 'onlySentence:1': 'onlySentence:1', 'jsonTraditionalNews': 'traditionalNewsInfo', 'firstInSentence': 'firstInSentence', 'sentenceNo:2': 'sentenceNo:2'}
+
+    #four sentenceCards and
+    firstCard = cards[0]
+
+    assert firstCard.get("cardNumber") == 1
+    assert firstCard.get("cardName") == "sentenceNo:1"
+    assert firstCard.get("frontSide") == '[[Zhu2Bei3]] Shi4 Hu4 Zheng4Shi4 .'
+    assert firstCard.get("backSide") == '[[竹北]] 市戶政事.'
+    assert firstCard.get("primaryInfo") == trad_primary_example()
+    assert firstCard.get("secondaryInfo") == trad_secondary_example()
+    assert firstCard.get("tags") == ['sentenceNo:1', 'firstInSentence', 'jsonTraditionalNews']
+    #assert firstCard.get("tokenblcu") == [None]
+
+    #last four cards == front side is chinese character
+    fifthCard = cards[4]
+    assert fifthCard.get("cardNumber") == 5
+    assert fifthCard.get("cardName") == 'sentenceNo:2'
+    assert fifthCard.get("frontSide") == 'Wu4 Suo3 [[Ri4]] 12 [[Ri4]] Yong3Ru4 。'
+    assert fifthCard.get("backSide") == '務所 [[日]] 12 [[日]] 湧入。'
+    assert fifthCard.get("tags") == ['sentenceNo:2', 'jsonTraditionalNews']
+    #assert fifthCard.get("tokenblcu") == [None, 146, 947, 23396, None]
+
+    assert cards[6].get("backSide") == '竹北市戶政事.'
+    #assert cards[8].get("tokenblcu") == [12236]
+    assert cards[7].get("backSide") == '務所日12日湧入。'
+    #assert cards[9].get("tokenblcu") == [4450, 108, 29, None, 29, 12236, None]
+
 def trad_primary_example():
     return """竹北 Zhu2Bei3 /Zhubei or Chupei city in Hsinchu County 新竹縣|新竹县[Xin1 zhu2 Xian4], northwest Taiwan/
 heisig:728 竹 bamboo 420 北 north hsk:nil blcu:nil
@@ -220,7 +273,7 @@ heisig:2378 湧 gush 638 入 enter hsk:nil blcu:12236
 heisig:nil hsk:nil blcu:nil"""
 
 
-def test_convertDictionarySentenceToCard_targetSimnplified():
+def test_convertDictionarySentenceToCard_targetSimnplified_noVocab():
     #configurations
     #traditional data, simplified data, traditional first then simplified, simplified first then traditional
     # (how it is done depends on witch script the original script is in)
@@ -269,6 +322,57 @@ def test_convertDictionarySentenceToCard_targetSimnplified():
     assert cards[8].get("backSide") == '竹北市户政事.'
     #assert cards[8].get("tokenblcu") == [12236]
     assert cards[9].get("backSide") == '务所日12日涌入。'
+    #assert cards[9].get("tokenblcu") == [4450, 108, 29, None, 29, 12236, None]
+
+def test_convertDictionarySentenceToCard_targetSimnplified_WithVocab():
+    #configurations
+    #traditional data, simplified data, traditional first then simplified, simplified first then traditional
+    # (how it is done depends on witch script the original script is in)
+    #word cards only, sentencecards only, words and sentencecards
+    #tags: the word cards, the sentencecards and the deck title will become tags
+
+    #if no configs == only simplified data and both words and sentences
+    analysisDict = createSmallSimpTestData()
+    analysisDict["vocab"] = ['户', '政事']
+    output = analysisDict.get("output")
+    allUniqueTokens = set()
+    allUniqueTokens.update(output[0].get("tokens"))
+    allUniqueTokens.update(output[1].get("tokens"))
+    #allUniqueTokens.update(output[2].get("tokens"))
+    #allUniqueTokens.update(output[3].get("tokens"))
+    chineseWords = set(filter(isChinese, allUniqueTokens))
+
+    res = Converter.convertAnalysisDictToMiningDict(analysisDict)
+    cards = res.get("cards")
+
+    #number of cards == number of sentences + number of unique tokens containing chinese characters
+    assert len(cards) == len(output) + len(chineseWords) - 2
+    assert res.get("tags") == {'jsonSimplifiedNews': 'simplifiedNewsInfo', 'sentenceNo:2': 'sentenceNo:2', 'firstInSentence': 'firstInSentence', 'sentenceNo:1': 'sentenceNo:1', 'onlySentence:1': 'onlySentence:1', 'onlySentence:2': 'onlySentence:2'}
+
+    #four sentenceCards and
+    firstCard = cards[0]
+
+    assert firstCard.get("cardNumber") == 1
+    assert firstCard.get("cardName") == "sentenceNo:1"
+    assert firstCard.get("frontSide") == '[[Zhu2Bei3]] Shi4 Hu4 Zheng4Shi4 .'
+    assert firstCard.get("backSide") == '[[竹北]] 市户政事.'
+    assert firstCard.get("tags") == ['sentenceNo:1', 'firstInSentence', 'jsonSimplifiedNews']
+
+    #assert firstCard.get("tokenblcu") == [None]
+
+    #last four cards == front side is chinese character
+    fifthCard = cards[4]
+    assert fifthCard.get("cardNumber") == 5
+    assert fifthCard.get("cardName") == 'sentenceNo:2'
+    assert fifthCard.get("frontSide") == 'Wu4 Suo3 [[Ri4]] 12 [[Ri4]] Yong3Ru4 。'
+    assert fifthCard.get("backSide") == '务所 [[日]] 12 [[日]] 涌入。'
+    assert fifthCard.get("tags") == ['sentenceNo:2', 'jsonSimplifiedNews']
+
+    #assert fifthCard.get("tokenblcu") == [None, 146, 947, 23396, None]
+
+    assert cards[6].get("backSide") == '竹北市户政事.'
+    #assert cards[8].get("tokenblcu") == [12236]
+    assert cards[7].get("backSide") == '务所日12日涌入。'
     #assert cards[9].get("tokenblcu") == [4450, 108, 29, None, 29, 12236, None]
 
 def test_convertDictionarySentenceToCard_targetSimnplified_wikidata():

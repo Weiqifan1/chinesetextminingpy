@@ -2,7 +2,6 @@ import re
 from src.Services import chineseTextHandlerService
 from src.Services import textAnalysisDictToMiningDictConverter
 
-
 def postendpoint(postinput):
     validated = validateTextToAnalysisDict(postinput)
     if not validated:
@@ -31,19 +30,19 @@ def postendpoint(postinput):
     else:
         sentences = []
     resultDict["output"] = sentences
+    resultDict["vocab"] = postinput["vocab"]
     return resultDict
 
 def postendpointToDeck(postnedpointOutput):
     validated = validateAnalysisDict(postnedpointOutput)
     if not validated:
-        return {"deckInfo": "missing either of the following: [deckName, deckInfo, script, output]"}
+        return {"deckInfo": "missing either of the following: [deckName, deckInfo, script, output, vocab]"}
     deck = textAnalysisDictToMiningDictConverter.convertAnalysisDictToMiningDict(postnedpointOutput)
     return deck
 
-
 def validateTextToAnalysisDict(postinput):
     valid = True
-    keylist = ["deckName", "deckInfo", "script", "text"]
+    keylist = ["deckName", "deckInfo", "script", "text", "vocab"]
     for x in keylist:
         if not x in postinput:
             valid = False

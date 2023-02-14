@@ -28,8 +28,6 @@ def input_jsonSimpNews_missingScript():
    }
    return jsondict
 
-
-
 def input_jsonSimpNews_missingText():
    jsondict = {
       "deckName": "testDeckName",
@@ -47,6 +45,7 @@ def input_jsonSimpNews():
       "deckInfo": "testDeckInfo",
       "script": "simplified",
       "cardOrder": "chronological",
+      "vocab": "",
       "text": cntext
    }
    return jsondict
@@ -62,12 +61,12 @@ def input_jsonTradNews():
       "deckInfo": "testDeckInfo",
       "script": "traditional",
       "cardOrder": "chronological",
+      "vocab": "",
       "text": cntext
    }
    return jsondict
 
-
-def test_appController_postendpoint_traditional():
+def test_appController_postendpoint_traditional_vocab():
    news = input_jsonTradNews()
    outputDict = src.Controllers.appController.postendpoint(news)
    assert outputDict["deckName"] == "testDeckName"
@@ -101,7 +100,7 @@ def test_appController_postendpoint_traditional():
    assert len(firstElem.get("heisigTradInt")) == 12
    assert firstElem.get("heisigTradInt") == [[{'竹': 728}, {'北': 420}], [{'市': 388}], [{'戶': 830}], [{'政': 363}, {'事': 878}], [{'務': 934}], [{'所': 857}], [], [{'日': 12}], [{'湧': 2378}, {'入': 638}], [{'大': 106}, {'量': 170}], [{'人': 736}, {'潮': 139}], []]
 
-def test_appController_postendpoint_simplified():
+def test_appController_postendpoint_simplified_noVocab():
    news = input_jsonSimpNews()
    outputDict = src.Controllers.appController.postendpoint(news)
    assert outputDict["deckName"] == "testDeckName"
