@@ -13,7 +13,7 @@ def input_jsonSimpNews():
       "tags": {"tag1": "tagVal1"},
       "script": "simplified",
       "cardOrder": "chronological",
-      "vocab" : "",
+      "vocab" : [],
       "text": cntext
    }
    return jsondict
@@ -27,7 +27,7 @@ def input_jsonSimpNews_missingField():
       #"tags": {"tag1": "tagVal1"},
       #"cardOrder": "chronological",
       "script": "simplified",
-      "vocab": "",
+      "vocab": [],
       "text": cntext
    }
    return jsondict
@@ -48,7 +48,7 @@ def createSmallSimpTestData():
         "deckInfo": "simplifiedNewsInfo",
         "script": "simplified",
         "cardOrder": "chronological",
-        "vocab": "",
+        "vocab": [],
         "text": "竹北市户政事. 务所日12日涌入。"
     }
     outputDict = src.Controllers.appController.postendpoint(jsondict)
@@ -61,7 +61,7 @@ def createWikiSimpTestData():
         "deckInfo": "simplifiedNewsInfo",
         "script": "simplified",
         "cardOrder": "chronological",
-        "vocab": "",
+        "vocab": [],
         "text": "中华人民共和国，简称中国[註 13][17][2]，是一个位於东亚的社会主义国家[18]，成立于1949年10月1日，"
     }
     outputDict = src.Controllers.appController.postendpoint(jsondict)
@@ -86,7 +86,7 @@ def createSmallTradTestData():
         "deckInfo": "traditionalNewsInfo",
         "script": "traditional",
         "cardOrder": "chronological",
-        "vocab": "",
+        "vocab": [],
         "text": "竹北市戶政事. 務所日12日湧入。"
     }
     outputDict = src.Controllers.appController.postendpoint(jsondict)
@@ -98,7 +98,7 @@ def createMoreComplexSimpTestData():
         "deckInfo": "simplifiedNewsInfo",
         "script": "simplified",
         "cardOrder": "chronological",
-        "vocab": "",
+        "vocab": [],
         "text": "中世纪时犹太学者为希伯来语的4字神名标。"
     }
     outputDict = src.Controllers.appController.postendpoint(jsondict)

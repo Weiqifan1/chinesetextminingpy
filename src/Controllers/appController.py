@@ -2,6 +2,14 @@ import re
 from src.Services import chineseTextHandlerService
 from src.Services import textAnalysisDictToMiningDictConverter
 
+def texttovocab(postinput):
+    res = postendpoint(postinput)
+    allItems = list(map(lambda each: each["tokens"], res["output"]))
+    vocabFromCards = chineseTextHandlerService.vocabFromSentences(allItems, res["script"])
+    resultDict = {}
+    resultDict["output"] = vocabFromCards
+    return resultDict
+
 def postendpoint(postinput):
     validated = validateTextToAnalysisDict(postinput)
     if not validated:
@@ -40,6 +48,16 @@ def postendpointToDeck(postnedpointOutput):
     deck = textAnalysisDictToMiningDictConverter.convertAnalysisDictToMiningDict(postnedpointOutput)
     return deck
 
+def validateTextToVocab(postinput):
+    valid = True
+    keylist = ["textVocab"]
+    for x in keylist:
+        if not x in postinput:
+            valid = False
+        if postinput.get(x) is None:
+            valid = False
+    return valid
+
 def validateTextToAnalysisDict(postinput):
     valid = True
     keylist = ["deckName", "deckInfo", "script", "text", "vocab"]
@@ -72,4 +90,3 @@ def getValueFromDictionary(key, dictionary):
         return dictionary[key]
     else:
         return None
-

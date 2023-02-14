@@ -45,7 +45,7 @@ def input_jsonSimpNews():
       "deckInfo": "testDeckInfo",
       "script": "simplified",
       "cardOrder": "chronological",
-      "vocab": "",
+      "vocab": [],
       "text": cntext
    }
    return jsondict
@@ -61,10 +61,15 @@ def input_jsonTradNews():
       "deckInfo": "testDeckInfo",
       "script": "traditional",
       "cardOrder": "chronological",
-      "vocab": "",
+      "vocab": [],
       "text": cntext
    }
    return jsondict
+
+def test_appController_texttovocab_traditional():
+   news = input_jsonTradNews()
+   outputDict = src.Controllers.appController.texttovocab(news)
+   assert outputDict["output"] == getDataForVocabTest()
 
 def test_appController_postendpoint_traditional_vocab():
    news = input_jsonTradNews()
@@ -143,3 +148,85 @@ def test_appController_postendpoint_missingText():
    news = input_jsonSimpNews_missingText()
    outputDict = src.Controllers.appController.postendpoint(news)
    assert outputDict["deckInfo"] == 'text json is missing either of the following: [deckName, deckInfo, script, text]'
+
+def getDataForVocabTest():
+   return """all words: 71
+hsk1: 7 of 150
+hsk2: 4 of 151
+hsk3: 3 of 300
+hsk4: 9 of 600
+hsk5: 6 of 1300
+hsk6: 1 of 2500
+non hsk: 41
+
+竹北
+市
+戶
+政事
+務
+所
+日
+湧入
+大量
+人潮
+碼
+牌
+抽
+到
+號
+多
+是
+為
+辦
+遷入
+戶籍
+作業
+鄭
+朝
+方
+接受
+媒體
+聯
+訪
+表示
+民生
+紓
+困
+金
+減緩
+疫情
+帶來
+的
+經濟
+衝擊
+所以
+未
+設定
+門檻
+條件
+通過
+提案
+自治
+條例
+以
+月
+含
+當
+前
+設
+籍
+於
+即
+符合
+領取
+資格
+但
+民眾
+若
+在
+發放
+移
+出
+會
+被
+取消"""

@@ -52,4 +52,15 @@ def textToDeck():
         return 'Content-Type not supported!'
     #["deckName", "deckInfo", "output", "script"]
 
+@app.route('/texttovocab', methods = ['POST'])
+def textToVocab():
+    content_type = request.headers.get('Content-Type')
+    print("appstart chr")
+    if (content_type == 'application/json'):
+        json = request.json
+        res = src.Controllers.appController.texttovocab(json)
+        return res
+    else:
+        return 'Content-Type not supported!'
+    #["deckName", "deckInfo", "output", "script"]
 

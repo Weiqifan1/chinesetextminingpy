@@ -1,3 +1,4 @@
+from src.Services import utilityService
 from src.libraryInterface import ChineseLibParser
 from src.libraryInterface import CedictParser
 from src.libraryInterface import HeisigParser
@@ -28,6 +29,41 @@ def textToTokensFromTraditional(text):
     test2 = ChineseLibParser.getSentencesFromLargeText(text)
     result = [senToDictFromTraditional(x) for x in test2]
     return result
+
+def vocabFromSentences(allItems, script):
+    singleList = sum(allItems, [])
+    onlyChinese = [x for x in singleList if utilityService.isChinese(x)]
+    chineseSet = sorted(set(onlyChinese), key=lambda x: onlyChinese.index(x))
+
+    hsk = []
+    setToSimp = []
+    if script == "traditional":
+        setToSimp = [CedictParser.wordToSimplifiedFromTrad(x) for x in chineseSet]
+        hsk = [HskParser.getHskLevel(x) for x in setToSimp]
+    elif script == "simplified":
+        setToSimp = [x for x in chineseSet]
+        hsk = [HskParser.getHskLevel(x) for x in setToSimp]
+    hsk1 = len([x for x in hsk if x == "hsk1"])
+    hsk2 = len([x for x in hsk if x == "hsk2"])
+    hsk3 = len([x for x in hsk if x == "hsk3"])
+    hsk4 = len([x for x in hsk if x == "hsk4"])
+    hsk5 = len([x for x in hsk if x == "hsk5"])
+    hsk6 = len([x for x in hsk if x == "hsk6"])
+    notHsk = len([x for x in hsk if x == ""])
+    number = len(chineseSet)
+
+    vocabText = ""
+    vocabText = vocabText + "all words: " + str(number) + "\n"
+    vocabText = vocabText + "hsk1: " + str(hsk1) + " of 150" + "\n"
+    vocabText = vocabText + "hsk2: " + str(hsk2) + " of 151" + "\n"
+    vocabText = vocabText + "hsk3: " + str(hsk3) + " of 300" + "\n"
+    vocabText = vocabText + "hsk4: " + str(hsk4) + " of 600" + "\n"
+    vocabText = vocabText + "hsk5: " + str(hsk5) + " of 1300" + "\n"
+    vocabText = vocabText + "hsk6: " + str(hsk6) + " of 2500" + "\n"
+    vocabText = vocabText + "non hsk: " + str(notHsk) + "\n" + "\n"
+    vocabText = vocabText + '\n'.join(chineseSet)
+
+    return vocabText
 
 def flattenNestedList(cleanedMergedList, outputList):
     if len(cleanedMergedList) == 0:
@@ -100,6 +136,3 @@ def senToDictFromSimplified(sent):
         "heisigTradInt": heisigTradIntFlatten
     }
     return mydict
-
-
-
