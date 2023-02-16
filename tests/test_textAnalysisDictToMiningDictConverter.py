@@ -162,7 +162,7 @@ def test_convertDictionarySentenceToCard_targetTraditional_noVocab():
 
     #number of cards == number of sentences + number of unique tokens containing chinese characters
     assert len(cards) == len(output) + len(chineseWords)
-    assert res.get("tags") == {'onlySentence:2': 'onlySentence:2', 'sentenceNo:1': 'sentenceNo:1', 'onlySentence:1': 'onlySentence:1', 'jsonTraditionalNews': 'traditionalNewsInfo', 'firstInSentence': 'firstInSentence', 'sentenceNo:2': 'sentenceNo:2'}
+    assert res.get("tags") == {'hasUniqueWord': 'hasUniqueWord', 'onlySentence': 'onlySentence', 'sentenceNo:2': 'sentenceNo:2', 'firstInSentence': 'firstInSentence', 'jsonTraditionalNews': 'traditionalNewsInfo', 'sentenceNo:1': 'sentenceNo:1'}
 
     #four sentenceCards and
     firstCard = cards[0]
@@ -214,7 +214,7 @@ def test_convertDictionarySentenceToCard_targetTraditional_WithVocab():
 
     #number of cards == number of sentences + number of unique tokens containing chinese characters - number of vocab words in cards
     assert len(cards) == len(output) + len(chineseWords) - 2
-    assert res.get("tags") == {'onlySentence:2': 'onlySentence:2', 'sentenceNo:1': 'sentenceNo:1', 'onlySentence:1': 'onlySentence:1', 'jsonTraditionalNews': 'traditionalNewsInfo', 'firstInSentence': 'firstInSentence', 'sentenceNo:2': 'sentenceNo:2'}
+    assert res.get("tags") == {'sentenceNo:1': 'sentenceNo:1', 'hasUniqueWord': 'hasUniqueWord', 'jsonTraditionalNews': 'traditionalNewsInfo', 'sentenceNo:2': 'sentenceNo:2', 'firstInSentence': 'firstInSentence', 'onlySentence': 'onlySentence'}
 
     #four sentenceCards and
     firstCard = cards[0]
@@ -296,7 +296,7 @@ def test_convertDictionarySentenceToCard_targetSimnplified_noVocab():
 
     #number of cards == number of sentences + number of unique tokens containing chinese characters
     assert len(cards) == len(output) + len(chineseWords)
-    assert res.get("tags") == {'jsonSimplifiedNews': 'simplifiedNewsInfo', 'sentenceNo:2': 'sentenceNo:2', 'firstInSentence': 'firstInSentence', 'sentenceNo:1': 'sentenceNo:1', 'onlySentence:1': 'onlySentence:1', 'onlySentence:2': 'onlySentence:2'}
+    assert res.get("tags") == {'firstInSentence': 'firstInSentence', 'sentenceNo:2': 'sentenceNo:2', 'onlySentence': 'onlySentence', 'hasUniqueWord': 'hasUniqueWord', 'sentenceNo:1': 'sentenceNo:1', 'jsonSimplifiedNews': 'simplifiedNewsInfo'}
 
     #four sentenceCards and
     firstCard = cards[0]
@@ -347,7 +347,7 @@ def test_convertDictionarySentenceToCard_targetSimnplified_WithVocab():
 
     #number of cards == number of sentences + number of unique tokens containing chinese characters
     assert len(cards) == len(output) + len(chineseWords) - 2
-    assert res.get("tags") == {'jsonSimplifiedNews': 'simplifiedNewsInfo', 'sentenceNo:2': 'sentenceNo:2', 'firstInSentence': 'firstInSentence', 'sentenceNo:1': 'sentenceNo:1', 'onlySentence:1': 'onlySentence:1', 'onlySentence:2': 'onlySentence:2'}
+    assert res.get("tags") == {'jsonSimplifiedNews': 'simplifiedNewsInfo', 'sentenceNo:1': 'sentenceNo:1', 'onlySentence': 'onlySentence', 'firstInSentence': 'firstInSentence', 'hasUniqueWord': 'hasUniqueWord', 'sentenceNo:2': 'sentenceNo:2'}
 
     #four sentenceCards and
     firstCard = cards[0]

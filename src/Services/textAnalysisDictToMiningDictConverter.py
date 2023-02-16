@@ -90,9 +90,11 @@ def subcard(token, sharedData, index, pinyinList, tokenList, sentence, blcu, dec
     return res
 
 
-def subcardForWholeSentence(sharedData, index, pinyinList, tokenList, sentence, blcu, deckName, deckInfo):
+def subcardForWholeSentence(sharedData, index, pinyinList, tokenList, sentence, blcu, deckName, deckInfo, senHasUniqueWord):
     # write a function that surrounds pinyin with curly
-    generateTags = ["sentenceNo:" + str(index + 1), "onlySentence:" + str(index + 1)]
+    generateTags = ["sentenceNo:" + str(index + 1), "onlySentence"]
+    if senHasUniqueWord:
+        generateTags.append("hasUniqueWord")
     generateTags.append(deckName)
     backsideAndSecondaryInfo = sharedData.split(globalParagraphSeparator)
     res = {
@@ -115,25 +117,28 @@ def subcardForWholeSentence(sharedData, index, pinyinList, tokenList, sentence, 
 def convertSentenceToCardOnlySimplified(sen, prevSen, nextSen, index, tokenList, blcu, lineblcu, deckName, deckInfo, vocab):
     output = sharedSentenceData(nextSen, prevSen, sen, "simplified")
     cardList = []
+    senHasUniqueWord = False
     for i in range(len(tokenList)):
         eachWord = tokenList[i]
         if eachWord not in vocab:
+            senHasUniqueWord = True
             cardtemp = subcard(eachWord, output, index, sen.get("pinyin"), sen.get("simplified"), sen.get("sentence"), blcu.get(eachWord), deckName, deckInfo)
             cardList.append(cardtemp)
-
-    cardForWholeSentence = subcardForWholeSentence(output, index, sen.get("pinyin"), sen.get("simplified"), sen.get("sentence"), lineblcu, deckName, deckInfo)
+    cardForWholeSentence = subcardForWholeSentence(output, index, sen.get("pinyin"), sen.get("simplified"), sen.get("sentence"), lineblcu, deckName, deckInfo, senHasUniqueWord)
     cardList.append(cardForWholeSentence)
     return cardList
 
 def convertSentenceToCardOnlyTraditional(sen, prevSen, nextSen, index, tokenList, blcu, lineblcu, deckName, deckInfo, vocab):
     output = sharedSentenceData(nextSen, prevSen, sen, "traditional")
     cardList = []
+    senHasUniqueWord = False
     for i in range(len(tokenList)):
         eachWord = tokenList[i]
         if eachWord not in vocab:
+            senHasUniqueWord = True
             cardtemp = subcard(eachWord, output, index, sen.get("pinyin"), sen.get("traditional"), sen.get("sentence"), blcu.get(eachWord), deckName, deckInfo)
             cardList.append(cardtemp)
-    cardForWholeSentence = subcardForWholeSentence(output, index, sen.get("pinyin"), sen.get("traditional"), sen.get("sentence"), lineblcu, deckName, deckInfo)
+    cardForWholeSentence = subcardForWholeSentence(output, index, sen.get("pinyin"), sen.get("traditional"), sen.get("sentence"), lineblcu, deckName, deckInfo, senHasUniqueWord)
     cardList.append(cardForWholeSentence)
     return cardList
 
