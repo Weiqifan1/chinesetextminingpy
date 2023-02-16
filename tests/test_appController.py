@@ -45,6 +45,7 @@ def input_jsonSimpNews():
       "deckInfo": "testDeckInfo",
       "script": "simplified",
       "cardOrder": "chronological",
+      "textType": "rawText",
       "vocab": [],
       "text": cntext
    }
@@ -61,6 +62,7 @@ def input_jsonTradNews():
       "deckInfo": "testDeckInfo",
       "script": "traditional",
       "cardOrder": "chronological",
+      "textType": "rawText",
       "vocab": [],
       "text": cntext
    }

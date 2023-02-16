@@ -60,7 +60,7 @@ def validateTextToVocab(postinput):
 
 def validateTextToAnalysisDict(postinput):
     valid = True
-    keylist = ["deckName", "deckInfo", "script", "text", "vocab"]
+    keylist = ["deckName", "deckInfo", "script", "cardOrder", "textType", "text", "vocab"]
     for x in keylist:
         if not x in postinput:
             valid = False

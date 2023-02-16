@@ -28,17 +28,6 @@ def home():
     else:
         return 'Content-Type not supported!'
 
-
-
-#endpoint which convert a text to a mining deck
-#http://localhost/texttodeck    POST
-#body:
-#{
-#      "deckName": "jsonSimplifiedNews",
-#         "deckInfo": "simplifiedNewsInfo",
-#         "script": "simplified",
-#         "text": "竹北市戶政事務所12日湧入大量人潮，碼牌抽到1297號，多是為辦遷入戶籍作業。"
-# }
 @app.route('/texttodeck', methods = ['POST'])
 def textToDeck():
     content_type = request.headers.get('Content-Type')
@@ -50,7 +39,6 @@ def textToDeck():
         return resToDeck
     else:
         return 'Content-Type not supported!'
-    #["deckName", "deckInfo", "output", "script"]
 
 @app.route('/texttovocab', methods = ['POST'])
 def textToVocab():
@@ -62,5 +50,4 @@ def textToVocab():
         return res
     else:
         return 'Content-Type not supported!'
-    #["deckName", "deckInfo", "output", "script"]
 
