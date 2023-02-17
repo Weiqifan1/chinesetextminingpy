@@ -46,6 +46,7 @@ def input_jsonSimpNews():
       "cardOrder": "chronological",
       "textType": "rawText",
       "vocab": [],
+      "sentencenames": [],
       "text": cntext
    }
    return jsondict
@@ -62,6 +63,7 @@ def input_jsonTradNews():
       "cardOrder": "chronological",
       "textType": "rawText",
       "vocab": [],
+      "sentencenames": [],
       "text": cntext
    }
    return jsondict
@@ -96,6 +98,7 @@ def input_jsonTradNews_textTypeOrdered2Line():
       "cardOrder": "chronological",
       "textType": "ordered2Line",
       "vocab": [],
+      "sentencenames": [],
       "text": cntext
    }
    return jsondict
@@ -210,12 +213,12 @@ def test_appController_postendpoint_simplified_noVocab():
 def test_appController_postendpoint_missingScript():
    news = input_jsonSimpNews_missingScript()
    outputDict = src.Controllers.appController.postendpoint(news)
-   assert outputDict["deckInfo"] == 'text json is missing either of the following: [deckName, deckInfo, script, text]'
+   assert outputDict["deckInfo"] == 'text json is missing either of the following: [deckName, deckInfo, script, cardOrder, textType, text, vocab, sentencenames]'
 
 def test_appController_postendpoint_missingText():
    news = input_jsonSimpNews_missingText()
    outputDict = src.Controllers.appController.postendpoint(news)
-   assert outputDict["deckInfo"] == 'text json is missing either of the following: [deckName, deckInfo, script, text]'
+   assert outputDict["deckInfo"] == 'text json is missing either of the following: [deckName, deckInfo, script, cardOrder, textType, text, vocab, sentencenames]'
 
 def getDataForVocabTest():
    return """all words: 71

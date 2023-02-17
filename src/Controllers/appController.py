@@ -13,7 +13,7 @@ def texttovocab(postinput):
 def postendpoint(postinput):
     validated = validateTextToAnalysisDict(postinput)
     if not validated:
-        return {"deckInfo": "text json is missing either of the following: [deckName, deckInfo, script, text]"}
+        return {"deckInfo": "text json is missing either of the following: [deckName, deckInfo, script, cardOrder, textType, text, vocab, sentencenames]"}
     print("print start")
     sentences = []
     sentencenames = []
@@ -61,7 +61,7 @@ def validateTextToVocab(postinput):
 
 def validateTextToAnalysisDict(postinput):
     valid = True
-    keylist = ["deckName", "deckInfo", "script", "cardOrder", "textType", "text", "vocab"]
+    keylist = ["deckName", "deckInfo", "script", "cardOrder", "textType", "text", "vocab", "sentencenames"]
     for x in keylist:
         if not x in postinput:
             valid = False

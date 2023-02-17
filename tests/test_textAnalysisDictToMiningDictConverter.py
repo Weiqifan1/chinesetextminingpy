@@ -14,6 +14,7 @@ def input_jsonSimpNews():
       "cardOrder": "chronological",
       "textType": "rawText",
       "vocab" : [],
+      "sentencenames": [],
       "text": cntext
    }
    return jsondict
@@ -38,6 +39,7 @@ def input_jsonTradNews_textTypeOrdered2Line():
         "cardOrder": "chronological",
         "textType": "ordered2Line",
         "vocab": [],
+        "sentencenames": [],
         "text": cntext
     }
     return jsondict
@@ -52,6 +54,7 @@ def input_jsonSimpNews_textTypeOrdered2Line():
         "cardOrder": "chronological",
         "textType": "ordered2Line",
         "vocab": [],
+        "sentencenames": [],
         "text": cntext
     }
     return jsondict
@@ -84,6 +87,7 @@ def createSmallSimpTestData():
         "cardOrder": "chronological",
         "textType": "rawText",
         "vocab": [],
+        "sentencenames": [],
         "text": "竹北市户政事. 务所日12日涌入。"
     }
     outputDict = src.Controllers.appController.postendpoint(jsondict)
@@ -97,6 +101,7 @@ def createWikiSimpTestData():
         "cardOrder": "chronological",
         "textType": "rawText",
         "vocab": [],
+        "sentencenames": [],
         "text": "中华人民共和国，简称中国[註 13][17][2]，是一个位於东亚的社会主义国家[18]，成立于1949年10月1日，"
     }
     outputDict = src.Controllers.appController.postendpoint(jsondict)
@@ -110,6 +115,7 @@ def createWikiSimpTestData_byFrequency():
         "cardOrder": "frequency",
         "textType": "rawText",
         "vocab": ['戶', '政事'],
+        "sentencenames": [],
         "text": "中华人民共和国，简称中国[註 13][17][2]，是一个位於东亚的社会主义国家[18]，成立于1949年10月1日，"
     }
     outputDict = src.Controllers.appController.postendpoint(jsondict)
@@ -123,6 +129,7 @@ def createSmallTradTestData():
         "cardOrder": "chronological",
         "textType": "rawText",
         "vocab": [],
+        "sentencenames": [],
         "text": "竹北市戶政事. 務所日12日湧入。"
     }
     outputDict = src.Controllers.appController.postendpoint(jsondict)
@@ -136,6 +143,7 @@ def createMoreComplexSimpTestData():
         "cardOrder": "chronological",
         "textType": "rawText",
         "vocab": [],
+        "sentencenames": [],
         "text": "中世纪时犹太学者为希伯来语的4字神名标。"
     }
     outputDict = src.Controllers.appController.postendpoint(jsondict)
@@ -178,7 +186,7 @@ def test_convertAnalysisDictToMiningDict_simp_textTypeOrdered2Line():
 def test_convertAnalysisDictToMiningDict_missingValue():
     analysisDict = createFaultyTestData()
     res = Converter.convertAnalysisDictToMiningDict(analysisDict)
-    assert res["deckInfo"] == 'text json is missing either of the following: [deckName, deckInfo, script, text]'
+    assert res["deckInfo"] == 'text json is missing either of the following: [deckName, deckInfo, script, cardOrder, textType, text, vocab, sentencenames]'
 
 def test_convertAnalysisDictToMiningDict_doesntTestCards():
     analysisDict = createTestData()
