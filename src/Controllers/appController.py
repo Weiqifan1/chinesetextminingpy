@@ -14,13 +14,12 @@ def postendpoint(postinput):
     validated = validateTextToAnalysisDict(postinput)
     if not validated:
         return {"deckInfo": "text json is missing either of the following: [deckName, deckInfo, script, text]"}
-
     print("print start")
     sentences = []
-    output = {}
+    sentencenames = []
     resultDict = {}
-    resultDict["deckName"] = postinput["deckName"] #addValueToDict("deckName", postinput, output)
-    resultDict["deckInfo"] = postinput["deckInfo"]#addValueToDict("deckInfo", postinput, output)
+    resultDict["deckName"] = postinput["deckName"]
+    resultDict["deckInfo"] = postinput["deckInfo"]
     resultDict["script"] = postinput["script"]
     resultDict["cardOrder"] = postinput["cardOrder"]
 
@@ -28,23 +27,25 @@ def postendpoint(postinput):
         return resultDict
     gettextdata = postinput["text"]
     scriptvalue = postinput["script"]
+    textType = postinput["textType"]
 
-    betterdata = re.sub("\s+", " ", gettextdata.strip())
-    sentences = ""
     if scriptvalue == "simplified":
-        sentences = chineseTextHandlerService.textToTokensFromSimplified(betterdata)
+        (sentences, sentencenames) = chineseTextHandlerService.textToTokensFromSimplified(gettextdata, textType)
     elif scriptvalue == "traditional":
-        sentences = chineseTextHandlerService.textToTokensFromTraditional(betterdata)
+        (sentences, sentencenames) = chineseTextHandlerService.textToTokensFromTraditional(gettextdata, textType)
     else:
         sentences = []
+        sentencenames = []
     resultDict["output"] = sentences
     resultDict["vocab"] = postinput["vocab"]
+    resultDict["sentencenames"] = sentencenames
+    resultDict["textType"] = postinput["textType"]
     return resultDict
 
 def postendpointToDeck(postnedpointOutput):
     validated = validateAnalysisDict(postnedpointOutput)
     if not validated:
-        return {"deckInfo": "missing either of the following: [deckName, deckInfo, script, output, vocab]"}
+        return {"deckInfo": "missing either of the following: [deckName, deckInfo, script, output, vocab, sentencenames]"}
     deck = textAnalysisDictToMiningDictConverter.convertAnalysisDictToMiningDict(postnedpointOutput)
     return deck
 
@@ -71,7 +72,7 @@ def validateTextToAnalysisDict(postinput):
 
 def validateAnalysisDict(analysisDict):
     valid = True
-    keylist = ["deckName", "deckInfo", "output", "script"]
+    keylist = ["deckName", "deckInfo", "output", "script", "sentencenames"]
     for x in keylist:
         if not x in analysisDict:
             valid = False

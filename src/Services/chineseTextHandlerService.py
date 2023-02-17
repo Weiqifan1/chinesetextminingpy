@@ -4,37 +4,53 @@ from src.libraryInterface import CedictParser
 from src.libraryInterface import HeisigParser
 from src.libraryInterface import HskParser
 from src.libraryInterface import BlcuParser
+import re
 
 def sentenceToDict(sen):
     return sen
 
-def textToTokensFromSimplified(text):
+def textToTokensFromSimplified(text, texttype):
     ChineseLibParser.initChineseLibParser()
     CedictParser.initCedictParser()
     HeisigParser.initHeisigParser()
     HskParser.initHskParser()
     BlcuParser.initBLCUDictionary()
     print("doneLoading")
-    test2 = ChineseLibParser.getSentencesFromLargeText(text)
-    result = [senToDictFromSimplified(x) for x in test2]
-    return result
+    sentences = []
+    sentn = []
+    if texttype == "rawText":
+        betterData = re.sub("\s+", " ", text.strip())
+        sentences = ChineseLibParser.getSentencesFromLargeText(betterData)
+        sentn = ["" for x in sentences]
+    elif texttype == "ordered2Line":
+        (sentences, sentnames) = ChineseLibParser.sentencesFromOrdered2Line(text)
+        sentn = sentnames
+    result = [senToDictFromSimplified(x) for x in sentences]
+    return (result, sentn)
 
-def textToTokensFromTraditional(text):
+def textToTokensFromTraditional(text, texttype):
     ChineseLibParser.initChineseLibParser()
     CedictParser.initCedictParser()
     HeisigParser.initHeisigParser()
     HskParser.initHskParser()
     BlcuParser.initBLCUDictionary()
     print("doneLoading")
-    test2 = ChineseLibParser.getSentencesFromLargeText(text)
-    result = [senToDictFromTraditional(x) for x in test2]
-    return result
+    sentences = []
+    sentn = []
+    if texttype == "rawText":
+        betterData = re.sub("\s+", " ", text.strip())
+        sentences = ChineseLibParser.getSentencesFromLargeText(betterData)
+        sentn = ["" for x in sentences]
+    elif texttype == "ordered2Line":
+        (sentences, sentnames) = ChineseLibParser.sentencesFromOrdered2Line(text)
+        sentn = sentnames
+    result = [senToDictFromTraditional(x) for x in sentences]
+    return (result, sentn)
 
 def vocabFromSentences(allItems, script):
     singleList = sum(allItems, [])
     onlyChinese = [x for x in singleList if utilityService.isChinese(x)]
     chineseSet = sorted(set(onlyChinese), key=lambda x: onlyChinese.index(x))
-
     hsk = []
     setToSimp = []
     if script == "traditional":
@@ -62,7 +78,6 @@ def vocabFromSentences(allItems, script):
     vocabText = vocabText + "hsk6: " + str(hsk6) + " of 2500" + "\n"
     vocabText = vocabText + "non hsk: " + str(notHsk) + "\n" + "\n"
     vocabText = vocabText + '\n'.join(chineseSet)
-
     return vocabText
 
 def flattenNestedList(cleanedMergedList, outputList):
@@ -76,7 +91,6 @@ def flattenNestedList(cleanedMergedList, outputList):
         newList = outputList + cleanedMergedList[0]
         rest = cleanedMergedList[1:]
         return flattenNestedList(rest, newList)
-
 
 def senToDictFromTraditional(sent):
     tokens = ChineseLibParser.getTokensFromTraditionalSentence(sent)
@@ -106,7 +120,6 @@ def senToDictFromTraditional(sent):
         "heisigTradInt": heisigTradIntFlatten
     }
     return mydict
-
 
 def senToDictFromSimplified(sent):
     tokens = ChineseLibParser.getTokensFromSimplifiedSentence(sent)

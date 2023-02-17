@@ -1,20 +1,16 @@
-#from chinese import ChineseAnalyzer
 import jieba
 import re
-
 from src.Services.utilityService import isChinese
 from src.libraryInterface import CedictParser
 
 def initChineseLibParser():
     print("start chinese")
-    # global parser
-    # parser = ChineseAnalyzer()
-
 
 def splitStringOnDelimiters(inputTest, paramList):
     stringlist = []
     newString = ""
     for elem in inputTest:
+        elemUnicode = ord(elem)
         if elem in paramList:
             newString = newString + elem
             stringlist.append(newString)
@@ -22,7 +18,6 @@ def splitStringOnDelimiters(inputTest, paramList):
         else:
             newString = newString + elem
     return stringlist
-
 
 def getSentencesFromLargeText(inputTest):
     """
@@ -37,19 +32,9 @@ def getSentencesFromLargeText(inputTest):
     "据介绍, 第三代C型CR200J'复兴号'动车组为9节车厢, 较第二代'绿巨人'增加了商务座, 旋转座椅等, 外形涂装为绿白相间",
     "此次中国铁路成都局集团公司迎接回6组最新型'复兴号'动车组, 将全部用于新成昆铁路开行"]
     """
-    #d = "，"
-    #test =  [e+d for e in inputTest.split(d) if e]
-    #rawsens2 = re.split(r'\.|。|，|,', inputTest)
-    #rawsens = re.split(r'(\.|。|，|.)', inputTest)
     rawsens3 = splitStringOnDelimiters(inputTest, [".","。","，",","])
     stripSen = [x.strip() for x in rawsens3 if len(x) > 0]
     return stripSen
-    #[1::2]
-    # anal = parser.parse(inputTest)
-    # sent = anal.sentences()
-    # trimmedSen = [x.strip() for x in sent]
-    # return trimmedSen
-
 
 def getTokensFromTraditionalSentence(sent):
     # use cedict to find subtokens
@@ -123,60 +108,23 @@ def flattenNestedList(cleanedMergedList, outputList):
         rest = cleanedMergedList[1:]
         return flattenNestedList(rest, newList)
 
-#
-# def getTokenToPinyinTuplesFromSentence(sent):
-#     basicTokens = ' '.join(parser.parse(sent).tokens()).split()
-#     basicPinyin = getPinyinStringFromSentence(sent).split()
-#     mergedLists = list(zip(basicTokens, basicPinyin))
-#     cleanedMergedList = [cleanedToken(x) for x in mergedLists]
-#     result = flattenNestedList(cleanedMergedList, [])
-#     return result
-#
-#
-#
-# def cleanedToken(tokenPinyinTuple):
-#     firstElem = tokenPinyinTuple[0]
-#     secondElem = tokenPinyinTuple[1]
-#     if firstElem == secondElem and isChinese(firstElem):
-#         return findSubtokenPairs(firstElem, "", [])
-#     else:
-#         return tokenPinyinTuple
-#
-# def findSubtokenPairs(firstElem, remainElems, listOfCharsToPinyinTupples):
-#     pinyin = getPinyinStringFromSentence(firstElem)
-#     pinyinSplit = pinyin.split()
-#     test = ' '.join(parser.parse(firstElem).tokens()).split()
-#
-#     if len(firstElem) == 0 and len(remainElems) == 0:
-#         return listOfCharsToPinyinTupples
-#     elif len(firstElem) == 0:
-#         return findSubtokenPairs(remainElems, firstElem, listOfCharsToPinyinTupples)
-#     elif len(pinyinSplit) > 1:
-#         lenOfSplit = len(test[0])
-#         shrinkFirstElemAgain = firstElem[:(lenOfSplit - len(firstElem))]
-#         lastSection = firstElem[(lenOfSplit - len(firstElem)):]
-#         return findSubtokenPairs(shrinkFirstElemAgain, lastSection + remainElems, listOfCharsToPinyinTupples)
-#     elif len(pinyin) > 0 and pinyin != firstElem:
-#         listOfCharsToPinyinTupples.append((firstElem, pinyin))
-#         return findSubtokenPairs(remainElems, "", listOfCharsToPinyinTupples)
-#     elif len(firstElem) == 1:
-#         listOfCharsToPinyinTupples.append((firstElem, firstElem))
-#         return findSubtokenPairs(remainElems, "", listOfCharsToPinyinTupples)
-#     else:
-#         shrinkFirstElem = firstElem[:-1]
-#         lastChar = firstElem[-1]
-#         return findSubtokenPairs(shrinkFirstElem, lastChar + remainElems, listOfCharsToPinyinTupples)
+def sentencesFromOrdered2Line(text):
+    # we split the text on double newLine. each trimmed block should now be 1 or 2 lines
+    # if 1, then it is a front side. if 2, then the second is front line and the first is cardname
+    doublenewline = re.compile(r"(\n{2})|(\n\r\n\r)").split(text)
+    trimmedFirst = list(filter(lambda x: not x is None, doublenewline))
+    trimmessecond = list(filter(lambda x: not x.isspace(), trimmedFirst))
+    trimmesthrid = list([i for i in trimmessecond if i])#[x for x in doublenewline if not x.isspace()]
+    nestedLines = [re.compile(r"\n").split(x) for x in trimmesthrid]
+    doublenested = list(map(lambda x: [i.strip() for i in x if i], nestedLines))
 
-
-
-#
-# def getPinyinStringFromSentence(text):
-#     """
-#     :param text: a string consisting of a single chinese sentences or small string of text. Example:
-#     '12月23日, 中国铁路成都局集团公司组织媒体提前试乘新成昆铁路, 感受即将到来的时空新体验'
-#     :return: a string of pinyin generated from the text. each ward is space separated. Example:
-#     '12 yuè 23 Rì ,   Zhōngguó tiělù Chéngdū jú 集团公司 zǔzhī méitǐ tíqián shìchéng Xīn 成昆铁路 ,   gǎnshòu jíjiāng dàolái de shíkōng 新体验'
-#     """
-#     pinyinStr = parser.parse(text).pinyin()
-#     return pinyinStr
-
+    sent = []
+    sentnames = []
+    for item in doublenested:
+        if len(item) > 1:
+            sentnames.append(item[0])
+            sent.append(item[1])
+        else:
+            sent.append(item[0])
+            sentnames.append("")
+    return (sent, sentnames)

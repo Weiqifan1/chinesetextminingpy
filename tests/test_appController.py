@@ -36,7 +36,6 @@ def input_jsonSimpNews_missingText():
    }
    return jsondict
 
-
 def input_jsonSimpNews():
    # http://cn.chinadaily.com.cn/a/202212/23/WS63a58ed9a3102ada8b2281d8.html
    cntext = """12月23日, 中国铁路成都局集团公司组织媒体提前试乘新成昆铁路, 感受即将到来的时空新体验。 记者在现场获悉, 新成昆铁路将采用第三代C型CR200J'复兴号'动车组值乘, 这也是该车型首次正式亮相。 据介绍, 第三代C型CR200J'复兴号'动车组为9节车厢, 较第二代'绿巨人'增加了商务座, 旋转座椅等, 外形涂装为绿白相间。 此次中国铁路成都局集团公司迎接回6组最新型'复兴号'动车组, 将全部用于新成昆铁路开行。"""
@@ -50,7 +49,6 @@ def input_jsonSimpNews():
       "text": cntext
    }
    return jsondict
-#skriv en test der tester at det ikke er markeret om undertekster er simplificerede eller traditionelle
 
 def input_jsonTradNews():
    # https://www.taiwannews.com.tw/ch/news/4779971
@@ -68,10 +66,78 @@ def input_jsonTradNews():
    }
    return jsondict
 
+def input_jsonTradNews_textTypeOrdered2Line():
+   # https://www.taiwannews.com.tw/ch/news/4779971
+   cntext4 = """
+   竹北市戶政事務所12日湧入大量人潮， 碼牌抽到1297號， 多是為辦遷入戶籍作業。
+   
+   
+   line2
+   鄭朝方12日接受媒體聯訪表示，
+   
+   line3
+   民生紓困金是為減緩疫情帶來的經濟衝擊，
+   
+   所以未設定門檻條件，
+   """
+   cntext3 = "Thank you for the music\nWelcome to the jungle"
+   cntext2 = '竹北市戶政事務所12日湧入大量人潮， 碼牌抽到1297號， 多是為辦遷入戶籍作業。\n\n\n\
+   line2\n鄭朝方12日接受媒體聯訪表示，\n\nline3\n民生紓困金是為減緩疫情帶來的經濟衝擊，\n\n\
+   所以未設定門檻條件，'
+   testnewline = ord("\n")
+   testcarriage = ord("\r")
+
+   cntext = "作業。\r\n\r\n\r\nline2\n方12日，\n\n\n\nline3\n民生，\n\n所以，"
+   listOfUni = [ord(x) for x in cntext]
+   jsondict = {
+      "deckName": "testDeckName",
+      "deckInfo": "testDeckInfo",
+      "script": "traditional",
+      "cardOrder": "chronological",
+      "textType": "ordered2Line",
+      "vocab": [],
+      "text": cntext
+   }
+   return jsondict
+
 def test_appController_texttovocab_traditional():
    news = input_jsonTradNews()
    outputDict = src.Controllers.appController.texttovocab(news)
    assert outputDict["output"] == getDataForVocabTest()
+
+def test_appController_postendpoint_traditional_vocabAndOrdered2Line():
+   news = input_jsonTradNews_textTypeOrdered2Line()
+   outputDict = src.Controllers.appController.postendpoint(news)
+   assert outputDict["deckName"] == "testDeckName"
+   assert outputDict["deckInfo"] == "testDeckInfo"
+   assert outputDict["script"] == "traditional"
+   assert outputDict["cardOrder"] == "chronological"
+   output = outputDict["output"]
+   assert len(output) == 4
+   firstElem = output[0]
+   assert firstElem.get("sentence") == '作業。'
+   assert len(firstElem.get("tokens")) == 2
+   assert firstElem.get("tokens") == ['作業', '。']
+   assert len(firstElem.get("simplified")) == 2
+   assert firstElem.get("simplified") == ['作业', '。']
+   assert len(firstElem.get("traditional")) == 2
+   assert firstElem.get("traditional") == ['作業', '。']
+   assert len(firstElem.get("pinyin")) == 2
+   assert firstElem.get("pinyin") == ['Zuo4Ye4', '。']
+   assert len(firstElem.get("meaning")) == 2
+   assert firstElem.get("meaning") == ['/school assignment/homework/work/task/operation/CL:個|个[ge4]/to operate/', '。']
+   assert len(firstElem.get("hskLevel")) == 2
+   assert firstElem.get("hskLevel") == ['hsk3', '']
+   assert len(firstElem.get("blcuFrequency")) == 2
+   assert firstElem.get("blcuFrequency") == [2507, None]
+   assert len(firstElem.get("heisigSimplified")) == 2
+   assert firstElem.get("heisigSimplified") == ['940 作 do 1351 业 profession', '']
+   assert len(firstElem.get("heisigSimpInt")) == 2
+   assert firstElem.get("heisigSimpInt") == [[{'作': 940}, {'业': 1351}], []]
+   assert len(firstElem.get("heisigTraditional")) == 2
+   assert firstElem.get("heisigTraditional") == ['868 作 do 1304 業 profession', '']
+   assert len(firstElem.get("heisigTradInt")) == 2
+   assert firstElem.get("heisigTradInt") == [[{'作': 868}, {'業': 1304}], []]
 
 def test_appController_postendpoint_traditional_vocab():
    news = input_jsonTradNews()

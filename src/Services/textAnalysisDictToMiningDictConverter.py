@@ -52,7 +52,7 @@ def formatAmbigousPinyin(rawPinyin):
         return noNum
 
 
-def subcard(token, sharedData, index, pinyinList, tokenList, sentence, blcu, deckName, deckInfo):
+def subcard(token, sharedData, index, pinyinList, tokenList, sentence, blcu, deckName, deckInfo, sentencename, textType):
     #write a function that surrounds pinyin with curly
     firstCardInSentece = False
     convertedPinyin = []
@@ -73,10 +73,13 @@ def subcard(token, sharedData, index, pinyinList, tokenList, sentence, blcu, dec
     generateTags.append(deckName)
 
     backsideAndSecondaryInfo = sharedData.split(globalParagraphSeparator)
+    cardName = "sentenceNo:" + str(index + 1)
+    if textType == "ordered2Line":
+        cardName = sentencename
     res = {
         "tokenblcu": [blcu],
         "cardNumber": 0,
-        "cardName": "sentenceNo:" + str(index + 1),
+        "cardName": cardName,
         "frontSide": (" ".join(convertedPinyin)).strip(),
         "backSide": (tokentListToBacksideSentence(tokenList, token)).strip(), # instead of just using token + sentence, i will try to join the tokentlist,
         "primaryInfo": backsideAndSecondaryInfo[0],
@@ -90,17 +93,20 @@ def subcard(token, sharedData, index, pinyinList, tokenList, sentence, blcu, dec
     return res
 
 
-def subcardForWholeSentence(sharedData, index, pinyinList, tokenList, sentence, blcu, deckName, deckInfo, senHasUniqueWord):
+def subcardForWholeSentence(sharedData, index, pinyinList, tokenList, sentence, blcu, deckName, deckInfo, senHasUniqueWord, sentencename, textType):
     # write a function that surrounds pinyin with curly
     generateTags = ["sentenceNo:" + str(index + 1), "onlySentence"]
     if senHasUniqueWord:
         generateTags.append("hasUniqueWord")
     generateTags.append(deckName)
     backsideAndSecondaryInfo = sharedData.split(globalParagraphSeparator)
+    cardName = "sentenceNo:" + str(index + 1)
+    if textType == "ordered2Line":
+        cardName = sentencename
     res = {
         "tokenblcu": blcu,
         "cardNumber": 0,
-        "cardName": "sentenceNo:" + str(index + 1),
+        "cardName": cardName,
         "frontSide": " ".join(pinyinList),
         "backSide": sentence,
         "primaryInfo": backsideAndSecondaryInfo[0],
@@ -114,31 +120,33 @@ def subcardForWholeSentence(sharedData, index, pinyinList, tokenList, sentence, 
     return res
 
 
-def convertSentenceToCardOnlySimplified(sen, prevSen, nextSen, index, tokenList, blcu, lineblcu, deckName, deckInfo, vocab):
+def convertSentenceToCardOnlySimplified(sen, prevSen, nextSen, index, tokenList, blcu, lineblcu, deckName, deckInfo, vocab, sentencenames, textType):
     output = sharedSentenceData(nextSen, prevSen, sen, "simplified")
     cardList = []
     senHasUniqueWord = False
     for i in range(len(tokenList)):
         eachWord = tokenList[i]
+        #sentName = sentencenames[i]
         if eachWord not in vocab:
             senHasUniqueWord = True
-            cardtemp = subcard(eachWord, output, index, sen.get("pinyin"), sen.get("simplified"), sen.get("sentence"), blcu.get(eachWord), deckName, deckInfo)
+            cardtemp = subcard(eachWord, output, index, sen.get("pinyin"), sen.get("simplified"), sen.get("sentence"), blcu.get(eachWord), deckName, deckInfo, sentencenames, textType)
             cardList.append(cardtemp)
-    cardForWholeSentence = subcardForWholeSentence(output, index, sen.get("pinyin"), sen.get("simplified"), sen.get("sentence"), lineblcu, deckName, deckInfo, senHasUniqueWord)
+    cardForWholeSentence = subcardForWholeSentence(output, index, sen.get("pinyin"), sen.get("simplified"), sen.get("sentence"), lineblcu, deckName, deckInfo, senHasUniqueWord, sentencenames, textType)
     cardList.append(cardForWholeSentence)
     return cardList
 
-def convertSentenceToCardOnlyTraditional(sen, prevSen, nextSen, index, tokenList, blcu, lineblcu, deckName, deckInfo, vocab):
+def convertSentenceToCardOnlyTraditional(sen, prevSen, nextSen, index, tokenList, blcu, lineblcu, deckName, deckInfo, vocab, sentencenames, textType):
     output = sharedSentenceData(nextSen, prevSen, sen, "traditional")
     cardList = []
     senHasUniqueWord = False
     for i in range(len(tokenList)):
         eachWord = tokenList[i]
+        #sentName = sentencenames[i]
         if eachWord not in vocab:
             senHasUniqueWord = True
-            cardtemp = subcard(eachWord, output, index, sen.get("pinyin"), sen.get("traditional"), sen.get("sentence"), blcu.get(eachWord), deckName, deckInfo)
+            cardtemp = subcard(eachWord, output, index, sen.get("pinyin"), sen.get("traditional"), sen.get("sentence"), blcu.get(eachWord), deckName, deckInfo, sentencenames, textType)
             cardList.append(cardtemp)
-    cardForWholeSentence = subcardForWholeSentence(output, index, sen.get("pinyin"), sen.get("traditional"), sen.get("sentence"), lineblcu, deckName, deckInfo, senHasUniqueWord)
+    cardForWholeSentence = subcardForWholeSentence(output, index, sen.get("pinyin"), sen.get("traditional"), sen.get("sentence"), lineblcu, deckName, deckInfo, senHasUniqueWord, sentencenames, textType)
     cardList.append(cardForWholeSentence)
     return cardList
 
@@ -259,7 +267,7 @@ def getNestedUniqueList(listOfTokens, newList, length, setToCompare):
         setToCompare.update(currentTokens)
         return getNestedUniqueList(updatedListOfTokens, newList, length, setToCompare)
 
-def convertSentencesToCardsSimplified(outputLines, deckName, deckInfo, vocab):
+def convertSentencesToCardsSimplified(outputLines, deckName, deckInfo, vocab, sentencenames, textType):
     tokenFReqMap = getTokenFreqMap(outputLines)
     uniqueTokens = getNestedUniqueList([x.get("simplified") for x in outputLines], [], len(outputLines), set())
 
@@ -268,18 +276,18 @@ def convertSentencesToCardsSimplified(outputLines, deckName, deckInfo, vocab):
         if i is 0:
             current = outputLines[i]
             next = outputLines[i+1] if len(outputLines) > i+1 else None
-            card = convertSentenceToCardOnlySimplified(current, None, next, i, uniqueTokens[i], tokenFReqMap, current.get("blcuFrequency"), deckName, deckInfo, vocab)
+            card = convertSentenceToCardOnlySimplified(current, None, next, i, uniqueTokens[i], tokenFReqMap, current.get("blcuFrequency"), deckName, deckInfo, vocab, sentencenames[i], textType)
             result.append(card)
         elif i is len(outputLines) - 1:
             current = outputLines[i]
             prev = outputLines[i-1]
-            card = convertSentenceToCardOnlySimplified(current, prev, None, i, uniqueTokens[i], tokenFReqMap, current.get("blcuFrequency"), deckName, deckInfo, vocab)
+            card = convertSentenceToCardOnlySimplified(current, prev, None, i, uniqueTokens[i], tokenFReqMap, current.get("blcuFrequency"), deckName, deckInfo, vocab, sentencenames[i], textType)
             result.append(card)
         else:
             current = outputLines[i]
             prev = outputLines[i-1]
             next = outputLines[i+1] if len(outputLines) > i+1 else None
-            card = convertSentenceToCardOnlySimplified(current, prev, next, i, uniqueTokens[i], tokenFReqMap, current.get("blcuFrequency"), deckName, deckInfo, vocab)
+            card = convertSentenceToCardOnlySimplified(current, prev, next, i, uniqueTokens[i], tokenFReqMap, current.get("blcuFrequency"), deckName, deckInfo, vocab, sentencenames[i], textType)
             result.append(card)
     return result
 
@@ -293,7 +301,7 @@ def convertSentencesToCardsSimplified(outputLines, deckName, deckInfo, vocab):
 
     #TODO: skal ordne text til simplified
 
-def convertSentencesToCardsTraditional(outputLines, deckName, deckInfo, vocab):
+def convertSentencesToCardsTraditional(outputLines, deckName, deckInfo, vocab, sentencenames, textType):
     tokenFReqMap = getTokenFreqMap(outputLines)
     uniqueTokens = getNestedUniqueList([x.get("traditional") for x in outputLines], [], len(outputLines), set())
     result = []
@@ -303,18 +311,18 @@ def convertSentencesToCardsTraditional(outputLines, deckName, deckInfo, vocab):
             current = outputLines[i]
             next = outputLines[i + 1] if len(outputLines) > i + 1 else None
             #createUniquetokens to blcu map
-            card = convertSentenceToCardOnlyTraditional(current, None, next, i, uniqueTokens[i], tokenFReqMap, current.get("blcuFrequency"), deckName, deckInfo, vocab)
+            card = convertSentenceToCardOnlyTraditional(current, None, next, i, uniqueTokens[i], tokenFReqMap, current.get("blcuFrequency"), deckName, deckInfo, vocab, sentencenames[i], textType)
             result.append(card)
         elif i is len(outputLines) - 1:
             current = outputLines[i]
             prev = outputLines[i - 1]
-            card = convertSentenceToCardOnlyTraditional(current, prev, None, i, uniqueTokens[i], tokenFReqMap, current.get("blcuFrequency"), deckName, deckInfo, vocab)
+            card = convertSentenceToCardOnlyTraditional(current, prev, None, i, uniqueTokens[i], tokenFReqMap, current.get("blcuFrequency"), deckName, deckInfo, vocab, sentencenames[i], textType)
             result.append(card)
         else:
             current = outputLines[i]
             prev = outputLines[i - 1]
             next = outputLines[i + 1] if len(outputLines) > i + 1 else None
-            card = convertSentenceToCardOnlyTraditional(current, prev, next, i, uniqueTokens[i], tokenFReqMap, current.get("blcuFrequency"), deckName, deckInfo, vocab)
+            card = convertSentenceToCardOnlyTraditional(current, prev, next, i, uniqueTokens[i], tokenFReqMap, current.get("blcuFrequency"), deckName, deckInfo, vocab, sentencenames[i], textType)
             result.append(card)
     return result
 
@@ -409,9 +417,19 @@ def convertAnalysisDictToMiningDict(analysisDict):
     else:
         cards = {}
         if analysisDict["script"] == "simplified":
-            cards = convertSentencesToCardsSimplified(outputLines, analysisDict.get("deckName"), analysisDict.get("deckInfo"), analysisDict.get("vocab"))
+            cards = convertSentencesToCardsSimplified(outputLines,
+                                                      analysisDict.get("deckName"),
+                                                      analysisDict.get("deckInfo"),
+                                                      analysisDict.get("vocab"),
+                                                      analysisDict.get("sentencenames"),
+                                                      analysisDict.get("textType"))
         elif analysisDict["script"] == "traditional":
-            cards = convertSentencesToCardsTraditional(outputLines, analysisDict.get("deckName"), analysisDict.get("deckInfo"), analysisDict.get("vocab"))
+            cards = convertSentencesToCardsTraditional(outputLines,
+                                                       analysisDict.get("deckName"),
+                                                       analysisDict.get("deckInfo"),
+                                                       analysisDict.get("vocab"),
+                                                       analysisDict.get("sentencenames"),
+                                                       analysisDict.get("textType"))
 
         flatCArds = [element for innerList in cards for element in innerList]
         #flatCArds = [card.strip() for card in flatCArdsRaw]
@@ -422,7 +440,7 @@ def convertAnalysisDictToMiningDict(analysisDict):
         res = {tagsList[i]: tagsList[i] for i in range(len(tagsList))}
         res.update({analysisDict.get("deckName"): analysisDict.get("deckInfo")})
         finalCards = list(map(lambda a: {key:val for key, val in a.items() if key != "tokenblcu"}, cardsWithNumbers))
-        resultDict["cards"] = finalCards#list(map(lambda a: a.update({"cardNumber": a["cardNumber"] + )) ))
+        resultDict["cards"] = finalCards#cards#finalCards#list(map(lambda a: a.update({"cardNumber": a["cardNumber"] + )) ))
         resultDict["tags"] = res
         resultDict["settings"] = {}
         return resultDict
