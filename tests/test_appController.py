@@ -103,10 +103,19 @@ def input_jsonTradNews_textTypeOrdered2Line():
    }
    return jsondict
 
-def test_appController_texttovocab_traditional():
+def test_appController_texttovocab_info_traditional():
    news = input_jsonTradNews()
-   outputDict = src.Controllers.appController.texttovocab(news)
-   assert outputDict["output"] == getDataForVocabTest()
+   outputDict = src.Controllers.appController.texttovocabinfo(news)
+   testdata = getDataForVocabInfoTest()
+   outp = outputDict["output"]
+   assert outp == testdata
+
+def test_appController_texttovocab_raw_traditional():
+   news = input_jsonTradNews()
+   outputDict = src.Controllers.appController.texttovocabraw(news)
+   outp = outputDict["output"]
+   testdata = getDataForVocabRawTest()
+   assert outp == testdata
 
 def test_appController_postendpoint_traditional_vocabAndOrdered2Line():
    news = input_jsonTradNews_textTypeOrdered2Line()
@@ -220,7 +229,86 @@ def test_appController_postendpoint_missingText():
    outputDict = src.Controllers.appController.postendpoint(news)
    assert outputDict["deckInfo"] == 'text json is missing either of the following: [deckName, deckInfo, script, cardOrder, textType, text, vocab, sentencenames]'
 
-def getDataForVocabTest():
+def getDataForVocabRawTest():
+   return """多
+的
+在
+是
+月
+會
+號
+
+到
+日
+出
+所以
+
+為
+被
+作業
+
+以
+經濟
+通過
+表示
+當
+接受
+條件
+符合
+困
+
+所
+方
+媒體
+朝
+資格
+取消
+
+衝擊
+
+竹北
+但
+前
+市
+未
+金
+即
+帶來
+辦
+大量
+戶
+若
+聯
+含
+牌
+設
+抽
+條例
+訪
+民眾
+碼
+發放
+移
+領取
+於
+務
+鄭
+籍
+提案
+設定
+疫情
+門檻
+民生
+自治
+戶籍
+減緩
+湧入
+紓
+人潮
+遷入
+政事"""
+
+def getDataForVocabInfoTest():
    return """all words: 71
 hsk1: 7 of 150
 hsk2: 4 of 151
@@ -230,74 +318,81 @@ hsk5: 6 of 1300
 hsk6: 1 of 2500
 non hsk: 41
 
-竹北
-市
-戶
-政事
-務
-所
-日
-湧入
-大量
-人潮
-碼
-牌
-抽
-到
-號
-多
-是
-為
-辦
-遷入
-戶籍
-作業
-鄭
-朝
-方
-接受
-媒體
-聯
-訪
-表示
-民生
-紓
-困
-金
-減緩
-疫情
-帶來
-的
-經濟
-衝擊
-所以
-未
-設定
-門檻
-條件
-通過
-提案
-自治
-條例
-以
-月
-含
-當
-前
-設
-籍
-於
-即
-符合
-領取
-資格
-但
-民眾
-若
-在
-發放
-移
-出
-會
-被
-取消"""
+多 hsk1 0 Duo1 /many/much/often/a lot of/numerous/more/in excess/how (to what extent)/multi-/Taiwan pr. [duo2] when it means "how"/
+的 hsk1 2 Di4|Di1|Di2|De5 /aim/clear/|/see 的士[di1 shi4]/|/really and truly/|/of/~'s (possessive particle)/(used after an attribute)/(used to form a nominal expression)/(used at the end of a declarative sentence for emphasis)/also pr. [di4] or [di5] in poetry and songs/
+在 hsk1 4 Zai4 /(located) at/(to be) in/to exist/in the middle of doing sth/(indicating an action in progress)/
+是 hsk1 5 Shi4 /is/are/am/yes/to be/
+月 hsk1 32 Yue4 /moon/month/monthly/CL:個|个[ge4],輪|轮[lun2]/
+會 hsk1 33 Kuai4|Hui4 /to balance an account/accountancy/accounting/|/can (i.e. have the skill, know how to)/likely to/sure to/to meet/to get together/meeting/gathering/union/group/association/a moment (Taiwan pr. for this sense is [hui3])/
+號 hsk1 254 Hao2|Hao4 /roar/cry/CL:個|个[ge4]/|/ordinal number/day of a month/mark/sign/business establishment/size/ship suffix/horn (wind instrument)/bugle call/assumed name/to take a pulse/classifier used to indicate number of people/
+
+到 hsk2 25 Dao4 /to (a place)/until (a time)/up to/to go/to arrive/(verb complement denoting completion or result of an action)/
+日 hsk2 29 Ri4 /abbr. for 日本[Ri4 ben3], Japan/|/sun/day/date, day of the month/
+出 hsk2 65 Chu1 /to go out/to come out/to occur/to produce/to go beyond/to rise/to put forth/to happen/(used after a verb to indicate an outward direction or a positive result)/classifier for dramas, plays, operas etc/
+所以 hsk2 192 Suo3Yi3 /therefore/as a result/so/the reason why/
+
+為 hsk3 20 Wei4|Wei2 /because of/for/to/|/as (in the capacity of)/to take sth as/to act as/to serve as/to behave as/to become/to be/to do/by (in the passive voice)/
+被 hsk3 43 Bei4 /quilt/by/(indicates passive-voice clauses)/(literary) to cover/to meet with/(coll.) (since c. 2009) used before a verb that does not accurately represent what actually happened, to describe with black humor how sb or sth was dealt with by the authorities (as in 被自殺|被自杀[bei4 zi4 sha1])/
+作業 hsk3 2507 Zuo4Ye4 /school assignment/homework/work/task/operation/CL:個|个[ge4]/to operate/
+
+以 hsk4 51 Yi3 /abbr. for Israel 以色列[Yi3 se4 lie4]/|/to use/by means of/according to/in order to/because of/at (a certain date or place)/
+經濟 hsk4 124 Jing1Ji4 /economy/economic/
+通過 hsk4 143 Tong1Guo4 /to pass through; to get through/to adopt (a resolution); to pass (legislation)/to pass (a test)/by means of; through; via/
+表示 hsk4 154 Biao3Shi4 /to express/to show/to say/to state/to indicate/to mean/
+當 hsk4 160 Dang4|Dang1 /at or in the very same.../suitable/adequate/fitting/proper/to replace/to regard as/to think/to pawn/(coll.) to fail (a student)/|/to be/to act as/manage/withstand/when/during/ought/should/match equally/equal/same/obstruct/just at (a time or place)/on the spot/right/just at/
+接受 hsk4 472 Jie1Shou4 /to accept/to receive/
+條件 hsk4 497 Tiao2Jian4 /condition; circumstance; term; factor/requirement; prerequisite; qualification/situation; state; condition/CL:個|个[ge4]/
+符合 hsk4 1231 Fu2He2 /in keeping with/in accordance with/tallying with/in line with/to agree with/to accord with/to conform to/to correspond with/to manage/to handle/
+困 hsk4 1920 Kun4 /to trap/to surround/hard-pressed/stranded/destitute/
+
+所 hsk5 108 Suo3 /actually/place/classifier for houses, small buildings, institutions etc/that which/particle introducing a relative clause or passive/CL:個|个[ge4]/
+方 hsk5 408 Fang1 /surname Fang/|/square/power or involution (math.)/upright/honest/fair and square/direction/side/party (to a contract, dispute etc)/place/method/prescription (medicine)/just when/only or just/classifier for square things/abbr. for square or cubic meter/
+媒體 hsk5 568 Mei2Ti3 /media, esp. news media/
+朝 hsk5 1412 Zhao1|Chao2|Chao2 /morning/|/abbr. for 朝鮮|朝鲜[Chao2 xian3] Korea/|/imperial or royal court/government/dynasty/reign of a sovereign or emperor/court or assembly held by a sovereign or emperor/to make a pilgrimage to/facing/towards/
+資格 hsk5 2102 Zi1Ge2 /qualifications/seniority/
+取消 hsk5 2238 Qu3Xiao1 /to cancel/cancellation/
+
+衝擊 hsk6 3094 Chong1Ji1 /to attack/to batter/(of waves) to pound against/shock/impact/
+
+竹北  0 Zhu2Bei3 /Zhubei or Chupei city in Hsinchu County 新竹縣|新竹县[Xin1 zhu2 Xian4], northwest Taiwan/
+但  46 Dan4 /but/yet/however/only/merely/still/
+前  84 Qian2 /front/forward/ahead/first/top (followed by a number)/future/ago/before/BC (e.g. 前293年)/former/formerly/
+市  146 Shi4 /market/city/CL:個|个[ge4]/
+未  339 Wei4 /not yet/did not/have not/not/8th earthly branch: 1-3 p.m., 6th solar month (7th July-6th August), year of the Sheep/ancient Chinese compass point: 210°/
+金  462 Jin1 /surname Jin/surname Kim (Korean)/Jurchen Jin dynasty (1115-1234)/|/gold/chemical element Au/generic term for lustrous and ductile metals/money/golden/highly respected/one of the eight categories of ancient musical instruments 八音[ba1 yin1]/
+即  466 Ji2 /namely/that is/i.e./prompt/at once/at present/even if/prompted (by the occasion)/to approach/to come into contact/to assume (office)/to draw near/
+帶來  634 Dai4Lai2 /to bring/to bring about/to produce/
+辦  736 Ban4 /to do/to manage/to handle/to go about/to run/to set up/to deal with/
+大量  842 Da4Liang4 /great amount/large quantity/bulk/numerous/generous/magnanimous/
+戶  947 Hu4 /a household/door/family/
+若  971 Ruo4 /to seem/like/as/if/
+聯  1038 Lian2 /to ally/to unite/to join/(poetry) antithetical couplet/
+含  1413 Han2 /to keep/to contain/to suck (keep in your mouth without chewing)/
+牌  1436 Pai2 /mahjong tile/playing card/game pieces/signboard/plate/tablet/medal/CL:片[pian4],個|个[ge4],塊|块[kuai4]/
+設  1572 She4 /to set up/to arrange/to establish/to found/to display/
+抽  1779 Chou1 /to draw out/to pull out from in between/to remove part of the whole/(of certain plants) to sprout or bud/to whip or thrash/
+條例  2814 Tiao2Li4 /regulations; rules; code of conduct; ordinances; statutes/
+訪  3053 Fang3 /(bound form) to visit/to call on/to seek/to inquire/to investigate/
+民眾  3175 Min2Zhong4 /populace/masses/the people/
+碼  3271 Ma3 /weight/number/code/to pile/to stack/classifier for length or distance (yard), happenings etc/
+發放  3276 Fa1Fang4 /to provide/to give/to grant/
+移  3312 Yi2 /to move/to shift/to change/to alter/to remove/
+領取  3570 Ling3Qu3 /to receive/to draw/to get/
+於  4283 Wu1|Yu1|Yu2 /(literary) Oh!/Ah!/|/surname Yu/Taiwan pr. [Yu2]/|/in/at/to/from/by/than/out of/
+務  4450 Wu4 /affair/business/matter/to be engaged in/to attend to/by all means/
+鄭  4618 Zheng4 /bound form used in 鄭重|郑重[zheng4 zhong4] and 雅鄭|雅郑[ya3 zheng4]/|/Zheng state during the Warring States period/surname Zheng/abbr. for 鄭州|郑州[Zheng4 zhou1]/
+籍  5027 Ji2 /surname Ji/|/book or record/registry/roll/place of one's family or ancestral records/membership/
+提案  5135 Ti2An4 /proposal/draft resolution/motion (to be debated)/to propose a bill/to make a proposal/
+設定  5438 She4Ding4 /to set/to set up/to install/setting/preferences/
+疫情  5810 Yi4Qing2 /epidemic situation/
+門檻  6355 Men2Kan3 /doorstep/sill/threshold/fig. knack or trick (esp. scheme to get sth cheaper)/
+民生  7105 Min2Sheng1 /people's livelihood/people's welfare/
+自治  8168 Zi4Zhi4 /autonomy/
+戶籍  9053 Hu4Ji2 /census register/household register/
+減緩  11902 Jian3Huan3 /to slow down/to retard/
+湧入  12236 Yong3Ru4 /to come pouring in/influx/
+紓  20712 Shu1 /abundant/ample/at ease/relaxed/to free from/to relieve/
+人潮  21235 Ren2Chao2 /a tide of people/
+遷入  21898 Qian1Ru4 /to move in (to new lodging)/
+政事  23396 Zheng4Shi4 /politics/government affairs/
+"""

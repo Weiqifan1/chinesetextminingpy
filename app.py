@@ -40,14 +40,24 @@ def textToDeck():
     else:
         return 'Content-Type not supported!'
 
-@app.route('/texttovocab', methods = ['POST'])
-def textToVocab():
+@app.route('/texttovocabinfo', methods = ['POST'])
+def textToVocabInfo():
     content_type = request.headers.get('Content-Type')
     print("appstart chr")
     if (content_type == 'application/json'):
         json = request.json
-        res = src.Controllers.appController.texttovocab(json)
+        res = src.Controllers.appController.texttovocabinfo(json)
         return res
     else:
         return 'Content-Type not supported!'
 
+@app.route('/texttovocabraw', methods = ['POST'])
+def textToVocabRaw():
+    content_type = request.headers.get('Content-Type')
+    print("appstart chr")
+    if (content_type == 'application/json'):
+        json = request.json
+        res = src.Controllers.appController.texttovocabraw(json)
+        return res
+    else:
+        return 'Content-Type not supported!'

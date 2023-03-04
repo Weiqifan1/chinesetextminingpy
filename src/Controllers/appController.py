@@ -2,10 +2,18 @@ import re
 from src.Services import chineseTextHandlerService
 from src.Services import textAnalysisDictToMiningDictConverter
 
-def texttovocab(postinput):
+def texttovocabinfo(postinput):
     res = postendpoint(postinput)
     allItems = list(map(lambda each: each["tokens"], res["output"]))
     vocabFromCards = chineseTextHandlerService.vocabFromSentences(allItems, res["script"])
+    resultDict = {}
+    resultDict["output"] = vocabFromCards
+    return resultDict
+
+def texttovocabraw(postinput):
+    res = postendpoint(postinput)
+    allItems = list(map(lambda each: each["tokens"], res["output"]))
+    vocabFromCards = chineseTextHandlerService.rawVocabFromSentences(allItems, res["script"])
     resultDict = {}
     resultDict["output"] = vocabFromCards
     return resultDict
