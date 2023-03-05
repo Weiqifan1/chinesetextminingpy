@@ -231,8 +231,10 @@ def test_convertDictionarySentenceToCard_targetTraditional_noVocab():
 
     #number of cards == number of sentences + number of unique tokens containing chinese characters
     assert len(cards) == len(output) + len(chineseWords)
-    assert res.get("tags") == {'hasUniqueWord': 'hasUniqueWord', 'onlySentence': 'onlySentence', 'sentenceNo:2': 'sentenceNo:2', 'firstInSentence': 'firstInSentence', 'jsonTraditionalNews': 'traditionalNewsInfo', 'sentenceNo:1': 'sentenceNo:1'}
-
+    #assert res.get("tags") == {'hasUniqueWord': 'hasUniqueWord', 'onlySentence': 'onlySentence', 'sentenceNo:2': 'sentenceNo:2', 'firstInSentence': 'firstInSentence', 'jsonTraditionalNews': 'traditionalNewsInfo', 'sentenceNo:1': 'sentenceNo:1'}
+    assert res.get("tags") == {'firstInSentence': 'noInfo', 'hasUniqueWord': 'noInfo', 'jsonTraditionalNews': 'traditionalNewsInfo',
+     'onlySentence': 'noInfo', 'sentenceNo:1': 'noInfo', 'sentenceNo:2': 'noInfo', '務': 'noInfo', '市': 'noInfo',
+     '戶': 'noInfo', '所': 'noInfo', '政事': 'noInfo', '日': 'noInfo', '湧入': 'noInfo', '竹北': 'noInfo'}
     firstCard = cards[0]
     assert firstCard.get("cardNumber") == 1
     assert firstCard.get("cardName") == "sentenceNo:1"
@@ -240,7 +242,7 @@ def test_convertDictionarySentenceToCard_targetTraditional_noVocab():
     assert firstCard.get("backSide") == '[[竹北]] 市戶政事.'
     assert firstCard.get("primaryInfo") == trad_primary_example()
     assert firstCard.get("secondaryInfo") == trad_secondary_example()
-    assert firstCard.get("tags") == ['sentenceNo:1', 'firstInSentence', 'jsonTraditionalNews']
+    assert firstCard.get("tags") == ['sentenceNo:1', 'firstInSentence', 'jsonTraditionalNews', '竹北']
 
     #last four cards == front side is chinese character
     fifthCard = cards[4]
@@ -248,9 +250,11 @@ def test_convertDictionarySentenceToCard_targetTraditional_noVocab():
     assert fifthCard.get("cardName") == 'sentenceNo:2'
     assert fifthCard.get("frontSide") == '[[Wu4]] Suo3 Ri4 12 Ri4 Yong3Ru4 。'
     assert fifthCard.get("backSide") == '[[務]] 所日12日湧入。'
-    assert fifthCard.get("tags") == ['sentenceNo:2', 'firstInSentence', 'jsonTraditionalNews']
+    assert fifthCard.get("tags") == ['sentenceNo:2', 'firstInSentence', 'jsonTraditionalNews', '務']
     assert cards[8].get("backSide") == '竹北市戶政事.'
+    assert cards[8].get("tags") == ['sentenceNo:1', 'onlySentence', 'hasUniqueWord', 'jsonTraditionalNews', '竹北', '市', '戶', '政事']
     assert cards[9].get("backSide") == '務所日12日湧入。'
+
 
 def test_convertDictionarySentenceToCard_targetTraditional_WithVocab():
     #configurations
@@ -273,7 +277,7 @@ def test_convertDictionarySentenceToCard_targetTraditional_WithVocab():
 
     #number of cards == number of sentences + number of unique tokens containing chinese characters - number of vocab words in cards
     assert len(cards) == len(output) + len(chineseWords) - 2
-    assert res.get("tags") == {'sentenceNo:1': 'sentenceNo:1', 'hasUniqueWord': 'hasUniqueWord', 'jsonTraditionalNews': 'traditionalNewsInfo', 'sentenceNo:2': 'sentenceNo:2', 'firstInSentence': 'firstInSentence', 'onlySentence': 'onlySentence'}
+    assert res.get("tags") == {'firstInSentence': 'noInfo', 'hasUniqueWord': 'noInfo', 'jsonTraditionalNews': 'traditionalNewsInfo', 'onlySentence': 'noInfo', 'sentenceNo:1': 'noInfo', 'sentenceNo:2': 'noInfo', '務': 'noInfo', '市': 'noInfo', '戶': 'noInfo', '所': 'noInfo', '政事': 'noInfo', '日': 'noInfo', '湧入': 'noInfo', '竹北': 'noInfo'}
 
     firstCard = cards[0]
     assert firstCard.get("cardNumber") == 1
@@ -282,7 +286,7 @@ def test_convertDictionarySentenceToCard_targetTraditional_WithVocab():
     assert firstCard.get("backSide") == '[[竹北]] 市戶政事.'
     assert firstCard.get("primaryInfo") == trad_primary_example()
     assert firstCard.get("secondaryInfo") == trad_secondary_example()
-    assert firstCard.get("tags") == ['sentenceNo:1', 'firstInSentence', 'jsonTraditionalNews']
+    assert firstCard.get("tags") == ['sentenceNo:1', 'firstInSentence', 'jsonTraditionalNews', '竹北']
 
     #last four cards == front side is chinese character
     fifthCard = cards[4]
@@ -290,8 +294,9 @@ def test_convertDictionarySentenceToCard_targetTraditional_WithVocab():
     assert fifthCard.get("cardName") == 'sentenceNo:2'
     assert fifthCard.get("frontSide") == 'Wu4 Suo3 [[Ri4]] 12 [[Ri4]] Yong3Ru4 。'
     assert fifthCard.get("backSide") == '務所 [[日]] 12 [[日]] 湧入。'
-    assert fifthCard.get("tags") == ['sentenceNo:2', 'jsonTraditionalNews']
+    assert fifthCard.get("tags") == ['sentenceNo:2', 'jsonTraditionalNews', '日']
     assert cards[6].get("backSide") == '竹北市戶政事.'
+    assert cards[6].get("tags") == ['sentenceNo:1', 'onlySentence', 'hasUniqueWord', 'jsonTraditionalNews', '竹北', '市', '戶', '政事']
     assert cards[7].get("backSide") == '務所日12日湧入。'
 
 def trad_primary_example():
@@ -343,7 +348,7 @@ def test_convertDictionarySentenceToCard_targetSimnplified_noVocab():
 
     #number of cards == number of sentences + number of unique tokens containing chinese characters
     assert len(cards) == len(output) + len(chineseWords)
-    assert res.get("tags") == {'firstInSentence': 'firstInSentence', 'sentenceNo:2': 'sentenceNo:2', 'onlySentence': 'onlySentence', 'hasUniqueWord': 'hasUniqueWord', 'sentenceNo:1': 'sentenceNo:1', 'jsonSimplifiedNews': 'simplifiedNewsInfo'}
+    assert res.get("tags") == {'firstInSentence': 'noInfo', 'hasUniqueWord': 'noInfo', 'jsonSimplifiedNews': 'simplifiedNewsInfo', 'onlySentence': 'noInfo', 'sentenceNo:1': 'noInfo', 'sentenceNo:2': 'noInfo', '务': 'noInfo', '市': 'noInfo', '户': 'noInfo', '所': 'noInfo', '政事': 'noInfo', '日': 'noInfo', '涌入': 'noInfo', '竹北': 'noInfo'}
 
     #four sentenceCards and
     firstCard = cards[0]
@@ -351,7 +356,7 @@ def test_convertDictionarySentenceToCard_targetSimnplified_noVocab():
     assert firstCard.get("cardName") == "sentenceNo:1"
     assert firstCard.get("frontSide") == '[[Zhu2Bei3]] Shi4 Hu4 Zheng4Shi4 .'
     assert firstCard.get("backSide") == '[[竹北]] 市户政事.'
-    assert firstCard.get("tags") == ['sentenceNo:1', 'firstInSentence', 'jsonSimplifiedNews']
+    assert firstCard.get("tags") == ['sentenceNo:1', 'firstInSentence', 'jsonSimplifiedNews', '竹北']
 
     #last four cards == front side is chinese character
     fifthCard = cards[4]
@@ -359,8 +364,9 @@ def test_convertDictionarySentenceToCard_targetSimnplified_noVocab():
     assert fifthCard.get("cardName") == 'sentenceNo:2'
     assert fifthCard.get("frontSide") == '[[Wu4]] Suo3 Ri4 12 Ri4 Yong3Ru4 。'
     assert fifthCard.get("backSide") == '[[务]] 所日12日涌入。'
-    assert fifthCard.get("tags") == ['sentenceNo:2', 'firstInSentence', 'jsonSimplifiedNews']
+    assert fifthCard.get("tags") == ['sentenceNo:2', 'firstInSentence', 'jsonSimplifiedNews', '务']
     assert cards[8].get("backSide") == '竹北市户政事.'
+    assert cards[8].get("tags") == ['sentenceNo:1', 'onlySentence', 'hasUniqueWord', 'jsonSimplifiedNews', '竹北', '市', '户', '政事']
     assert cards[9].get("backSide") == '务所日12日涌入。'
 
 def test_convertDictionarySentenceToCard_targetSimnplified_WithVocab():
@@ -383,14 +389,14 @@ def test_convertDictionarySentenceToCard_targetSimnplified_WithVocab():
 
     #number of cards == number of sentences + number of unique tokens containing chinese characters
     assert len(cards) == len(output) + len(chineseWords) - 2
-    assert res.get("tags") == {'jsonSimplifiedNews': 'simplifiedNewsInfo', 'sentenceNo:1': 'sentenceNo:1', 'onlySentence': 'onlySentence', 'firstInSentence': 'firstInSentence', 'hasUniqueWord': 'hasUniqueWord', 'sentenceNo:2': 'sentenceNo:2'}
+    assert res.get("tags") == {'firstInSentence': 'noInfo', 'hasUniqueWord': 'noInfo', 'jsonSimplifiedNews': 'simplifiedNewsInfo', 'onlySentence': 'noInfo', 'sentenceNo:1': 'noInfo', 'sentenceNo:2': 'noInfo', '务': 'noInfo', '市': 'noInfo', '户': 'noInfo', '所': 'noInfo', '政事': 'noInfo', '日': 'noInfo', '涌入': 'noInfo', '竹北': 'noInfo'}
     #four sentenceCards and
     firstCard = cards[0]
     assert firstCard.get("cardNumber") == 1
     assert firstCard.get("cardName") == "sentenceNo:1"
     assert firstCard.get("frontSide") == '[[Zhu2Bei3]] Shi4 Hu4 Zheng4Shi4 .'
     assert firstCard.get("backSide") == '[[竹北]] 市户政事.'
-    assert firstCard.get("tags") == ['sentenceNo:1', 'firstInSentence', 'jsonSimplifiedNews']
+    assert firstCard.get("tags") == ['sentenceNo:1', 'firstInSentence', 'jsonSimplifiedNews', '竹北']
 
     #last four cards == front side is chinese character
     fifthCard = cards[4]
@@ -398,8 +404,9 @@ def test_convertDictionarySentenceToCard_targetSimnplified_WithVocab():
     assert fifthCard.get("cardName") == 'sentenceNo:2'
     assert fifthCard.get("frontSide") == 'Wu4 Suo3 [[Ri4]] 12 [[Ri4]] Yong3Ru4 。'
     assert fifthCard.get("backSide") == '务所 [[日]] 12 [[日]] 涌入。'
-    assert fifthCard.get("tags") == ['sentenceNo:2', 'jsonSimplifiedNews']
+    assert fifthCard.get("tags") == ['sentenceNo:2', 'jsonSimplifiedNews', '日']
     assert cards[6].get("backSide") == '竹北市户政事.'
+    assert cards[6].get("tags") == ['sentenceNo:1', 'onlySentence', 'hasUniqueWord', 'jsonSimplifiedNews', '竹北', '市', '户', '政事']
     assert cards[7].get("backSide") == '务所日12日涌入。'
 
 def test_convertDictionarySentenceToCard_targetSimnplified_wikidata():

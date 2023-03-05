@@ -3,11 +3,7 @@ from operator import itemgetter
 from src.Services.utilityService import isChinese
 import functools
 
-
-#convert dictionaries from the text analysis format to FlashCardDeck format from the app 'hanzimining'
-
 globalLineSeparator = "\n"
-
 globalParagraphSeparator = "\n\n" # "<br/><br/>"
 
 def addValueToDict(valueName, oldDict, newDict):
@@ -71,6 +67,7 @@ def subcard(token, sharedData, index, pinyinList, tokenList, sentence, blcu, dec
     if firstCardInSentece:
         generateTags.append("firstInSentence")
     generateTags.append(deckName)
+    generateTags.append(token)
 
     backsideAndSecondaryInfo = sharedData.split(globalParagraphSeparator)
     cardName = "sentenceNo:" + str(index + 1)
@@ -99,6 +96,9 @@ def subcardForWholeSentence(sharedData, index, pinyinList, tokenList, sentence, 
     if senHasUniqueWord:
         generateTags.append("hasUniqueWord")
     generateTags.append(deckName)
+    for elem in tokenList:
+        if isChinese(elem):
+            generateTags.append(elem)
     backsideAndSecondaryInfo = sharedData.split(globalParagraphSeparator)
     cardName = "sentenceNo:" + str(index + 1)
     if textType == "ordered2Line":
@@ -405,6 +405,9 @@ def flatCardsWithNumbers(flatCArds, param):
     else:
         return flatCArds
 
+def getInfoForTag(tag):
+    return "noInfo"
+
 def convertAnalysisDictToMiningDict(analysisDict):
     resultDict = {}
     resultDict = addValueToDict("deckName", analysisDict, resultDict)
@@ -437,7 +440,8 @@ def convertAnalysisDictToMiningDict(analysisDict):
         cardsWithNumbers = flatCardsWithNumbers(flatCArds, analysisDict.get("cardOrder"))
 
         tagsList = getAllTagsFromCards(cardsWithNumbers)
-        res = {tagsList[i]: tagsList[i] for i in range(len(tagsList))}
+        tagsList.sort()
+        res = {tagsList[i]: getInfoForTag(tagsList[i]) for i in range(len(tagsList))}
         res.update({analysisDict.get("deckName"): analysisDict.get("deckInfo")})
         finalCards = list(map(lambda a: {key:val for key, val in a.items() if key != "tokenblcu"}, cardsWithNumbers))
         resultDict["cards"] = finalCards#cards#finalCards#list(map(lambda a: a.update({"cardNumber": a["cardNumber"] + )) ))
