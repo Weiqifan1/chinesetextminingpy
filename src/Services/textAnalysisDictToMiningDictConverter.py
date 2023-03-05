@@ -13,7 +13,7 @@ def addValueToDict(valueName, oldDict, newDict):
 
 
 def doTokenList(tokenList, token, newList):
-    punctuationSet = {",", ".", "。", "？", "?", ";", "!"}
+    punctuationSet = {",", ".", "。", "？", "?", ";", "!", "、"}
     if len(tokenList) == 0:
         return newList
     elif tokenList[0] in punctuationSet: #not isChinese(tokenList[0]):
